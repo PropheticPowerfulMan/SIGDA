@@ -1,70 +1,163 @@
 {% load static %}
 <!doctype html>
-<html lang="fr">
+<html lang="fr" data-theme="dark">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Atelier documentaire · SIGDA</title>
     <link rel="icon" href="{% static 'sigda/EmblemRDC.jpg' %}">
-    <link rel="stylesheet" href="{% static 'sigda/workspace.css' %}">
+    <link rel="stylesheet" href="{% static 'app.css' %}">
+    <script src="{% static 'theme.js' %}" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
-    <header class="masthead">
-        <div class="identity">
-            <img src="{% static 'sigda/EmblemRDC.jpg' %}" alt="Emblème de la Présidence de la RDC" width="52" height="52">
-            <div><strong>SIGDA</strong><span>Système intégré de gestion documentaire des agents</span></div>
-        </div>
-        <span class="badge">Démonstration</span>
-    </header>
-    <main id="main">
-        <section class="intro" aria-labelledby="title">
-            <p class="eyebrow">Gestion documentaire</p>
-            <h1 id="title">Atelier documentaire</h1>
-            <p>Prévisualisez et téléchargez des spécimens à partir de dossiers fictifs.</p>
-        </section>
-        <div class="workspace">
-            <section class="settings panel" aria-labelledby="settings-title">
-                <h2 id="settings-title">Préparer le spécimen</h2>
-                <form action="{% url 'workspace' %}" method="get">
-                    <label for="agent">Agent fictif</label>
-                    <select name="agent" id="agent">
-                        {% for key, value in agents.items %}
-                        <option value="{{ key }}"{% if selected_agent == key %} selected{% endif %}>{{ value.name }} · {{ value.registration }}</option>
-                        {% endfor %}
-                    </select>
-                    <label for="type">Modèle documentaire</label>
-                    <select name="type" id="type">
-                        {% for key, value in document_types.items %}
-                        <option value="{{ key }}"{% if selected_type == key %} selected{% endif %}>{{ value.title }}</option>
-                        {% endfor %}
-                    </select>
-                    <button type="submit">Générer l’aperçu</button>
-                </form>
-                <dl class="context">
-                    <dt>Dossier affiché</dt>
-                    <dd>{{ agent.name }} · {{ agent.registration }}</dd>
-                    <dt>Service</dt>
-                    <dd>{{ agent.service }}</dd>
-                </dl>
-            </section>
-            <section class="preview panel" aria-labelledby="preview-title">
-                <div class="preview-header">
-                    <div>
-                        <p class="eyebrow">Aperçu A4</p>
-                        <h2 id="preview-title">{{ document.title }}</h2>
-                        <p>{{ document.description }}</p>
-                    </div>
-                    <a class="download" href="{% url 'specimen' selected_type selected_agent %}?download=1">Télécharger le PDF</a>
+    <div class="app-shell">
+        <aside class="sidebar">
+            <a class="brand" href="#overview">
+                <span class="brand-mark"><img src="{% static 'sigda/EmblemRDC.jpg' %}" alt="" width="38" height="38"></span>
+                <span class="brand-copy"><strong>SIGDA</strong><span>Gestion documentaire</span></span>
+            </a>
+            <nav class="side-nav" aria-label="Navigation principale">
+                <p class="nav-group-label">Espace de travail</p>
+                <a class="nav-link" href="#overview" aria-current="location">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
+                    <span>Vue d’ensemble</span>
+                </a>
+                <a class="nav-link" href="#dossiers">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
+                    <span>Dossiers agents</span>
+                </a>
+                <a class="nav-link" href="#atelier">
+                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8m-8 4h8"></path></svg>
+                    <span>Atelier documentaire</span>
+                </a>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="side-status"><span class="status-dot" aria-hidden="true"></span><div><strong>Mode démonstration</strong><p>Données fictives</p></div></div>
+            </div>
+        </aside>
+
+        <div class="main-shell">
+            <header class="topbar">
+                <div class="breadcrumb"><span>Gestion documentaire</span><span aria-hidden="true">/</span><strong>Atelier</strong></div>
+                <a class="mobile-brand" href="#overview">
+                    <img src="{% static 'sigda/EmblemRDC.jpg' %}" alt="" width="30" height="30">
+                    <strong>SIGDA</strong>
+                </a>
+                <div class="topbar-actions">
+                    <button class="theme-toggle" id="theme-toggle" type="button" hidden aria-label="Activer le thème clair">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" data-theme-icon="sun"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M19 5l-1.5 1.5m-11 11L5 19"></path></svg>
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true" data-theme-icon="moon" hidden><path d="M20.7 14.4A9 9 0 0 1 9.6 3.3a9 9 0 1 0 11.1 11.1z"></path></svg>
+                        <span data-theme-label>Clair</span>
+                    </button>
                 </div>
-                <iframe title="Aperçu PDF — {{ document.title }}" src="{% url 'specimen' selected_type selected_agent %}"></iframe>
-                <a class="open-pdf" href="{% url 'specimen' selected_type selected_agent %}">Ouvrir l’aperçu PDF</a>
-            </section>
+            </header>
+
+            <main id="main" class="main-content" tabindex="-1">
+                <section class="page-heading" id="overview" aria-labelledby="title" tabindex="-1">
+                    <div>
+                        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Espace de travail</p>
+                        <h1 id="title">Atelier documentaire</h1>
+                        <p class="page-description">Consultez les dossiers agents et préparez des spécimens au format A4.</p>
+                    </div>
+                    <span class="status-pill heading-badge"><span class="status-dot" aria-hidden="true"></span>Démonstration locale</span>
+                </section>
+
+                <section class="metrics" aria-label="Catalogue de démonstration">
+                    <article class="metric-card">
+                        <span class="metric-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><path d="M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2m2-15a3 3 0 0 1 0 6m4 9v-2a4 4 0 0 0-3-3.9"></path></svg></span>
+                        <div class="metric-copy"><p class="metric-label">Dossiers agents</p><p class="metric-value">{{ agents|length }}</p><p class="metric-meta">Agents fictifs</p></div>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8 8h8m-8 4h8m-8 4h5"></path></svg></span>
+                        <div class="metric-copy"><p class="metric-label">Modèles</p><p class="metric-value">{{ document_types|length }}</p><p class="metric-meta">Documents administratifs</p></div>
+                    </article>
+                    <article class="metric-card">
+                        <span class="metric-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"></path></svg></span>
+                        <div class="metric-copy"><p class="metric-label">Spécimens</p><p class="metric-value">{% widthratio agents|length 1 document_types|length %}</p><p class="metric-meta">PDF prêts à consulter</p></div>
+                    </article>
+                </section>
+
+                <div class="workbench">
+                    <section class="panel directory-panel" id="dossiers" aria-labelledby="directory-title" tabindex="-1">
+                        <header class="panel-header">
+                            <div><h2 class="panel-title" id="directory-title">Dossiers agents</h2><p>Choisissez le dossier à utiliser.</p></div>
+                            <span class="status-pill">Fictifs</span>
+                        </header>
+                        <table class="agent-table">
+                            <thead><tr><th scope="col">Agent</th><th scope="col">Service</th></tr></thead>
+                            <tbody>
+                                {% for key, value in agents.items %}
+                                <tr{% if selected_agent == key %} class="is-selected"{% endif %}>
+                                    <td>
+                                        <a class="agent-pick" href="{% url 'workspace' %}?agent={{ key|urlencode }}&amp;type={{ selected_type|urlencode }}#dossiers"{% if selected_agent == key %} aria-current="true"{% endif %}>
+                                            <span class="agent-avatar" aria-hidden="true">{{ value.name|first }}</span>
+                                            <span><span class="agent-name">{{ value.name }}</span><span class="agent-code">{{ value.registration }}</span></span>
+                                        </a>
+                                    </td>
+                                    <td class="agent-service">{{ value.service }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                        <div class="directory-footer"><p class="directory-status">{{ agents|length }} dossiers affichés</p></div>
+                        <div class="directory-selection">
+                            <div class="selected-agent">
+                                <p class="selected-kicker">Dossier sélectionné</p>
+                                <p><strong>{{ agent.name }}</strong> <span>{{ agent.registration }}</span></p>
+                                <p>{{ agent.service }}</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="panel document-panel" id="atelier" aria-labelledby="settings-title" tabindex="-1">
+                        <header class="panel-header">
+                            <div><h2 class="panel-title" id="settings-title">Atelier documentaire</h2><p>Préparer et consulter un spécimen.</p></div>
+                            <span class="status-pill">PDF A4</span>
+                        </header>
+                        <form class="document-form" action="{% url 'workspace' %}#atelier" method="get">
+                            <input name="agent" type="hidden" value="{{ selected_agent }}">
+                            <div class="form-field">
+                                <label for="type">Modèle documentaire</label>
+                                <select name="type" id="type">
+                                    {% for key, value in document_types.items %}
+                                    <option value="{{ key }}"{% if selected_type == key %} selected{% endif %}>{{ value.title }}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <button class="button button-secondary" type="submit">
+                                <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.75"></circle></svg>
+                                Actualiser l’aperçu
+                            </button>
+                        </form>
+                        <div class="document-toolbar">
+                            <div class="document-meta">
+                                <h3 id="preview-title">{{ document.title }}</h3>
+                                <p>{{ document.description }}</p>
+                            </div>
+                            <div class="document-actions">
+                                <a class="button button-primary" href="{% url 'specimen' selected_type selected_agent %}?download=1">
+                                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"></path></svg>
+                                    Télécharger le PDF
+                                </a>
+                            </div>
+                        </div>
+                        <div class="preview-surface">
+                            <div class="preview-topline"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>SPÉCIMEN — NON VALABLE</span></div>
+                            <iframe title="Aperçu PDF · {{ document.title }} · {{ agent.name }}" src="{% url 'specimen' selected_type selected_agent %}"></iframe>
+                        </div>
+                        <div class="preview-links">
+                            <a href="{% url 'specimen' selected_type selected_agent %}" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet</a>
+                        </div>
+                    </section>
+                </div>
+            </main>
+
+            <footer class="app-footer">
+                <p><strong>SIGDA</strong> · Proposition institutionnelle</p>
+                <p>SIGDA et SSDC sont deux projets indépendants.</p>
+            </footer>
         </div>
-    </main>
-    <footer>
-        <p>SIGDA · Conception du projet par LOKALA LOMBOTO JONATHAN · Proposition institutionnelle</p>
-        <p>SIGDA et SSDC sont deux projets indépendants.</p>
-    </footer>
+    </div>
 </body>
 </html>

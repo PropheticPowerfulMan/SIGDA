@@ -20,6 +20,7 @@ MIDDLEWARE = [
 ]
 X_FRAME_OPTIONS = "DENY"
 STATIC_URL = "/static/"
+STATICFILES_DIRS = [BASE_DIR.parent / "demo"]
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",

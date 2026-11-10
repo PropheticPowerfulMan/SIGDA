@@ -25,23 +25,42 @@ const documents = {
 };
 
 const form = document.getElementById("specimen-form");
-const agentSelect = document.getElementById("agent");
 const modelSelect = document.getElementById("model");
+const agentButtons = [...document.querySelectorAll(".agent-pick")];
+const searchInput = document.getElementById("agent-search");
+const directoryStatus = document.getElementById("directory-status");
+const emptyRow = document.getElementById("empty-agents");
 const frame = document.getElementById("preview-frame");
 const downloadLink = document.getElementById("download-link");
 const openLink = document.getElementById("open-link");
 const previewFragment = "#toolbar=0&navpanes=0&view=FitH";
+let selectedAgent = "alpha";
+
+function normalizeSearch(value) {
+    return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase("fr").trim();
+}
+
+function filterAgents() {
+    const query = normalizeSearch(searchInput.value);
+    let visible = 0;
+    for (const button of agentButtons) {
+        const agent = agents[button.dataset.agent];
+        const haystack = normalizeSearch(`${agent.name} ${agent.registration} ${agent.service}`);
+        const matches = haystack.includes(query);
+        button.closest("tr").hidden = !matches;
+        if (matches) visible += 1;
+    }
+    emptyRow.hidden = visible > 0;
+    directoryStatus.textContent = visible === 1 ? "1 dossier affiché" : `${visible} dossiers affichés`;
+}
 
 function updatePreview() {
-    const agentKey = agentSelect.value;
     const documentKey = modelSelect.value;
-    if (!Object.hasOwn(agents, agentKey) || !Object.hasOwn(documents, documentKey)) {
-        return;
-    }
+    if (!Object.hasOwn(documents, documentKey)) return;
 
-    const agent = agents[agentKey];
+    const agent = agents[selectedAgent];
     const model = documents[documentKey];
-    const pdf = `./assets/specimens/${documentKey}-${agentKey}.pdf`;
+    const pdf = `./assets/specimens/${documentKey}-${selectedAgent}.pdf`;
 
     document.getElementById("agent-name").textContent = agent.name;
     document.getElementById("agent-registration").textContent = agent.registration;
@@ -57,8 +76,38 @@ function updatePreview() {
     document.getElementById("preview-status").textContent = `Aperçu mis à jour. ${model.title} pour ${agent.name}.`;
 }
 
+for (const button of agentButtons) {
+    button.disabled = false;
+    button.addEventListener("click", () => {
+        selectedAgent = button.dataset.agent;
+        for (const agentButton of agentButtons) {
+            const selected = agentButton === button;
+            agentButton.setAttribute("aria-pressed", String(selected));
+            agentButton.closest("tr").classList.toggle("is-selected", selected);
+        }
+        updatePreview();
+    });
+}
+
 form.addEventListener("submit", (event) => {
     event.preventDefault();
     updatePreview();
 });
+modelSelect.disabled = false;
 document.getElementById("preview-button").disabled = false;
+document.getElementById("directory-tools").hidden = false;
+searchInput.addEventListener("input", filterAgents);
+
+const navLinks = document.querySelectorAll(".side-nav .nav-link");
+function updateNavigation() {
+    const location = window.location.hash || "#overview";
+    for (const link of navLinks) {
+        if (link.hash === location) {
+            link.setAttribute("aria-current", "location");
+        } else {
+            link.removeAttribute("aria-current");
+        }
+    }
+}
+window.addEventListener("hashchange", updateNavigation);
+updateNavigation();

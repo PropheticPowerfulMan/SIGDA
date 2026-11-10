@@ -13,7 +13,7 @@ ROOT = Path(__file__).resolve().parents[1]
 DEMO = ROOT / "apps" / "demo"
 DIST = ROOT / "dist"
 OUTPUT = DIST / "demo"
-STATIC_FILES = ("index.html", "app.css", "app.js")
+STATIC_FILES = ("index.html", "app.css", "app.js", "theme.js")
 SPECIMEN_DATE = date(2026, 1, 15)
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 

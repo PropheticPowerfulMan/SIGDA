@@ -7,3 +7,4 @@
 - Téléchargement PDF et tests des routes, des paramètres et des réponses.
 - Mention de l’indépendance des projets SIGDA et SSDC dans le README et l’atelier.
 - Démonstration statique pour GitHub Pages avec deux dossiers fictifs, deux modèles et quatre spécimens téléchargeables.
+- Tableau de bord avec navigation latérale, recherche de dossiers dans la démonstration publique et thèmes clair et sombre.
