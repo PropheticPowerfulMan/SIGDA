@@ -1,3 +1,5 @@
+from unicodedata import combining, normalize
+
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import Http404, HttpResponse
@@ -18,6 +20,40 @@ from .pwa import manifest, offline, service_worker
 @never_cache
 @login_required
 @require_safe
+def overview(request):
+    return render(request, "overview.html", {
+        "current_view": "overview",
+        "current_label": "Vue d’ensemble",
+        "agents": AGENTS,
+        "document_types": DOCUMENT_TYPES,
+    })
+
+
+def search_text(value):
+    return "".join(character for character in normalize("NFD", value.casefold()) if not combining(character))
+
+
+@never_cache
+@login_required
+@require_safe
+def directory(request):
+    query = request.GET.get("q", "").strip()
+    needle = search_text(query)
+    agents = {
+        key: agent for key, agent in AGENTS.items()
+        if needle in search_text(f"{agent.name} {agent.registration} {agent.service}")
+    }
+    return render(request, "directory.html", {
+        "current_view": "directory",
+        "current_label": "Dossiers agents",
+        "agents": agents,
+        "query": query,
+    })
+
+
+@never_cache
+@login_required
+@require_safe
 def workspace(request):
     selected_agent = request.GET.get("agent", next(iter(AGENTS)))
     selected_type = request.GET.get("type", next(iter(DOCUMENT_TYPES)))
@@ -25,6 +61,8 @@ def workspace(request):
         raise Http404("Agent ou modèle de démonstration inconnu.")
 
     return render(request, "workspace.html", {
+        "current_view": "workspace",
+        "current_label": "Atelier documentaire",
         "agents": AGENTS,
         "document_types": DOCUMENT_TYPES,
         "selected_agent": selected_agent,
@@ -69,6 +107,8 @@ def specimen_preview(request, key, agent_key):
 
 urlpatterns = [
     path("", workspace, name="workspace"),
+    path("accueil/", overview, name="overview"),
+    path("dossiers/", directory, name="agent_directory"),
     path("demandes/", include("sigda.workflow")),
     path("activite/", dashboard, name="activity"),
     path("connexion/", LoginView.as_view(), name="login"),

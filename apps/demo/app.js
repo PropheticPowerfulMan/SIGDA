@@ -25,6 +25,7 @@ const documents = {
 };
 
 const form = document.getElementById("specimen-form");
+const workshopAgent = document.getElementById("workshop-agent");
 const modelSelect = document.getElementById("model");
 const agentButtons = [...document.querySelectorAll(".agent-pick")];
 const searchInput = document.getElementById("agent-search");
@@ -77,22 +78,28 @@ function updatePreview() {
     document.getElementById("preview-status").textContent = `Aperçu mis à jour. ${model.title} pour ${agent.name}.`;
 }
 
+function selectAgent(key) {
+    if (!Object.hasOwn(agents, key)) return;
+    selectedAgent = key;
+    workshopAgent.value = key;
+    for (const button of agentButtons) {
+        const selected = button.dataset.agent === key;
+        button.setAttribute("aria-pressed", String(selected));
+        button.closest("tr").classList.toggle("is-selected", selected);
+    }
+    updatePreview();
+}
+
 for (const button of agentButtons) {
     button.disabled = false;
     button.addEventListener("click", () => {
-        selectedAgent = button.dataset.agent;
-        for (const agentButton of agentButtons) {
-            const selected = agentButton === button;
-            agentButton.setAttribute("aria-pressed", String(selected));
-            agentButton.closest("tr").classList.toggle("is-selected", selected);
-        }
-        updatePreview();
+        selectAgent(button.dataset.agent);
+        window.location.hash = "documents";
     });
 }
-
 form.addEventListener("submit", (event) => {
     event.preventDefault();
-    updatePreview();
+    selectAgent(workshopAgent.value);
 });
 modelSelect.disabled = false;
 document.getElementById("preview-button").disabled = false;
@@ -100,15 +107,35 @@ document.getElementById("directory-tools").hidden = false;
 searchInput.addEventListener("input", filterAgents);
 
 const navLinks = document.querySelectorAll(".side-nav .nav-link");
-function updateNavigation() {
-    const location = window.location.hash || "#overview";
+const views = [...document.querySelectorAll("[data-view]")];
+const breadcrumb = document.getElementById("view-breadcrumb");
+
+function updateNavigation(focusHeading = false) {
+    const route = window.location.hash.slice(1);
+    const active = views.find((view) => view.dataset.view === route) || views[0];
+    for (const view of views) view.hidden = view !== active;
+    const heading = active.querySelector("h1");
+    const hash = `#${active.dataset.view}`;
     for (const link of navLinks) {
-        if (link.hash === location) {
-            link.setAttribute("aria-current", "location");
+        if (link.hash === hash) {
+            link.setAttribute("aria-current", "page");
         } else {
             link.removeAttribute("aria-current");
         }
     }
+    breadcrumb.textContent = heading.textContent;
+    document.title = `${heading.textContent} · SIGDA`;
+    document.body.classList.toggle("specimen-page", active.dataset.view === "documents");
+    if (focusHeading) {
+        window.scrollTo(0, 0);
+        heading.tabIndex = -1;
+        heading.focus({ preventScroll: true });
+    }
 }
-window.addEventListener("hashchange", updateNavigation);
+
+document.querySelector(".skip-link").addEventListener("click", (event) => {
+    event.preventDefault();
+    document.getElementById("main").focus();
+});
+window.addEventListener("hashchange", () => updateNavigation(true));
 updateNavigation();

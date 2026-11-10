@@ -102,8 +102,8 @@ def dashboard(request):
     page = log.get_page(request.GET.get("page"))
 
     return render(request, "workflow/activity.html", {
-        "workflow_page": True,
-        "activity_page": True,
+        "current_view": "activity",
+        "current_label": "Activité",
         "reviewer": request.user.has_perm(REVIEW_PERMISSION),
         "periods": PERIODS,
         "period": period,

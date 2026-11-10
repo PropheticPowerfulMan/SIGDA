@@ -36,7 +36,7 @@ self.addEventListener("fetch", (event) => {
     const url = new URL(request.url);
     if (!url.href.startsWith(scope.href) || url.pathname.toLowerCase().endsWith(".pdf")) return;
 
-    event.respondWith(fetch(request).catch(async () => {
+    event.respondWith(fetch(request, { cache: "no-cache" }).catch(async () => {
         const cache = await caches.open(cacheName);
         return await cache.match(offlinePage) || Response.error();
     }));

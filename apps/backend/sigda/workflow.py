@@ -73,8 +73,10 @@ def queue(request):
 
     page = Paginator(visible_requests(request.user), 20).get_page(request.GET.get("page"))
     return render(request, "workflow/queue.html", {
-        "workflow_page": True,
-        "workflow_page": True,
+        "current_view": "requests",
+        "current_label": "Demandes",
+        "current_view": "requests",
+        "current_label": "Demandes",
         "draft_form": form,
         "page": page,
         "rows": [(record, *catalog_labels(record)) for record in page],

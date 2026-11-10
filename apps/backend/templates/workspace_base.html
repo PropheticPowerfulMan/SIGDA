@@ -19,29 +19,29 @@
     <a class="skip-link" href="#main">Aller au contenu</a>
     <div class="app-shell">
         <aside class="sidebar">
-            <a class="brand" href="{% if workflow_page %}{% url 'workspace' %}{% endif %}#overview">
+            <a class="brand" href="{% url 'overview' %}">
                 <span class="brand-mark"><img src="{% static 'sigda/EmblemRDC.jpg' %}" alt="" width="38" height="38"></span>
                 <span class="brand-copy"><strong>SIGDA</strong><span>Gestion documentaire</span></span>
             </a>
             <nav id="side-nav" class="side-nav" aria-label="Navigation principale">
                 <p class="nav-group-label">Espace de travail</p>
-                <a class="nav-link" href="{% if workflow_page %}{% url 'workspace' %}{% endif %}#overview" title="Vue d’ensemble"{% if not workflow_page %} aria-current="location"{% endif %}>
+                <a class="nav-link" href="{% url 'overview' %}" title="Vue d’ensemble"{% if current_view == 'overview' %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
                     <span class="nav-label">Vue d’ensemble</span>
                 </a>
-                <a class="nav-link" href="{% if workflow_page %}{% url 'workspace' %}{% endif %}#dossiers" title="Dossiers agents">
+                <a class="nav-link" href="{% url 'agent_directory' %}" title="Dossiers agents"{% if current_view == "directory" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
                     <span class="nav-label">Dossiers agents</span>
                 </a>
-                <a class="nav-link" href="{% if workflow_page %}{% url 'workspace' %}{% endif %}#atelier" title="Atelier documentaire">
+                <a class="nav-link" href="{% url 'workspace' %}" title="Atelier documentaire"{% if current_view == "workspace" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8m-8 4h8"></path></svg>
                     <span class="nav-label">Atelier documentaire</span>
                 </a>
-                <a class="nav-link" href="{% url 'request_queue' %}" title="Demandes"{% if workflow_page and not activity_page %} aria-current="page"{% endif %}>
+                <a class="nav-link" href="{% url 'request_queue' %}" title="Demandes"{% if current_view == "requests" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zm3 5h8m-8 4h8m-8 4h5"></path></svg>
                     <span class="nav-label">Demandes</span>
                 </a>
-                <a class="nav-link" href="{% url 'activity' %}" title="Activité"{% if activity_page %} aria-current="page"{% endif %}>
+                <a class="nav-link" href="{% url 'activity' %}" title="Activité"{% if current_view == "activity" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16M8 15v-3m5 3V7m5 8V9"></path></svg>
                     <span class="nav-label">Activité</span>
                 </a>
@@ -57,8 +57,8 @@
                     <button type="button" class="menu-toggle" id="menu-toggle" aria-controls="side-nav" aria-expanded="true" aria-label="Replier le menu" hidden>
                         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"></path></svg>
                     </button>
-                    <div class="breadcrumb"><span>Gestion documentaire</span><span aria-hidden="true">/</span><strong>{% if activity_page %}Activité{% elif workflow_page %}Demandes{% else %}Atelier{% endif %}</strong></div>
-                    <a class="mobile-brand" href="{% if workflow_page %}{% url 'workspace' %}{% endif %}#overview">
+                    <div class="breadcrumb"><span>Gestion documentaire</span><span aria-hidden="true">/</span><strong>{{ current_label }}</strong></div>
+                    <a class="mobile-brand" href="{% url 'overview' %}">
                         <img src="{% static 'sigda/EmblemRDC.jpg' %}" alt="" width="30" height="30">
                         <strong>SIGDA</strong>
                     </a>

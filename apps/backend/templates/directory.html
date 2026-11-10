@@ -1,0 +1,38 @@
+{% extends "workspace_base.html" %}
+{% block title %}Dossiers agents · SIGDA{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">Répertoire de démonstration</p><h1>Dossiers agents</h1></div></section>
+<section class="panel directory-panel" id="dossiers" aria-labelledby="directory-title" tabindex="-1">
+    <header class="panel-header">
+        <div><h2 class="panel-title" id="directory-title">Dossiers agents</h2><p>Choisissez un dossier pour ouvrir son atelier documentaire.</p></div>
+        <span class="status-pill">Fictifs</span>
+    </header>
+    <form class="document-form" method="get" action="{% url 'agent_directory' %}">
+        <div>
+            <label for="agent-query">Nom, matricule ou service</label>
+            <div class="search-field"><input id="agent-query" name="q" type="search" value="{{ query }}"></div>
+        </div>
+        <button class="button" type="submit">Rechercher</button>
+        {% if query %}<a class="button" href="{% url 'agent_directory' %}">Effacer</a>{% endif %}
+    </form>
+    <table class="agent-table">
+        <thead><tr><th scope="col">Agent</th><th scope="col">Service</th></tr></thead>
+        <tbody>
+            {% for key, value in agents.items %}
+            <tr>
+                <td>
+                    <a class="agent-pick" href="{% url 'workspace' %}?agent={{ key|urlencode }}">
+                        <span class="agent-avatar" aria-hidden="true">{{ value.name|first }}</span>
+                        <span><span class="agent-name">{{ value.name }}</span><span class="agent-code">{{ value.registration }}</span></span>
+                    </a>
+                </td>
+                <td class="agent-service">{{ value.service }}</td>
+            </tr>
+            {% empty %}
+                <tr class="empty-row"><td colspan="2">Aucun dossier ne correspond à cette recherche.</td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <div class="directory-footer"><p class="directory-status">{{ agents|length }} dossiers affichés</p></div>
+</section>
+{% endblock %}

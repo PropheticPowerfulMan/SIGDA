@@ -2,6 +2,7 @@
 
 (() => {
     const key = "sigda-demo-session";
+    const revision = new URL(document.currentScript.src).searchParams.get("v");
     const form = document.getElementById("demo-login");
     const workspace = document.getElementById("demo-workspace");
 
@@ -16,11 +17,18 @@
     function showSessionPage() {
         const active = signedIn();
         if (form && active) {
-            window.location.replace("./");
+            navigate("./", window.location.hash);
         } else if (workspace) {
             workspace.hidden = !active;
-            if (!active) window.location.replace("./login.html");
+            if (!active) navigate("./login.html", window.location.hash);
         }
+    }
+
+    function navigate(path, hash = "") {
+        const target = new URL(path, window.location.href);
+        if (revision) target.searchParams.set("v", revision);
+        target.hash = hash;
+        window.location.replace(target.href);
     }
 
     if (form) {
@@ -47,13 +55,14 @@
                 showError("Autorisez le stockage de session du navigateur pour ouvrir la démonstration.");
                 return;
             }
-            window.location.replace("./");
+            navigate("./", window.location.hash);
         });
         submit.disabled = false;
     } else if (workspace) {
         document.getElementById("demo-logout").addEventListener("click", () => {
             sessionStorage.removeItem(key);
-            showSessionPage();
+            workspace.hidden = true;
+            navigate("./login.html");
         });
     }
 

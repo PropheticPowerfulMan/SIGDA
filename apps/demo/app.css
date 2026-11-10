@@ -269,6 +269,25 @@ button, select { cursor: pointer; }
 }
 
 .main-content { padding-top: 26px; padding-bottom: 26px; }
+.workbench.view-workbench { grid-template-columns: minmax(0, 1fr); }
+.view-workbench > .page-heading { margin-bottom: 0; }
+.view-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; padding: 12px 15px; }
+.view-actions:empty { display: none; }
+.demo-list { margin: 0; padding: 0; list-style: none; }
+.demo-list li { padding: 12px 15px; overflow-wrap: anywhere; }
+.demo-list li + li { border-top: 1px solid var(--border); }
+.demo-list .status-pill { margin-top: 6px; }
+.demo-list .view-actions { padding: 10px 0 0; }
+.demo-list input {
+    width: min(100%, 15rem);
+    min-height: 36px;
+    padding: 6px 9px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--inset);
+    color: var(--text);
+}
+.demo-muted { color: var(--muted); }
 .install-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
 .install-help {
     margin-bottom: 16px;

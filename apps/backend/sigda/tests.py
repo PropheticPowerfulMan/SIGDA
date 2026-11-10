@@ -24,6 +24,22 @@ class WorkspaceTests(TestCase):
         self.assertContains(response, f'src="{preview}"')
         self.assertContains(response, f'href="{url}?download=1"')
 
+    def test_navigation_opens_distinct_pages(self):
+        for route, view in (
+            ("overview", "overview"), ("agent_directory", "directory"),
+            ("workspace", "workspace"), ("request_queue", "requests"), ("activity", "activity"),
+        ):
+            with self.subTest(route=route):
+                url = reverse(route)
+                response = self.client.get(url)
+                self.assertEqual(response.status_code, 200)
+                self.assertEqual(response.context["current_view"], view)
+        directory = self.client.get(reverse("agent_directory"), {"q": "temoin"})
+        self.assertContains(directory, "Dominique Témoin")
+        self.assertNotContains(directory, "Camille Exemple")
+        self.assertNotContains(directory, "data-print-specimen")
+        self.assertContains(self.client.get(reverse("workspace")), "data-print-specimen")
+
     def test_unknown_agent_and_model_return_404(self):
         self.assertEqual(self.client.get("/", {"agent": "unknown"}).status_code, 404)
         self.assertEqual(self.client.get("/", {"type": "unknown"}).status_code, 404)

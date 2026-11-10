@@ -3,6 +3,7 @@
 import re
 import sys
 from datetime import date
+from hashlib import sha256
 from itertools import product
 from pathlib import Path
 from shutil import copyfile
@@ -18,6 +19,7 @@ STATIC_FILES = (
     "app.js", "theme.js", "demo-auth.js", "menu.js",
     "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
     "print.css", "print.js",
+    "requests.js",
 )
 ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
 SPECIMEN_DATE = date(2026, 1, 15)
@@ -67,6 +69,12 @@ def build_demo() -> None:
         if source.resolve() != source or not source.is_file():
             raise ValueError(f"Ressource absente ou redirigée : {source}")
 
+    digest = sha256()
+    for relative, source in sorted(sources.items()):
+        digest.update(relative.as_posix().encode("utf-8"))
+        digest.update(source.read_bytes())
+    revision = digest.hexdigest()[:12]
+
     previews = {path.with_suffix(".png") for path in specimens}
     files = {*sources, *specimens, *previews, Path(".nojekyll")}
     validate_output(files)
@@ -76,8 +84,14 @@ def build_demo() -> None:
         staging = Path(temp) / "site"
         (staging / "assets" / "specimens").mkdir(parents=True)
         for relative, source in sources.items():
-            (staging / relative).parent.mkdir(parents=True, exist_ok=True)
-            copyfile(source, staging / relative)
+            target = staging / relative
+            target.parent.mkdir(parents=True, exist_ok=True)
+            if relative.name in {"index.html", "login.html"}:
+                html = source.read_text(encoding="utf-8")
+                html = re.sub(r'((?:src|href)="\./[a-z-]+\.(?:css|js))"', rf'\1?v={revision}"', html)
+                target.write_text(html, encoding="utf-8")
+            else:
+                copyfile(source, target)
 
         date_label = format_date(SPECIMEN_DATE)
         for relative, (kind, agent_key) in specimens.items():

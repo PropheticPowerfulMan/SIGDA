@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="description" content="Démonstration publique du système intégré de gestion documentaire des agents SIGDA.">
-    <title>Atelier documentaire · SIGDA</title>
+    <title>Vue d’ensemble · SIGDA</title>
     <meta name="theme-color" content="#0a0f1d">
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
@@ -16,9 +16,10 @@
     <script src="./menu.js" defer></script>
     <script src="./pwa.js" defer></script>
     <script src="./app.js" defer></script>
+    <script src="./requests.js" defer></script>
     <script src="./print.js" defer></script>
 </head>
-<body class="specimen-page">
+<body>
     <a class="skip-link" href="#main">Aller au contenu</a>
     <svg xmlns="http://www.w3.org/2000/svg" class="sr-only" aria-hidden="true" focusable="false">
         <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
@@ -32,6 +33,7 @@
         <symbol id="i-sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></symbol>
         <symbol id="i-moon" viewBox="0 0 24 24"><path d="M20.5 14.3A8.7 8.7 0 0 1 9.7 3.5 8.8 8.8 0 1 0 20.5 14.3Z"/></symbol>
         <symbol id="i-logout" viewBox="0 0 24 24"><path d="M9 4H5v16h4m4-8h8m-4-4 4 4-4 4"/></symbol>
+        <symbol id="i-activity" viewBox="0 0 24 24"><path d="M4 4v16h16M8 15v-3m5 3V7m5 8V9"/></symbol>
         <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
     </svg>
     <noscript><p>Activez JavaScript pour vous connecter à la démonstration.</p></noscript>
@@ -46,6 +48,8 @@
                 <a class="nav-link" href="#overview" title="Vue d’ensemble" aria-current="location"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span class="nav-label">Vue d’ensemble</span></a>
                 <a class="nav-link" href="#directory" title="Dossiers agents"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span class="nav-label">Dossiers agents</span></a>
                 <a class="nav-link" href="#documents" title="Atelier documentaire"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span class="nav-label">Atelier documentaire</span></a>
+                <a class="nav-link" href="#requests" title="Demandes"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span class="nav-label">Demandes</span></a>
+                <a class="nav-link" href="#activity" title="Activité"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activité</span></a>
             </nav>
             <div class="sidebar-footer">
                 <div class="side-status"><span class="status-dot" aria-hidden="true"></span><div><strong>Mode démonstration</strong><p>Données fictives</p></div></div>
@@ -56,7 +60,7 @@
             <header class="topbar">
                 <div class="topbar-leading">
                     <button type="button" class="menu-toggle" id="menu-toggle" aria-controls="side-nav" aria-expanded="true" aria-label="Replier le menu" hidden><svg class="icon" aria-hidden="true"><use href="#i-menu"/></svg></button>
-                    <div class="breadcrumb"><span>Gestion documentaire</span><span aria-hidden="true">/</span><strong>Atelier</strong></div>
+                    <div class="breadcrumb"><span>Gestion documentaire</span><span aria-hidden="true">/</span><strong id="view-breadcrumb">Vue d’ensemble</strong></div>
                     <a class="mobile-brand" href="#overview"><img src="./assets/EmblemRDC.jpg" alt="" width="30" height="30"><strong>SIGDA</strong></a>
                 </div>
                 <div class="topbar-actions">
@@ -70,42 +74,52 @@
             </header>
 
             <main id="main" class="main-content" tabindex="-1">
-                <section class="page-heading" id="overview" aria-labelledby="page-title" tabindex="-1">
-                    <div>
-                        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Espace de travail</p>
-                        <h1 id="page-title">Atelier documentaire</h1>
-                        <p class="page-description">Consultez les dossiers agents et préparez des spécimens au format A4.</p>
-                    </div>
-                    <div class="install-actions">
-                        <span class="heading-badge status-pill"><span class="status-dot" aria-hidden="true"></span>Démonstration publique</span>
-                        <button type="button" class="button" data-install-button aria-expanded="false" aria-controls="install-help" hidden>Installer SIGDA</button>
+                <section data-view="overview">
+                    <section class="page-heading" aria-labelledby="page-title" tabindex="-1">
+                        <div>
+                            <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Espace de travail</p>
+                            <h1 id="page-title">Vue d’ensemble</h1>
+                            <p class="page-description">Consultez les dossiers agents et préparez des spécimens au format A4.</p>
+                        </div>
+                        <div class="install-actions">
+                            <span class="heading-badge status-pill"><span class="status-dot" aria-hidden="true"></span>Démonstration publique</span>
+                            <button type="button" class="button" data-install-button aria-expanded="false" aria-controls="install-help" hidden>Installer SIGDA</button>
+                        </div>
+                    </section>
+                    <aside class="install-help" id="install-help" data-install-help hidden aria-label="Installation de SIGDA">
+                        <p><strong>iPhone et iPad</strong> · Dans Safari, choisissez <b>Partager</b>, puis <b>Sur l’écran d’accueil</b> et <b>Ouvrir comme app web</b> si proposé.</p>
+                        <p><strong>Mac avec Safari</strong> · Choisissez <b>Partager</b>, puis <b>Ajouter au Dock</b>.</p>
+                        <p><strong>Android et autres navigateurs de bureau</strong> · Cherchez <b>Installer</b> ou <b>Ajouter à l’écran d’accueil</b> dans le menu du navigateur.</p>
+                    </aside>
+
+                    <section class="metrics" aria-label="Catalogue de démonstration">
+                        <article class="metric-card">
+                            <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg></span>
+                            <div class="metric-copy"><p class="metric-label">Dossiers agents</p><p class="metric-value">02</p><p class="metric-meta">Agents fictifs</p></div>
+                        </article>
+                        <article class="metric-card">
+                            <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></span>
+                            <div class="metric-copy"><p class="metric-label">Modèles</p><p class="metric-value">02</p><p class="metric-meta">Attestation et notification</p></div>
+                        </article>
+                        <article class="metric-card">
+                            <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></span>
+                            <div class="metric-copy"><p class="metric-label">Spécimens</p><p class="metric-value">04</p><p class="metric-meta">PDF prêts à consulter</p></div>
+                        </article>
+                    </section>
+                    <div class="panel">
+                        <div class="panel-header"><h2>Accès rapide</h2></div>
+                        <div class="view-actions">
+                            <a class="button button-primary" href="#directory">Consulter les dossiers</a>
+                            <a class="button" href="#documents">Préparer un spécimen</a>
+                            <a class="button" href="#requests">Créer une demande</a>
+                        </div>
                     </div>
                 </section>
-                <aside class="install-help" id="install-help" data-install-help hidden aria-label="Installation de SIGDA">
-                    <p><strong>iPhone et iPad</strong> · Dans Safari, choisissez <b>Partager</b>, puis <b>Sur l’écran d’accueil</b> et <b>Ouvrir comme app web</b> si proposé.</p>
-                    <p><strong>Mac avec Safari</strong> · Choisissez <b>Partager</b>, puis <b>Ajouter au Dock</b>.</p>
-                    <p><strong>Android et autres navigateurs de bureau</strong> · Cherchez <b>Installer</b> ou <b>Ajouter à l’écran d’accueil</b> dans le menu du navigateur.</p>
-                </aside>
-
-                <section class="metrics" aria-label="Catalogue de démonstration">
-                    <article class="metric-card">
-                        <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg></span>
-                        <div class="metric-copy"><p class="metric-label">Dossiers agents</p><p class="metric-value">02</p><p class="metric-meta">Agents fictifs</p></div>
-                    </article>
-                    <article class="metric-card">
-                        <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></span>
-                        <div class="metric-copy"><p class="metric-label">Modèles</p><p class="metric-value">02</p><p class="metric-meta">Attestation et notification</p></div>
-                    </article>
-                    <article class="metric-card">
-                        <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></span>
-                        <div class="metric-copy"><p class="metric-label">Spécimens</p><p class="metric-value">04</p><p class="metric-meta">PDF prêts à consulter</p></div>
-                    </article>
-                </section>
-
-                <div class="workbench">
-                    <section class="panel directory-panel" id="directory" aria-labelledby="directory-title" tabindex="-1">
+                <section data-view="directory" hidden>
+                    <div class="page-heading"><div><p class="eyebrow">Répertoire de démonstration</p><h1>Dossiers agents</h1><p class="page-description">Recherchez par nom, matricule ou service.</p></div></div>
+                    <section class="panel directory-panel" aria-labelledby="directory-title" tabindex="-1">
                         <div class="panel-header">
-                            <div><h2 class="panel-title" id="directory-title">Dossiers agents</h2><p>Choisissez le dossier à utiliser.</p></div>
+                            <div><h2 class="panel-title" id="directory-title">Dossiers agents</h2><p>Sélectionnez un agent pour ouvrir son atelier documentaire.</p></div>
                             <span class="status-pill">Fictifs</span>
                         </div>
                         <div class="directory-tools" id="directory-tools" hidden>
@@ -138,13 +152,20 @@
                             </div>
                         </div>
                     </section>
-
-                    <section class="panel document-panel" id="documents" aria-labelledby="document-panel-title" tabindex="-1">
+                </section>
+                <div class="workbench view-workbench" data-view="documents" hidden>
+                    <div class="page-heading"><div><p class="eyebrow">Production documentaire</p><h1>Atelier documentaire</h1><p class="page-description">Sélectionnez un dossier et un modèle pour imprimer ou télécharger le spécimen A4.</p></div></div>
+                    <section class="panel document-panel" aria-labelledby="document-panel-title" tabindex="-1">
                         <div class="panel-header">
-                            <div><h2 class="panel-title" id="document-panel-title">Atelier documentaire</h2><p>Préparer et consulter un spécimen.</p></div>
+                            <div><h2 class="panel-title" id="document-panel-title">Préparation du spécimen</h2><p>Préparer et consulter un spécimen.</p></div>
                             <span class="status-pill">PDF A4</span>
                         </div>
                         <form id="specimen-form" class="document-form">
+                            <div><label for="workshop-agent">Agent fictif</label>
+                            <select id="workshop-agent" name="agent">
+                                <option value="alpha">Camille Exemple</option>
+                                <option value="beta">Dominique Témoin</option>
+                            </select></div>
                             <div><label for="model">Modèle documentaire</label>
                             <select id="model" name="model" disabled>
                                 <option value="attestation-nuit">Attestation de travail de nuit</option>
@@ -174,6 +195,36 @@
                         <p id="preview-status" role="status" class="sr-only"></p>
                     </section>
                 </div>
+                <section data-view="requests" hidden>
+                    <div class="page-heading"><div><p class="eyebrow">Suivi de la démonstration</p><h1>Demandes documentaires</h1><p class="page-description">Créez, soumettez et décidez des demandes fictives dans cet onglet.</p></div><span class="status-pill">Simulation</span></div>
+                    <div class="workbench">
+                        <section class="panel">
+                            <div class="panel-header"><h2>Nouvelle demande</h2></div>
+                            <form id="demo-request-form" class="document-form">
+                                <div><label for="request-agent">Agent fictif</label><select id="request-agent" required></select></div>
+                                <div><label for="request-model">Modèle</label><select id="request-model" required></select></div>
+                                <button class="button button-primary" type="submit">Créer le brouillon</button>
+                            </form>
+                            <p id="demo-request-status" class="view-actions" role="status"></p>
+                        </section>
+                        <section class="panel">
+                            <div class="panel-header"><h2>Demandes de cet onglet</h2></div>
+                            <ul class="demo-list" id="demo-request-list"></ul>
+                        </section>
+                    </div>
+                </section>
+                <section data-view="activity" hidden>
+                    <div class="page-heading"><div><p class="eyebrow">Pilotage de la démonstration</p><h1>Activité et traçabilité</h1><p class="page-description">Indicateurs calculés à partir des actions réalisées dans cet onglet.</p></div><span class="status-pill">Simulation</span></div>
+                    <div class="metrics" aria-label="Indicateurs de la session">
+                        <article class="metric-card"><div class="metric-copy"><p class="metric-label">Soumises</p><p class="metric-value" id="demo-count-submitted">0</p></div></article>
+                        <article class="metric-card"><div class="metric-copy"><p class="metric-label">En attente</p><p class="metric-value" id="demo-count-pending">0</p></div></article>
+                        <article class="metric-card"><div class="metric-copy"><p class="metric-label">Taux d’approbation</p><p class="metric-value" id="demo-approval-rate">—</p><p class="metric-meta" id="demo-decision-count">0 décision</p></div></article>
+                    </div>
+                    <section class="panel">
+                        <div class="panel-header"><h2>Journal des actions</h2><a class="button" href="#requests">Ouvrir les demandes</a></div>
+                        <ol class="demo-list" id="demo-activity-log"></ol>
+                    </section>
+                </section>
             </main>
             <footer class="app-footer">
                 <p><strong>SIGDA</strong> · Proposition institutionnelle</p>
