@@ -60,6 +60,10 @@ def workspace(request):
     if selected_agent not in AGENTS or selected_type not in DOCUMENT_TYPES:
         raise Http404("Agent ou modèle de démonstration inconnu.")
 
+    families = tuple(dict.fromkeys(kind.category for kind in DOCUMENT_TYPES.values()))
+    family = request.GET.get("family", "")
+    if family not in families:
+        family = ""
     return render(request, "workspace.html", {
         "current_view": "workspace",
         "current_label": "Atelier documentaire",
@@ -67,6 +71,12 @@ def workspace(request):
         "document_types": DOCUMENT_TYPES,
         "selected_agent": selected_agent,
         "selected_type": selected_type,
+        "family": family,
+        "families": families,
+        "catalogue_items": {
+            key: kind for key, kind in DOCUMENT_TYPES.items()
+            if not family or kind.category == family
+        },
         "agent": AGENTS[selected_agent],
         "document": DOCUMENT_TYPES[selected_type],
     })

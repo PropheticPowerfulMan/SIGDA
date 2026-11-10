@@ -11,12 +11,31 @@
     <div><p class="eyebrow">Production documentaire</p><h1>Atelier documentaire</h1><p class="page-description">Préparez, imprimez ou téléchargez un spécimen A4.</p></div>
 </section>
 <div class="workbench view-workbench">
+    <section class="panel catalogue-panel" id="catalogue" aria-labelledby="catalogue-title">
+        <header class="panel-header"><div><h2 id="catalogue-title">Catalogue de modèles</h2><p>Choisissez un modèle pour actualiser l’aperçu.</p></div><span class="status-pill">A4</span></header>
+        <nav class="catalogue-filters" aria-label="Familles de documents">
+            <a class="button" href="?agent={{ selected_agent }}&amp;type={{ selected_type }}#catalogue"{% if not family %} aria-current="true"{% endif %}>Tous</a>
+            {% for label in families %}
+                <a class="button" href="?agent={{ selected_agent }}&amp;type={{ selected_type }}&amp;family={{ label|urlencode }}#catalogue"{% if family == label %} aria-current="true"{% endif %}>{{ label }}</a>
+            {% endfor %}
+        </nav>
+        <div class="catalogue-grid">
+            {% for key, kind in catalogue_items.items %}
+                <a class="catalogue-card" href="?agent={{ selected_agent }}&amp;type={{ key }}{% if family %}&amp;family={{ family|urlencode }}{% endif %}#atelier"{% if key == selected_type %} aria-current="true"{% endif %}>
+                    <span class="catalogue-category">{{ kind.category }}</span>
+                    <strong>{{ kind.title }}</strong>
+                    <span class="catalogue-description">{{ kind.description }}</span>
+                </a>
+            {% endfor %}
+        </div>
+    </section>
     <section class="panel document-panel" id="atelier" aria-labelledby="settings-title" tabindex="-1">
         <header class="panel-header">
             <div><h2 class="panel-title" id="settings-title">Préparation du spécimen</h2><p>Préparer et consulter un spécimen.</p></div>
             <span class="status-pill">PDF A4</span>
         </header>
         <form class="document-form" action="{% url 'workspace' %}#atelier" method="get">
+            {% if family %}<input type="hidden" name="family" value="{{ family }}">{% endif %}
             <div class="form-field">
                 <label for="agent">Agent fictif</label>
                 <select name="agent" id="agent">

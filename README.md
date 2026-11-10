@@ -10,7 +10,7 @@ SIGDA et SSDC sont deux projets indépendants, avec leurs propres dépôts, appl
 
 ## Démonstration GitHub Pages
 
-La démonstration publique simule une connexion avec l’identifiant `demo` et le mot de passe `SIGDA-demo-2026!`. Elle permet d’explorer deux dossiers fictifs, de choisir un modèle documentaire et de télécharger le PDF A4 correspondant. Le site statique dispose de quatre spécimens générés par le même moteur que l’atelier Django.
+La démonstration publique simule une connexion avec l’identifiant `demo` et le mot de passe `SIGDA-demo-2026!`. Deux dossiers fictifs et cinq modèles donnent accès à dix spécimens A4, générés par le même moteur que l’atelier Django. Le catalogue se filtre par famille et l’atelier permet de reprendre le dossier et le modèle dans une demande.
 
 La connexion simulée ne protège aucune donnée. GitHub Pages sert uniquement des ressources de démonstration publiques. L’application Django utilise ses propres comptes et vérifie les accès au serveur.
 
@@ -28,7 +28,7 @@ python scripts/build_demo.py
 python -m http.server 8080 --bind 127.0.0.1 --directory dist/demo
 ```
 
-Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni et les quatre PDF fictifs avec leurs aperçus.
+Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni et les dix PDF fictifs avec leurs aperçus.
 
 Le workflow [Démonstration GitHub Pages](.github/workflows/pages.yml) construit et publie cet artefact depuis `main`. Dans le dépôt SIGDA, choisir **GitHub Actions** comme source dans **Settings → Pages** pour activer la publication. L’adresse cible est [propheticpowerfulman.github.io/SIGDA](https://propheticpowerfulman.github.io/SIGDA/).
 

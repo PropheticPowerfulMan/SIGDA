@@ -16,3 +16,4 @@
 - Pilotage des demandes sur 7, 30 ou 90 jours avec journal, flux, taux d’approbation, médiane et 90ᵉ percentile.
 - Navigation par vues distinctes dans Django et sur GitHub Pages. La démonstration simule le traitement des demandes et calcule les indicateurs de l’onglet.
 - Ressources de la démonstration versionnées à chaque compilation et HTML revalidé par le service worker.
+- Accueil et transitions visuelles modernisés, catalogue par famille et trois nouveaux modèles A4 : attestation de service, convocation administrative et bordereau de transmission.

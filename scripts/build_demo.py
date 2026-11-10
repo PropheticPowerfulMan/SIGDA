@@ -5,6 +5,7 @@ import sys
 from datetime import date
 from hashlib import sha256
 from itertools import product
+from json import dumps
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
@@ -69,20 +70,30 @@ def build_demo() -> None:
         if source.resolve() != source or not source.is_file():
             raise ValueError(f"Ressource absente ou redirigée : {source}")
 
-    digest = sha256()
+    public_agents = {
+        key: {"name": agent.name, "registration": agent.registration, "service": agent.service}
+        for key, agent in AGENTS.items()
+    }
+    public_documents = {
+        key: {"title": kind.title, "description": kind.description, "category": kind.category}
+        for key, kind in DOCUMENT_TYPES.items()
+    }
+    catalogue = f"const agents = {dumps(public_agents)};\nconst documents = {dumps(public_documents)};\n"
+    digest = sha256(catalogue.encode("utf-8"))
     for relative, source in sorted(sources.items()):
         digest.update(relative.as_posix().encode("utf-8"))
         digest.update(source.read_bytes())
     revision = digest.hexdigest()[:12]
 
     previews = {path.with_suffix(".png") for path in specimens}
-    files = {*sources, *specimens, *previews, Path(".nojekyll")}
+    files = {*sources, *specimens, *previews, Path("catalogue.js"), Path(".nojekyll")}
     validate_output(files)
     DIST.mkdir(exist_ok=True)
 
     with TemporaryDirectory(prefix="sigda-demo-", dir=DIST) as temp:
         staging = Path(temp) / "site"
         (staging / "assets" / "specimens").mkdir(parents=True)
+        (staging / "catalogue.js").write_text(catalogue, encoding="utf-8")
         for relative, source in sources.items():
             target = staging / relative
             target.parent.mkdir(parents=True, exist_ok=True)

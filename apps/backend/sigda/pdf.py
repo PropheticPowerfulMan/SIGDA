@@ -26,6 +26,43 @@ def draw_paragraph(page: Canvas, text: str, top: float) -> float:
     return top - height - 16
 
 
+def draw_standard_body(page: Canvas, key: str, agent: Agent) -> float:
+    identity = f"<b>{escape(agent.name)}</b>, matricule <b>{escape(agent.registration)}</b>"
+    if key == "attestation-nuit":
+        paragraphs = (
+            f"Dans ce scénario de démonstration, il est attesté que {identity}, exerce au "
+            f"{escape(agent.service)} en qualité de {escape(agent.job)} et assure le service de nuit.",
+            "Cette attestation illustre la présentation d’un document de service.",
+        )
+    elif key == "attestation-service":
+        paragraphs = (
+            f"Il est attesté, pour les besoins de cette démonstration, que {identity}, exerce au "
+            f"{escape(agent.service)} en qualité de {escape(agent.job)}.",
+            f"<b>Grade renseigné</b> · {escape(agent.grade)}.",
+        )
+    elif key == "convocation":
+        paragraphs = (
+            f"<b>Destinataire</b> · {identity}.",
+            "<b>Objet</b> · Entretien de mise à jour du dossier administratif.",
+            "<b>Lieu indicatif</b> · Service des ressources humaines, Kinshasa.",
+            "Dans ce scénario fictif, la date et l’heure sont communiquées séparément par le service.",
+        )
+    elif key == "bordereau-transmission":
+        paragraphs = (
+            f"<b>Dossier concerné</b> · {identity}.",
+            f"<b>Service expéditeur</b> · {escape(agent.service)}.",
+            "<b>Service destinataire</b> · Service des ressources humaines.",
+            "<b>Pièce transmise</b> · Une fiche de situation administrative fictive, pour vérification.",
+        )
+    else:
+        raise ValueError(f"Modèle de document sans contenu : {key}")
+
+    top = 531
+    for paragraph in paragraphs:
+        top = draw_paragraph(page, paragraph, top)
+    return top
+
+
 def render_pdf(
     key: str, document: DocumentType, agent: Agent, reference: str, date_label: str
 ) -> bytes:
@@ -48,7 +85,6 @@ def render_pdf(
     page.drawString(MARGIN, 645, f"N/Réf. : {reference}")
     page.drawRightString(WIDTH - MARGIN, 645, f"Kinshasa, le {date_label}")
 
-    name = escape(agent.name)
     if key == "notification":
         page.setFont("Helvetica", 9)
         page.drawString(324, 614, "Copie pour information")
@@ -80,14 +116,7 @@ def render_pdf(
         page.drawCentredString(WIDTH / 2, 575, title)
         title_width = page.stringWidth(title, "Helvetica-Bold", 15)
         page.line((WIDTH - title_width) / 2, 571, (WIDTH + title_width) / 2, 571)
-        top = draw_paragraph(
-            page,
-            f"Dans ce scénario de démonstration, il est attesté que <b>{name}</b>, "
-            f"matricule <b>{escape(agent.registration)}</b>, exerce au {escape(agent.service)} "
-            f"en qualité de {escape(agent.job)} et assure le service de nuit.",
-            531,
-        )
-        top = draw_paragraph(page, "Cette attestation illustre la présentation d’un document de service.", top)
+        top = draw_standard_body(page, key, agent)
 
     page.setFont("Helvetica", 10)
     page.drawRightString(WIDTH - MARGIN, top - 35, f"Fait à Kinshasa, le {date_label}")

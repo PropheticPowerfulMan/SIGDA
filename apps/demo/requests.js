@@ -110,6 +110,10 @@
 
     for (const [key, agent] of Object.entries(agents)) agentSelect.add(new Option(agent.name, key));
     for (const [key, document] of Object.entries(documents)) modelSelect.add(new Option(document.title, key));
+    document.getElementById("request-specimen").addEventListener("click", (event) => {
+        agentSelect.value = event.currentTarget.dataset.agent;
+        modelSelect.value = event.currentTarget.dataset.model;
+    });
     form.addEventListener("submit", (event) => {
         event.preventDefault();
         const request = { agent: agentSelect.value, model: modelSelect.value, events: [] };

@@ -1,29 +1,5 @@
 "use strict";
 
-const agents = {
-    alpha: {
-        name: "Camille Exemple",
-        registration: "DEMO-001",
-        service: "Service des systèmes d’information",
-    },
-    beta: {
-        name: "Dominique Témoin",
-        registration: "DEMO-002",
-        service: "Service de la gestion documentaire",
-    },
-};
-
-const documents = {
-    "attestation-nuit": {
-        title: "Attestation de travail de nuit",
-        description: "Certifier une affectation au service de nuit.",
-    },
-    notification: {
-        title: "Notification administrative",
-        description: "Notifier une régularisation de situation administrative.",
-    },
-};
-
 const form = document.getElementById("specimen-form");
 const workshopAgent = document.getElementById("workshop-agent");
 const modelSelect = document.getElementById("model");
@@ -34,7 +10,61 @@ const emptyRow = document.getElementById("empty-agents");
 const previewImage = document.getElementById("preview-image");
 const downloadLink = document.getElementById("download-link");
 const openLink = document.getElementById("open-link");
+const requestLink = document.getElementById("request-specimen");
+const catalogueGrid = document.getElementById("catalogue-models");
+const catalogueFilters = document.getElementById("catalogue-filters");
+const catalogueCards = [];
 let selectedAgent = "alpha";
+
+function setFamily(family) {
+    for (const button of catalogueFilters.querySelectorAll("button")) {
+        button.setAttribute("aria-pressed", String(button.dataset.family === family));
+    }
+    for (const card of catalogueCards) {
+        card.hidden = Boolean(family) && card.dataset.family !== family;
+    }
+}
+
+function setupCatalogue() {
+    const models = Object.entries(documents);
+    document.getElementById("model-count").textContent = models.length;
+    document.getElementById("specimen-count").textContent = models.length * Object.keys(agents).length;
+
+    for (const family of ["", ...new Set(models.map(([, model]) => model.category))]) {
+        const button = document.createElement("button");
+        button.className = "button";
+        button.type = "button";
+        button.textContent = family || "Tous";
+        button.dataset.family = family;
+        button.addEventListener("click", () => setFamily(family));
+        catalogueFilters.append(button);
+    }
+
+    for (const [key, model] of models) {
+        modelSelect.add(new Option(model.title, key));
+        const card = document.createElement("button");
+        card.className = "catalogue-card";
+        card.type = "button";
+        card.dataset.model = key;
+        card.dataset.family = model.category;
+        const category = document.createElement("span");
+        category.className = "catalogue-category";
+        category.textContent = model.category;
+        const title = document.createElement("strong");
+        title.textContent = model.title;
+        const description = document.createElement("span");
+        description.className = "catalogue-description";
+        description.textContent = model.description;
+        card.append(category, title, description);
+        card.addEventListener("click", () => {
+            modelSelect.value = key;
+            selectAgent(workshopAgent.value);
+        });
+        catalogueCards.push(card);
+        catalogueGrid.append(card);
+    }
+    setFamily("");
+}
 
 function normalizeSearch(value) {
     return value.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLocaleLowerCase("fr").trim();
@@ -75,6 +105,11 @@ function updatePreview() {
     }
     downloadLink.href = `${specimen}.pdf`;
     openLink.href = downloadLink.href;
+    requestLink.dataset.agent = selectedAgent;
+    requestLink.dataset.model = documentKey;
+    for (const card of catalogueCards) {
+        card.setAttribute("aria-pressed", String(card.dataset.model === documentKey));
+    }
     document.getElementById("preview-status").textContent = `Aperçu mis à jour. ${model.title} pour ${agent.name}.`;
 }
 
@@ -89,6 +124,9 @@ function selectAgent(key) {
     }
     updatePreview();
 }
+
+setupCatalogue();
+updatePreview();
 
 for (const button of agentButtons) {
     button.disabled = false;

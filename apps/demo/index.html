@@ -15,6 +15,7 @@
     <script src="./demo-auth.js" defer></script>
     <script src="./menu.js" defer></script>
     <script src="./pwa.js" defer></script>
+    <script src="./catalogue.js" defer></script>
     <script src="./app.js" defer></script>
     <script src="./requests.js" defer></script>
     <script src="./print.js" defer></script>
@@ -75,11 +76,11 @@
 
             <main id="main" class="main-content" tabindex="-1">
                 <section data-view="overview">
-                    <section class="page-heading" aria-labelledby="page-title" tabindex="-1">
+                    <section class="page-heading overview-hero" aria-labelledby="page-title" tabindex="-1">
                         <div>
                             <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Espace de travail</p>
                             <h1 id="page-title">Vue d’ensemble</h1>
-                            <p class="page-description">Consultez les dossiers agents et préparez des spécimens au format A4.</p>
+                            <p class="page-description">Du dossier agent au document imprimé. Retrouvez vos modèles, vos demandes et votre journal d’activité au même endroit.</p>
                         </div>
                         <div class="install-actions">
                             <span class="heading-badge status-pill"><span class="status-dot" aria-hidden="true"></span>Démonstration publique</span>
@@ -99,11 +100,11 @@
                         </article>
                         <article class="metric-card">
                             <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></span>
-                            <div class="metric-copy"><p class="metric-label">Modèles</p><p class="metric-value">02</p><p class="metric-meta">Attestation et notification</p></div>
+                            <div class="metric-copy"><p class="metric-label">Modèles</p><p class="metric-value" id="model-count"></p><p class="metric-meta">Classés par famille</p></div>
                         </article>
                         <article class="metric-card">
                             <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></span>
-                            <div class="metric-copy"><p class="metric-label">Spécimens</p><p class="metric-value">04</p><p class="metric-meta">PDF prêts à consulter</p></div>
+                            <div class="metric-copy"><p class="metric-label">Spécimens</p><p class="metric-value" id="specimen-count"></p><p class="metric-meta">PDF A4 prêts à imprimer</p></div>
                         </article>
                     </section>
                     <div class="panel">
@@ -155,6 +156,11 @@
                 </section>
                 <div class="workbench view-workbench" data-view="documents" hidden>
                     <div class="page-heading"><div><p class="eyebrow">Production documentaire</p><h1>Atelier documentaire</h1><p class="page-description">Sélectionnez un dossier et un modèle pour imprimer ou télécharger le spécimen A4.</p></div></div>
+                    <section class="panel catalogue-panel" aria-labelledby="catalogue-title">
+                        <div class="panel-header"><div><h2 id="catalogue-title">Catalogue de modèles</h2><p>Choisissez un modèle pour actualiser l’aperçu.</p></div><span class="status-pill">A4</span></div>
+                        <div class="catalogue-filters" id="catalogue-filters" role="group" aria-label="Familles de documents"></div>
+                        <div class="catalogue-grid" id="catalogue-models"></div>
+                    </section>
                     <section class="panel document-panel" aria-labelledby="document-panel-title" tabindex="-1">
                         <div class="panel-header">
                             <div><h2 class="panel-title" id="document-panel-title">Préparation du spécimen</h2><p>Préparer et consulter un spécimen.</p></div>
@@ -167,10 +173,7 @@
                                 <option value="beta">Dominique Témoin</option>
                             </select></div>
                             <div><label for="model">Modèle documentaire</label>
-                            <select id="model" name="model" disabled>
-                                <option value="attestation-nuit">Attestation de travail de nuit</option>
-                                <option value="notification">Notification administrative</option>
-                            </select></div>
+                            <select id="model" name="model" disabled></select></div>
                             <button class="button button-secondary" type="submit" id="preview-button" disabled><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg>Actualiser l’aperçu</button>
                         </form>
                         <noscript><p>Activez JavaScript pour choisir un autre dossier ou modèle.</p></noscript>
@@ -191,7 +194,10 @@
                                 <img id="preview-image" src="./assets/specimens/attestation-nuit-alpha.png" alt="Aperçu de l’attestation de travail de nuit de Camille Exemple">
                             </div>
                         </div>
-                        <div class="preview-links"><a id="open-link" href="./assets/specimens/attestation-nuit-alpha.pdf" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a></div>
+                        <div class="preview-links">
+                            <a id="open-link" href="./assets/specimens/attestation-nuit-alpha.pdf" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                            <a href="#requests" id="request-specimen">Préparer une demande pour ce spécimen</a>
+                        </div>
                         <p id="preview-status" role="status" class="sr-only"></p>
                     </section>
                 </div>

@@ -16,6 +16,7 @@ class DocumentType:
     title: str
     description: str
     prefix: str
+    category: str
 
 
 AGENTS = {
@@ -34,11 +35,31 @@ DOCUMENT_TYPES = {
         "Attestation de travail de nuit",
         "Certifier une affectation au service de nuit.",
         "ATN",
+        "Attestations",
     ),
     "notification": DocumentType(
         "Notification administrative",
         "Notifier une régularisation de situation administrative.",
         "NOT",
+        "Notifications",
+    ),
+    "attestation-service": DocumentType(
+        "Attestation de service",
+        "Présenter la fonction et l’affectation administrative d’un agent.",
+        "ATS",
+        "Attestations",
+    ),
+    "convocation": DocumentType(
+        "Convocation administrative",
+        "Inviter un agent à un entretien de mise à jour de son dossier.",
+        "CON",
+        "Notifications",
+    ),
+    "bordereau-transmission": DocumentType(
+        "Bordereau de transmission",
+        "Accompagner l’envoi d’une pièce administrative et en préciser la destination.",
+        "BOR",
+        "Transmission",
     ),
 }
 
