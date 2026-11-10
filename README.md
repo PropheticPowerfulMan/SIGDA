@@ -54,3 +54,4 @@ Ouvrir [l’atelier local](http://127.0.0.1:8000/). Le serveur est prévu pour u
 - L’atelier utilise des gabarits HTML Django. Les agents et les modèles sont en mémoire. Les références de spécimen sont reproductibles par agent, modèle et année.
 - Le projet cible prévoit une interface React, PostgreSQL, une API DRF, l’identité institutionnelle, les habilitations, les workflows, l’archivage, les exports DOCX, l’authenticité et la PWA. Ces éléments restent à livrer, ainsi que les PDF de présentation et le manuel illustré.
 - Voir [l’architecture de SIGDA](docs/architecture.md) pour le périmètre livré, le modèle de données cible et les invariants de réception.
+

@@ -1,0 +1,70 @@
+{% load static %}
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Atelier documentaire · SIGDA</title>
+    <link rel="icon" href="{% static 'sigda/EmblemRDC.jpg' %}">
+    <link rel="stylesheet" href="{% static 'sigda/workspace.css' %}">
+</head>
+<body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="masthead">
+        <div class="identity">
+            <img src="{% static 'sigda/EmblemRDC.jpg' %}" alt="Emblème de la Présidence de la RDC" width="52" height="52">
+            <div><strong>SIGDA</strong><span>Système intégré de gestion documentaire des agents</span></div>
+        </div>
+        <span class="badge">Démonstration</span>
+    </header>
+    <main id="main">
+        <section class="intro" aria-labelledby="title">
+            <p class="eyebrow">Gestion documentaire</p>
+            <h1 id="title">Atelier documentaire</h1>
+            <p>Prévisualisez et téléchargez des spécimens à partir de dossiers fictifs.</p>
+        </section>
+        <div class="workspace">
+            <section class="settings panel" aria-labelledby="settings-title">
+                <h2 id="settings-title">Préparer le spécimen</h2>
+                <form action="{% url 'workspace' %}" method="get">
+                    <label for="agent">Agent fictif</label>
+                    <select name="agent" id="agent">
+                        {% for key, value in agents.items %}
+                        <option value="{{ key }}"{% if selected_agent == key %} selected{% endif %}>{{ value.name }} · {{ value.registration }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="type">Modèle documentaire</label>
+                    <select name="type" id="type">
+                        {% for key, value in document_types.items %}
+                        <option value="{{ key }}"{% if selected_type == key %} selected{% endif %}>{{ value.title }}</option>
+                        {% endfor %}
+                    </select>
+                    <button type="submit">Générer l’aperçu</button>
+                </form>
+                <dl class="context">
+                    <dt>Dossier affiché</dt>
+                    <dd>{{ agent.name }} · {{ agent.registration }}</dd>
+                    <dt>Service</dt>
+                    <dd>{{ agent.service }}</dd>
+                </dl>
+            </section>
+            <section class="preview panel" aria-labelledby="preview-title">
+                <div class="preview-header">
+                    <div>
+                        <p class="eyebrow">Aperçu A4</p>
+                        <h2 id="preview-title">{{ document.title }}</h2>
+                        <p>{{ document.description }}</p>
+                    </div>
+                    <a class="download" href="{% url 'specimen' selected_type selected_agent %}?download=1">Télécharger le PDF</a>
+                </div>
+                <iframe title="Aperçu PDF — {{ document.title }}" src="{% url 'specimen' selected_type selected_agent %}"></iframe>
+                <a class="open-pdf" href="{% url 'specimen' selected_type selected_agent %}">Ouvrir l’aperçu PDF</a>
+            </section>
+        </div>
+    </main>
+    <footer>
+        <p>SIGDA · Conception du projet par LOKALA LOMBOTO JONATHAN · Proposition institutionnelle</p>
+        <p>SIGDA et SSDC sont deux projets indépendants.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,94 @@
+"""Assemble the public Pages demo from its static sources and fictitious catalogue."""
+
+import re
+import sys
+from datetime import date
+from itertools import product
+from pathlib import Path
+from shutil import copyfile
+from tempfile import TemporaryDirectory
+
+
+ROOT = Path(__file__).resolve().parents[1]
+DEMO = ROOT / "apps" / "demo"
+DIST = ROOT / "dist"
+OUTPUT = DIST / "demo"
+STATIC_FILES = ("index.html", "app.css", "app.js")
+SPECIMEN_DATE = date(2026, 1, 15)
+SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
+
+sys.path.insert(0, str(ROOT / "apps" / "backend"))
+
+from sigda.catalog import AGENTS, DOCUMENT_TYPES, format_date
+from sigda.pdf import EMBLEM, render_pdf
+
+
+def validate_output(files: set[Path]) -> None:
+    """Reject extra files and filesystem redirects before publishing the build."""
+    directories = {Path("."), Path("assets"), Path("assets/specimens")}
+    for directory in (DIST, OUTPUT, OUTPUT / "assets", OUTPUT / "assets" / "specimens"):
+        if directory.is_symlink() or directory.resolve() != directory:
+            raise ValueError(f"Chemin de sortie redirigé : {directory}")
+        if directory.exists() and not directory.is_dir():
+            raise ValueError(f"Le chemin de sortie n’est pas un dossier : {directory}")
+        if directory == DIST or not directory.exists():
+            continue
+        for item in directory.iterdir():
+            relative = item.relative_to(OUTPUT)
+            if item.is_symlink() or relative not in files | directories:
+                raise ValueError(f"Élément inattendu dans la sortie : {item}")
+            if relative in files and not item.is_file():
+                raise ValueError(f"Le fichier de sortie attendu n’est pas un fichier : {item}")
+
+
+def build_demo() -> None:
+    if any(not SLUG.fullmatch(key) for key in (*DOCUMENT_TYPES, *AGENTS)):
+        raise ValueError("Les identifiants du catalogue doivent être des slugs ASCII.")
+
+    specimens = {
+        Path("assets/specimens") / f"{kind}-{agent}.pdf": (kind, agent)
+        for kind, agent in product(DOCUMENT_TYPES, AGENTS)
+    }
+    if len(specimens) != len(DOCUMENT_TYPES) * len(AGENTS):
+        raise ValueError("Deux spécimens partagent le même nom de fichier.")
+
+    sources = {Path(name): DEMO / name for name in STATIC_FILES}
+    sources[Path("assets/EmblemRDC.jpg")] = EMBLEM
+    for source in sources.values():
+        if source.resolve() != source or not source.is_file():
+            raise ValueError(f"Ressource absente ou redirigée : {source}")
+
+    files = {*sources, *specimens, Path(".nojekyll")}
+    validate_output(files)
+    DIST.mkdir(exist_ok=True)
+
+    with TemporaryDirectory(prefix="sigda-demo-", dir=DIST) as temp:
+        staging = Path(temp) / "site"
+        (staging / "assets" / "specimens").mkdir(parents=True)
+        for relative, source in sources.items():
+            copyfile(source, staging / relative)
+
+        date_label = format_date(SPECIMEN_DATE)
+        for relative, (kind, agent_key) in specimens.items():
+            document = DOCUMENT_TYPES[kind]
+            agent = AGENTS[agent_key]
+            reference = f"SPEC-{document.prefix}-{agent.registration}-{SPECIMEN_DATE.year}"
+            (staging / relative).write_bytes(render_pdf(kind, document, agent, reference, date_label))
+        (staging / ".nojekyll").touch()
+
+        validate_output(files)
+        if not OUTPUT.exists():
+            staging.rename(OUTPUT)
+        else:
+            for relative in sorted(files):
+                destination = OUTPUT / relative
+                destination.parent.mkdir(parents=True, exist_ok=True)
+                (staging / relative).replace(destination)
+
+
+if __name__ == "__main__":
+    try:
+        build_demo()
+    except (OSError, ValueError) as error:
+        raise SystemExit(f"Impossible de construire la démonstration. {error}") from error
+    print(f"Démonstration prête dans {OUTPUT.relative_to(ROOT)}.")

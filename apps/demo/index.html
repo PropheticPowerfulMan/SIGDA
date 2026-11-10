@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="Démonstration publique du système intégré de gestion documentaire des agents SIGDA.">
+    <meta name="theme-color" content="#101820">
+    <title>Atelier documentaire · SIGDA</title>
+    <link rel="icon" href="./assets/EmblemRDC.jpg">
+    <link rel="stylesheet" href="./app.css">
+    <script src="./app.js" defer></script>
+</head>
+<body>
+    <a class="skip-link" href="#main">Aller au contenu</a>
+    <header class="site-header">
+        <div class="container header-inner">
+            <div class="identity">
+                <img src="./assets/EmblemRDC.jpg" alt="Emblème de la Présidence de la RDC" width="48" height="48">
+                <div>
+                    <p class="identity-name">SIGDA</p>
+                    <p class="identity-description">Système intégré de gestion documentaire des agents</p>
+                </div>
+            </div>
+            <p class="demo-badge"><span aria-hidden="true"></span>Démonstration publique</p>
+        </div>
+    </header>
+
+    <main id="main" class="container">
+        <section class="hero" aria-labelledby="page-title">
+            <p class="eyebrow">Espace documentaire</p>
+            <h1 id="page-title">Atelier documentaire</h1>
+            <p>Choisissez un agent fictif et un modèle pour prévisualiser puis télécharger un spécimen au format A4.</p>
+        </section>
+
+        <p class="notice">
+            <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                <circle cx="12" cy="12" r="9"></circle><path d="M12 10.5v5m0-8.5v1.5"></path>
+            </svg>
+            <span><strong>Projet proposé à l’institution.</strong> Les dossiers présentés sont fictifs. Chaque PDF porte la mention « SPÉCIMEN — NON VALABLE ».</span>
+        </p>
+
+        <div class="workspace">
+            <section class="panel settings" aria-labelledby="settings-title">
+                <div class="section-heading">
+                    <span class="step" aria-hidden="true">01</span>
+                    <h2 id="settings-title">Préparer le spécimen</h2>
+                </div>
+                <form id="specimen-form">
+                    <label for="agent">Agent fictif</label>
+                    <select id="agent" name="agent">
+                        <option value="alpha">Camille Exemple</option>
+                        <option value="beta">Dominique Témoin</option>
+                    </select>
+                    <label for="model">Modèle documentaire</label>
+                    <select id="model" name="model">
+                        <option value="attestation-nuit">Attestation de travail de nuit</option>
+                        <option value="notification">Notification administrative</option>
+                    </select>
+                    <button class="button button-primary" type="submit" id="preview-button" disabled>Mettre à jour l’aperçu</button>
+                </form>
+                <noscript>
+                    <p>Activez JavaScript pour changer d’agent ou de modèle.</p>
+                </noscript>
+                <dl class="record">
+                    <div>
+                        <dt>Dossier affiché</dt>
+                        <dd id="agent-name">Camille Exemple</dd>
+                    </div>
+                    <div>
+                        <dt>Matricule de démonstration</dt>
+                        <dd id="agent-registration">DEMO-001</dd>
+                    </div>
+                    <div>
+                        <dt>Service</dt>
+                        <dd id="agent-service">Service des systèmes d’information</dd>
+                    </div>
+                </dl>
+            </section>
+
+            <section class="panel preview" aria-labelledby="preview-title">
+                <div class="preview-header">
+                    <div>
+                        <div class="section-heading">
+                            <span class="step" aria-hidden="true">02</span>
+                            <h2 id="preview-title">Aperçu A4</h2>
+                        </div>
+                        <p class="document-title" id="document-title">Attestation de travail de nuit</p>
+                        <p class="document-description" id="document-description">Certifier une affectation au service de nuit.</p>
+                    </div>
+                    <a class="button button-primary download" id="download-link" href="./assets/specimens/attestation-nuit-alpha.pdf" download>
+                        <svg aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7">
+                            <path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"></path>
+                        </svg>
+                        Télécharger le PDF
+                    </a>
+                </div>
+                <iframe
+                    id="preview-frame"
+                    src="./assets/specimens/attestation-nuit-alpha.pdf#toolbar=0&amp;navpanes=0&amp;view=FitH"
+                    title="Aperçu PDF · Attestation de travail de nuit">
+                </iframe>
+                <div class="preview-footer">
+                    <span>Document de démonstration au format A4</span>
+                    <a id="open-link" href="./assets/specimens/attestation-nuit-alpha.pdf" target="_blank" rel="noopener">
+                        Ouvrir le PDF dans un nouvel onglet
+                    </a>
+                </div>
+                <p id="preview-status" role="status" class="screen-reader-only"></p>
+            </section>
+        </div>
+    </main>
+
+    <footer class="container site-footer">
+        <p><strong>SIGDA</strong> · Conception du projet par LOKALA LOMBOTO JONATHAN</p>
+        <p>SIGDA et SSDC sont deux projets indépendants.</p>
+    </footer>
+</body>
+</html>
