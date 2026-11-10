@@ -10,13 +10,15 @@
     <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
     <link rel="icon" href="./assets/EmblemRDC.jpg">
     <link rel="stylesheet" href="./app.css">
+    <link rel="stylesheet" href="./print.css">
     <script src="./theme.js" defer></script>
     <script src="./demo-auth.js" defer></script>
     <script src="./menu.js" defer></script>
     <script src="./pwa.js" defer></script>
     <script src="./app.js" defer></script>
+    <script src="./print.js" defer></script>
 </head>
-<body>
+<body class="specimen-page">
     <a class="skip-link" href="#main">Aller au contenu</a>
     <svg xmlns="http://www.w3.org/2000/svg" class="sr-only" aria-hidden="true" focusable="false">
         <symbol id="i-grid" viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></symbol>
@@ -156,8 +158,12 @@
                                 <h3 id="document-title">Attestation de travail de nuit</h3>
                                 <p id="document-description">Certifier une affectation au service de nuit.</p>
                             </div>
-                            <div class="document-actions"><a class="button button-primary" id="download-link" href="./assets/specimens/attestation-nuit-alpha.pdf" download><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Télécharger le PDF</a></div>
+                            <div class="document-actions">
+                                <button class="button button-primary" type="button" data-print-specimen hidden>Imprimer</button>
+                                <a class="button" id="download-link" href="./assets/specimens/attestation-nuit-alpha.pdf" download><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Télécharger le PDF</a>
+                            </div>
                         </div>
+                        <p data-print-error role="alert" hidden>L’aperçu est indisponible. Ouvrez le PDF pour l’imprimer depuis votre lecteur.</p>
                         <div class="preview-surface">
                             <div class="preview-topline"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>SPÉCIMEN — NON VALABLE</span></div>
                             <div class="preview-scroll" role="region" tabindex="0" aria-label="Aperçu du document">

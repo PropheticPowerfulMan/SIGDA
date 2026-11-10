@@ -2,12 +2,13 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import Http404, HttpResponse
 from django.shortcuts import render
-from django.urls import path
+from django.urls import include, path
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
 from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.http import require_POST, require_safe
 
+from .activity import dashboard
 from .catalog import AGENTS, DOCUMENT_TYPES, format_date
 from .pdf import render_pdf
 from .preview import render_preview
@@ -68,6 +69,8 @@ def specimen_preview(request, key, agent_key):
 
 urlpatterns = [
     path("", workspace, name="workspace"),
+    path("demandes/", include("sigda.workflow")),
+    path("activite/", dashboard, name="activity"),
     path("connexion/", LoginView.as_view(), name="login"),
     path("deconnexion/", require_POST(LogoutView.as_view()), name="logout"),
     path("manifest.webmanifest", manifest, name="manifest"),

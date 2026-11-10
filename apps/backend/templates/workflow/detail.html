@@ -1,0 +1,58 @@
+{% extends "workspace_base.html" %}
+{% load static %}
+{% block title %}Demande documentaire · SIGDA{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'sigda/workflow.css' %}">{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <a class="workflow-back" href="{% url 'request_queue' %}">← Toutes les demandes</a>
+        <h1>{{ document_label }}</h1>
+        <p class="page-description">{{ agent_label }} · Demande de {{ record.owner.get_username }}</p>
+    </div>
+    <span class="status-pill">{{ record.get_status_display }}</span>
+</section>
+{% if conflict %}<p class="workflow-notice" role="alert">Cette demande a déjà changé d’état. Consultez le statut actuel et son historique.</p>{% endif %}
+
+<div class="workbench">
+    <section class="panel" aria-labelledby="actions-title">
+        <div class="panel-header"><h2 id="actions-title">Traitement</h2></div>
+        <div class="workflow-body">
+            {% if can_submit %}
+                <p>Un compte valideur distinct pourra statuer après la soumission.</p>
+                <form method="post" action="{% url 'request_transition' record.pk %}">
+                    {% csrf_token %}
+                    <button class="button button-primary" type="submit" name="action" value="submit">Soumettre la demande</button>
+                </form>
+            {% elif can_review %}
+                <form class="workflow-form" method="post" action="{% url 'request_transition' record.pk %}">
+                    {% csrf_token %}
+                    {{ decision_form.as_div }}
+                    <p>Le motif est obligatoire en cas de refus.</p>
+                    <div class="workflow-actions">
+                        <button class="button button-primary" type="submit" name="action" value="approve">Approuver</button>
+                        <button class="button" type="submit" name="action" value="reject">Refuser</button>
+                    </div>
+                </form>
+            {% endif %}
+            {% if catalog_available %}
+                <a class="button" href="{% url 'workspace' %}?agent={{ record.agent_key|urlencode }}&amp;type={{ record.document_key|urlencode }}#atelier">Ouvrir le spécimen imprimable</a>
+            {% endif %}
+            <p>Le PDF de cet atelier porte la mention « SPÉCIMEN — NON VALABLE », quel que soit le statut de la demande.</p>
+        </div>
+    </section>
+    <section class="panel" aria-labelledby="history-title">
+        <div class="panel-header"><h2 id="history-title">Historique</h2></div>
+        <ol class="workflow-list">
+            {% for event in events %}
+                <li>
+                    <div>
+                        <strong>{{ event.get_status_display }}</strong>
+                        <span>{{ event.actor.get_username }} · <time datetime="{{ event.created_at|date:'c' }}">{{ event.created_at|date:"d/m/Y H:i" }}</time></span>
+                        {% if event.note %}<p class="workflow-note">{{ event.note }}</p>{% endif %}
+                    </div>
+                </li>
+            {% endfor %}
+        </ol>
+    </section>
+</div>
+{% endblock %}

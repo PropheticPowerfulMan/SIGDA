@@ -1,0 +1,49 @@
+@page {
+    size: A4 portrait;
+    margin: 0;
+}
+
+[data-print-error] {
+    padding: 0 15px 10px;
+    color: var(--secondary);
+}
+
+@media print {
+    body.specimen-page > :not(.app-shell),
+    .specimen-page .app-shell > :not(.main-shell),
+    .specimen-page .main-shell > :not(.main-content),
+    .specimen-page .main-content > :not(.workbench),
+    .specimen-page .workbench > :not(.document-panel),
+    .specimen-page .document-panel > :not(.preview-surface),
+    .specimen-page .preview-surface > :not(.preview-scroll) {
+        display: none !important;
+    }
+
+    body.specimen-page,
+    .specimen-page :is(.app-shell, .main-shell, .main-content, .workbench, .document-panel, .preview-surface, .preview-scroll) {
+        display: block;
+        position: static;
+        width: 100%;
+        max-width: none;
+        height: auto;
+        max-height: none;
+        min-height: 0;
+        overflow: visible;
+        margin: 0;
+        padding: 0;
+        border: 0;
+        border-radius: 0;
+        background: #fff;
+        box-shadow: none;
+    }
+
+    .specimen-page .preview-scroll img {
+        display: block;
+        width: 209mm;
+        height: 296mm;
+        max-width: 100%;
+        margin: 0 auto;
+        object-fit: contain;
+        box-shadow: none;
+    }
+}

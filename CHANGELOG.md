@@ -11,3 +11,6 @@
 - Connexion simulée pour la démonstration publique et contrôle des accès par session pour Django.
 - Menu rétractable et barres de défilement coordonnées aux deux thèmes, y compris dans l’aperçu.
 - Installation de SIGDA en PWA avec page de reprise hors connexion.
+- Demandes persistantes dans Django avec soumission, décision par un compte distinct et historique.
+- Commande Imprimer dans les deux ateliers, avec mise en page A4 centrée sur le spécimen.
+- Pilotage des demandes sur 7, 30 ou 90 jours avec journal, flux, taux d’approbation, médiane et 90ᵉ percentile.

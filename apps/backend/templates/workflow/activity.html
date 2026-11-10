@@ -1,0 +1,97 @@
+{% extends "workspace_base.html" %}
+{% load static %}
+{% block title %}Activité et traçabilité · SIGDA{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'sigda/workflow.css' %}">{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div>
+        <p class="eyebrow">Pilotage documentaire</p>
+        <h1>Activité et traçabilité</h1>
+        <p class="page-description">
+            Du {{ first_day|date:"d/m/Y" }} au {{ today|date:"d/m/Y" }} ·
+            {% if reviewer %}Demandes soumises et vos brouillons{% else %}Vos demandes{% endif %}
+        </p>
+    </div>
+    <nav class="workflow-actions" aria-label="Période d’analyse">
+        {% for days in periods %}
+            <a class="button{% if period == days %} button-primary{% endif %}" href="?period={{ days }}"{% if period == days %} aria-current="true"{% endif %}>{{ days }} jours</a>
+        {% endfor %}
+    </nav>
+</section>
+
+<section class="metrics" aria-label="Indicateurs d’activité">
+    <article class="metric-card"><div class="metric-copy">
+        <p class="metric-label">Demandes soumises</p><p class="metric-value">{{ submitted }}</p>
+        <p class="metric-meta">{{ pending }} en attente à ce jour</p>
+    </div></article>
+    <article class="metric-card"><div class="metric-copy">
+        <p class="metric-label">Décisions rendues</p><p class="metric-value">{{ decided }}</p>
+        <p class="metric-meta">Approuvées et refusées</p>
+    </div></article>
+    <article class="metric-card"><div class="metric-copy">
+        <p class="metric-label">Taux d’approbation</p>
+        <p class="metric-value">{% if decided %}{{ approval_rate|floatformat:1 }} %{% else %}—{% endif %}</p>
+        <p class="metric-meta">{{ approved }} approbation(s) sur {{ decided }} décision(s)</p>
+    </div></article>
+</section>
+
+<div class="workbench activity-workbench">
+    <section class="panel" aria-labelledby="flow-title">
+        <div class="panel-header"><div><h2 id="flow-title">Flux des demandes</h2><p>Soumissions et décisions comptées à la date de l’événement.</p></div></div>
+        <div class="workflow-body">
+            <div class="activity-legend"><span>Soumises</span><span>Décidées</span></div>
+            <div class="activity-chart" aria-hidden="true">
+                {% for row in buckets %}
+                    <div class="activity-bucket">
+                        <div class="activity-bars">
+                            <span class="activity-bar" style="height: {{ row.submitted_height }}%"></span>
+                            <span class="activity-bar" style="height: {{ row.decided_height }}%"></span>
+                        </div>
+                        <span>{{ row.start|date:"d/m" }}</span>
+                    </div>
+                {% endfor %}
+            </div>
+            <p>Échelle de 0 à {{ peak }} par intervalle.</p>
+            <details>
+                <summary>Voir les chiffres du graphique</summary>
+                <table class="agent-table activity-table">
+                    <thead><tr><th scope="col">Période</th><th scope="col">Soumises</th><th scope="col">Décidées</th></tr></thead>
+                    <tbody>{% for row in buckets %}<tr><th scope="row">{{ row.start|date:"d/m" }}{% if row.start != row.end %}–{{ row.end|date:"d/m" }}{% endif %}</th><td>{{ row.submitted }}</td><td>{{ row.decided }}</td></tr>{% endfor %}</tbody>
+                </table>
+            </details>
+        </div>
+    </section>
+    <section class="panel" aria-labelledby="delays-title">
+        <div class="panel-header"><div><h2 id="delays-title">Délais de décision</h2><p>Entre la soumission et la décision.</p></div></div>
+        <div class="workflow-body">
+            <dl class="activity-delays">
+                <div><dt>Médiane</dt><dd>{{ median_delay }}</dd></div>
+                <div><dt>90ᵉ percentile</dt><dd>{{ p90_delay }}</dd></div>
+            </dl>
+            <p>{{ sample }} délai(s) mesuré(s) sur {{ decided }} décision(s). Le P90 utilise une interpolation linéaire entre les délais triés.</p>
+            {% if sample and sample < 10 %}<p>Échantillon réduit. Un seul dossier peut faire varier sensiblement le P90.</p>{% endif %}
+        </div>
+    </section>
+</div>
+
+<section class="panel activity-log" aria-labelledby="log-title">
+    <div class="panel-header"><div><h2 id="log-title">Journal des demandes</h2><p>États horodatés et comptes ayant effectué les actions.</p></div><span class="status-pill">{{ log_page.paginator.count }} événement(s)</span></div>
+    <ul class="workflow-list">
+        {% for event, agent_label, document_label in log_rows %}
+            <li>
+                <a href="{% url 'request_detail' event.request_id %}"><strong>{{ event.get_status_display }}</strong><span>{{ document_label }} · {{ agent_label }}</span></a>
+                <span>{{ event.actor.get_username }} · <time datetime="{{ event.created_at|date:'c' }}">{{ event.created_at|date:"d/m/Y H:i" }}</time></span>
+            </li>
+        {% empty %}
+            <li>Aucun événement pour cette période.</li>
+        {% endfor %}
+    </ul>
+    {% if log_page.has_other_pages %}
+        <nav class="workflow-pagination" aria-label="Pages du journal">
+            {% if log_page.has_previous %}<a class="button" href="?period={{ period }}&amp;page={{ log_page.previous_page_number }}">Précédente</a>{% endif %}
+            <span>Page {{ log_page.number }} sur {{ log_page.paginator.num_pages }}</span>
+            {% if log_page.has_next %}<a class="button" href="?period={{ period }}&amp;page={{ log_page.next_page_number }}">Suivante</a>{% endif %}
+        </nav>
+    {% endif %}
+</section>
+{% endblock %}

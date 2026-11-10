@@ -1,0 +1,87 @@
+.workflow-form, .workflow-body {
+    display: grid;
+    gap: 12px;
+    padding: 15px;
+}
+
+.workflow-body > .workflow-form { padding: 0; }
+.workflow-form .button, .workflow-body > .button { width: fit-content; }
+.workflow-form label { display: block; margin-bottom: 4px; font-weight: 675; }
+.workflow-form select, .workflow-form textarea {
+    width: 100%;
+    min-height: 38px;
+    padding: 8px 10px;
+    border: 1px solid var(--border);
+    border-radius: 7px;
+    background: var(--inset);
+    color: var(--text);
+    font: inherit;
+}
+
+.workflow-form textarea { resize: vertical; }
+.workflow-form p, .workflow-body p { color: var(--secondary); }
+.workflow-form .errorlist { margin: 0 0 5px; padding-inline-start: 20px; color: var(--text); }
+.workflow-back { display: inline-block; margin-bottom: 6px; }
+.workflow-actions, .workflow-pagination { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+.workflow-pagination { padding: 12px 15px; }
+.workflow-list { margin: 0; padding: 0; list-style: none; }
+.workflow-list li {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 8px 12px;
+    padding: 12px 15px;
+    overflow-wrap: anywhere;
+}
+
+.workflow-list li + li { border-top: 1px solid var(--border); }
+.workflow-list strong { display: block; }
+.workflow-list a > span, .workflow-list li > div > span { display: block; color: var(--muted); }
+.workflow-list a { text-decoration: none; }
+.workflow-list a:hover strong { text-decoration: underline; }
+.workflow-note { margin-top: 5px; white-space: pre-wrap; }
+.workflow-notice { margin-bottom: 15px; padding: 10px 15px; border: 1px solid var(--accent-border); }
+
+.activity-workbench { grid-template-columns: minmax(0, 2fr) minmax(0, 1fr); }
+.activity-log { margin-top: 16px; }
+.activity-legend { display: flex; flex-wrap: wrap; gap: 12px; }
+.activity-legend span { display: inline-flex; align-items: center; gap: 6px; }
+.activity-legend span::before {
+    content: "";
+    width: 9px;
+    height: 9px;
+    border-radius: 2px;
+    background: var(--accent);
+}
+
+.activity-legend span:nth-child(2)::before, .activity-bar:nth-child(2) { background: var(--teal); }
+.activity-chart { display: flex; gap: 6px; }
+.activity-bucket { min-width: 0; flex: 1; text-align: center; font-size: 0.6875rem; color: var(--muted); }
+.activity-bars {
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    gap: 3px;
+    height: 132px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid var(--border);
+    background: repeating-linear-gradient(to top, transparent 0 32px, var(--border) 32px 33px);
+}
+
+.activity-bar { display: block; width: min(28%, 20px); border-radius: 3px 3px 0 0; background: var(--accent); }
+.activity-table { margin-top: 8px; }
+.activity-delays { display: grid; gap: 8px; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.activity-delays div { padding: 9px; border: 1px solid var(--border); border-radius: 7px; background: var(--inset); }
+.activity-delays dt { font-size: 0.75rem; color: var(--muted); }
+.activity-delays dd { margin-top: 4px; font-weight: 700; }
+
+@media (max-width: 950px) {
+    .activity-workbench { grid-template-columns: minmax(0, 1fr); }
+}
+
+@media (max-width: 520px) {
+    .activity-chart { gap: 2px; }
+    .activity-bucket { font-size: 0.625rem; }
+    .activity-bucket:nth-child(even) > span { visibility: hidden; }
+}

@@ -14,6 +14,8 @@ La démonstration publique simule une connexion avec l’identifiant `demo` et l
 
 La connexion simulée ne protège aucune donnée. GitHub Pages sert uniquement des ressources de démonstration publiques. L’application Django utilise ses propres comptes et vérifie les accès au serveur.
 
+Dans les deux ateliers, **Imprimer** ouvre le dialogue d’impression avec le spécimen seul sur une feuille A4. Le PDF original peut aussi être ouvert et imprimé dans un lecteur PDF.
+
 Le bouton **Installer SIGDA** ouvre l’installation du navigateur lorsqu’elle est disponible et propose les étapes manuelles sur les autres appareils. L’application installée affiche une icône qui associe l’emblème au sigle SIGDA. La démonstration et l’atelier local ont chacun leur propre identifiant d’installation. L’installation depuis l’application locale nécessite un contexte sécurisé comme `http://127.0.0.1`. Hors connexion, la PWA affiche une page de reprise. Le service worker ne met en cache ni les dossiers, ni les PDF, ni les réponses de connexion.
 
 ### Construire et prévisualiser
@@ -41,10 +43,15 @@ python -m venv .venv
 .venv/Scripts/python -m pip install -r apps/backend/requirements.txt
 .venv/Scripts/python apps/backend/manage.py migrate
 .venv/Scripts/python apps/backend/manage.py create_demo_user
+.venv/Scripts/python apps/backend/manage.py create_demo_user --reviewer
 .venv/Scripts/python apps/backend/manage.py runserver 127.0.0.1:8000 --insecure
 ```
 
 Ouvrir [l’atelier local](http://127.0.0.1:8000/), puis saisir `demo` et le mot de passe choisi lors de la création du compte. Django protège le tableau de bord, les aperçus et les PDF avec une session. Le serveur est prévu pour une exécution locale avec données fictives. L’option `--insecure` permet au serveur Django de développement de distribuer le CSS et l’emblème avec `DEBUG=False`.
+
+Dans **Demandes**, créez un brouillon avec `demo` et soumettez-le. Connectez-vous avec `demo-valideur` et le mot de passe choisi pour ce compte afin d’approuver ou de refuser la demande. Un refus exige un motif. Chaque étape conserve l’auteur, la date et le commentaire éventuel. Même approuvé, le PDF reste un spécimen. Les installations locales existantes doivent exécuter `migrate` avant d’utiliser ce parcours.
+
+**Activité** agrège ce journal sur 7, 30 ou 90 jours calendaires dans le fuseau de Kinshasa. Le taux d’approbation est le rapport entre les approbations et toutes les décisions de la période. La médiane et le P90 mesurent le délai entre soumission et décision, même si la soumission est antérieure à la période. Le tableau indique l’effectif mesuré et distingue le stock actuel des événements sur la période. Chaque compte voit uniquement les demandes auxquelles il a accès.
 
 ### Vérification
 
