@@ -4,7 +4,9 @@ SIGDA et SSDC sont des projets indépendants. SIGDA aura ses propres comptes, do
 
 ## Atelier livré
 
-Le serveur Django présente le catalogue fictif et génère les deux PDF à la demande. La sélection ne transmet que deux identifiants de catalogue. Les PDF sont marqués comme spécimens et leurs réponses interdisent la mise en cache. L’aperçu et le téléchargement appellent le même générateur. Le catalogue en mémoire est réservé à cet atelier local.
+Le serveur Django présente le catalogue fictif et génère les deux PDF à la demande. Un compte Django et sa session donnent accès à l’atelier et à ses documents. La sélection ne transmet que deux identifiants de catalogue. Les PDF sont marqués comme spécimens et leurs réponses interdisent la mise en cache. L’aperçu et le téléchargement appellent le même générateur. Le catalogue en mémoire est réservé à cet atelier local.
+
+La PWA de démonstration publique simule la connexion sur GitHub Pages. Elle publie uniquement des données fictives. Pour la démonstration et l’atelier local, le service worker conserve seulement la page de reprise hors connexion.
 
 ## Architecture cible
 

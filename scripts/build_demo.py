@@ -13,7 +13,12 @@ ROOT = Path(__file__).resolve().parents[1]
 DEMO = ROOT / "apps" / "demo"
 DIST = ROOT / "dist"
 OUTPUT = DIST / "demo"
-STATIC_FILES = ("index.html", "app.css", "app.js", "theme.js")
+STATIC_FILES = (
+    "index.html", "login.html", "app.css", "login.css",
+    "app.js", "theme.js", "demo-auth.js", "menu.js",
+    "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
+)
+ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
 SPECIMEN_DATE = date(2026, 1, 15)
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
@@ -21,12 +26,13 @@ sys.path.insert(0, str(ROOT / "apps" / "backend"))
 
 from sigda.catalog import AGENTS, DOCUMENT_TYPES, format_date
 from sigda.pdf import EMBLEM, render_pdf
+from sigda.preview import render_preview
 
 
 def validate_output(files: set[Path]) -> None:
     """Reject extra files and filesystem redirects before publishing the build."""
-    directories = {Path("."), Path("assets"), Path("assets/specimens")}
-    for directory in (DIST, OUTPUT, OUTPUT / "assets", OUTPUT / "assets" / "specimens"):
+    directories = {Path("."), Path("assets"), Path("assets/specimens"), Path("assets/icons")}
+    for directory in (DIST, *(OUTPUT / relative for relative in sorted(directories))):
         if directory.is_symlink() or directory.resolve() != directory:
             raise ValueError(f"Chemin de sortie redirigé : {directory}")
         if directory.exists() and not directory.is_dir():
@@ -54,11 +60,14 @@ def build_demo() -> None:
 
     sources = {Path(name): DEMO / name for name in STATIC_FILES}
     sources[Path("assets/EmblemRDC.jpg")] = EMBLEM
+    for name in ICONS:
+        sources[Path("assets/icons") / name] = EMBLEM.parent / "icons" / name
     for source in sources.values():
         if source.resolve() != source or not source.is_file():
             raise ValueError(f"Ressource absente ou redirigée : {source}")
 
-    files = {*sources, *specimens, Path(".nojekyll")}
+    previews = {path.with_suffix(".png") for path in specimens}
+    files = {*sources, *specimens, *previews, Path(".nojekyll")}
     validate_output(files)
     DIST.mkdir(exist_ok=True)
 
@@ -66,6 +75,7 @@ def build_demo() -> None:
         staging = Path(temp) / "site"
         (staging / "assets" / "specimens").mkdir(parents=True)
         for relative, source in sources.items():
+            (staging / relative).parent.mkdir(parents=True, exist_ok=True)
             copyfile(source, staging / relative)
 
         date_label = format_date(SPECIMEN_DATE)
@@ -73,7 +83,9 @@ def build_demo() -> None:
             document = DOCUMENT_TYPES[kind]
             agent = AGENTS[agent_key]
             reference = f"SPEC-{document.prefix}-{agent.registration}-{SPECIMEN_DATE.year}"
-            (staging / relative).write_bytes(render_pdf(kind, document, agent, reference, date_label))
+            pdf = render_pdf(kind, document, agent, reference, date_label)
+            (staging / relative).write_bytes(pdf)
+            (staging / relative.with_suffix(".png")).write_bytes(render_preview(pdf))
         (staging / ".nojekyll").touch()
 
         validate_output(files)

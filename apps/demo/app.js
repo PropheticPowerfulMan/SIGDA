@@ -30,10 +30,9 @@ const agentButtons = [...document.querySelectorAll(".agent-pick")];
 const searchInput = document.getElementById("agent-search");
 const directoryStatus = document.getElementById("directory-status");
 const emptyRow = document.getElementById("empty-agents");
-const frame = document.getElementById("preview-frame");
+const previewImage = document.getElementById("preview-image");
 const downloadLink = document.getElementById("download-link");
 const openLink = document.getElementById("open-link");
-const previewFragment = "#toolbar=0&navpanes=0&view=FitH";
 let selectedAgent = "alpha";
 
 function normalizeSearch(value) {
@@ -60,19 +59,21 @@ function updatePreview() {
 
     const agent = agents[selectedAgent];
     const model = documents[documentKey];
-    const pdf = `./assets/specimens/${documentKey}-${selectedAgent}.pdf`;
+    const specimen = `./assets/specimens/${documentKey}-${selectedAgent}`;
 
     document.getElementById("agent-name").textContent = agent.name;
     document.getElementById("agent-registration").textContent = agent.registration;
     document.getElementById("agent-service").textContent = agent.service;
     document.getElementById("document-title").textContent = model.title;
     document.getElementById("document-description").textContent = model.description;
-    frame.title = `Aperçu PDF · ${model.title} · ${agent.name}`;
-    if (frame.getAttribute("src") !== pdf + previewFragment) {
-        frame.src = pdf + previewFragment;
+    const preview = `${specimen}.png`;
+    previewImage.alt = `Aperçu · ${model.title} · ${agent.name}`;
+    if (previewImage.getAttribute("src") !== preview) {
+        previewImage.src = preview;
+        previewImage.parentElement.scrollTop = 0;
     }
-    downloadLink.href = pdf;
-    openLink.href = pdf;
+    downloadLink.href = `${specimen}.pdf`;
+    openLink.href = downloadLink.href;
     document.getElementById("preview-status").textContent = `Aperçu mis à jour. ${model.title} pour ${agent.name}.`;
 }
 

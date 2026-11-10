@@ -10,17 +10,21 @@ SIGDA et SSDC sont deux projets indépendants, avec leurs propres dépôts, appl
 
 ## Démonstration GitHub Pages
 
-La démonstration publique permet d’explorer deux dossiers fictifs, de choisir un modèle documentaire et de télécharger le PDF A4 correspondant. Le site statique dispose de quatre spécimens générés par le même moteur que l’atelier Django.
+La démonstration publique simule une connexion avec l’identifiant `demo` et le mot de passe `SIGDA-demo-2026!`. Elle permet d’explorer deux dossiers fictifs, de choisir un modèle documentaire et de télécharger le PDF A4 correspondant. Le site statique dispose de quatre spécimens générés par le même moteur que l’atelier Django.
+
+La connexion simulée ne protège aucune donnée. GitHub Pages sert uniquement des ressources de démonstration publiques. L’application Django utilise ses propres comptes et vérifie les accès au serveur.
+
+Le bouton **Installer SIGDA** ouvre l’installation du navigateur lorsqu’elle est disponible et propose les étapes manuelles sur les autres appareils. L’application installée affiche une icône qui associe l’emblème au sigle SIGDA. La démonstration et l’atelier local ont chacun leur propre identifiant d’installation. L’installation depuis l’application locale nécessite un contexte sécurisé comme `http://127.0.0.1`. Hors connexion, la PWA affiche une page de reprise. Le service worker ne met en cache ni les dossiers, ni les PDF, ni les réponses de connexion.
 
 ### Construire et prévisualiser
 
 ```powershell
-python -m pip install "reportlab>=4.4,<5"
+python -m pip install "reportlab>=4.4,<5" "pypdfium2>=5.13,<6"
 python scripts/build_demo.py
 python -m http.server 8080 --bind 127.0.0.1 --directory dist/demo
 ```
 
-Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni et les quatre PDF fictifs.
+Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni et les quatre PDF fictifs avec leurs aperçus.
 
 Le workflow [Démonstration GitHub Pages](.github/workflows/pages.yml) construit et publie cet artefact depuis `main`. Dans le dépôt SIGDA, choisir **GitHub Actions** comme source dans **Settings → Pages** pour activer la publication. L’adresse cible est [propheticpowerfulman.github.io/SIGDA](https://propheticpowerfulman.github.io/SIGDA/).
 
@@ -35,10 +39,12 @@ L’image de l’emblème fournie par le porteur du projet est utilisée dans l�
 ```powershell
 python -m venv .venv
 .venv/Scripts/python -m pip install -r apps/backend/requirements.txt
+.venv/Scripts/python apps/backend/manage.py migrate
+.venv/Scripts/python apps/backend/manage.py create_demo_user
 .venv/Scripts/python apps/backend/manage.py runserver 127.0.0.1:8000 --insecure
 ```
 
-Ouvrir [l’atelier local](http://127.0.0.1:8000/). Le serveur est prévu pour une exécution locale avec données fictives. L’option `--insecure` permet au serveur Django de développement de distribuer le CSS et l’emblème avec `DEBUG=False`.
+Ouvrir [l’atelier local](http://127.0.0.1:8000/), puis saisir `demo` et le mot de passe choisi lors de la création du compte. Django protège le tableau de bord, les aperçus et les PDF avec une session. Le serveur est prévu pour une exécution locale avec données fictives. L’option `--insecure` permet au serveur Django de développement de distribuer le CSS et l’emblème avec `DEBUG=False`.
 
 ### Vérification
 
@@ -52,6 +58,6 @@ Ouvrir [l’atelier local](http://127.0.0.1:8000/). Le serveur est prévu pour u
 - `apps/backend/sigda/catalog.py` contient le catalogue de démonstration.
 - `apps/backend/sigda/pdf.py` compose les PDF avec ReportLab.
 - L’atelier utilise des gabarits HTML Django. Les agents et les modèles sont en mémoire. Les références de spécimen sont reproductibles par agent, modèle et année.
-- Le projet cible prévoit une interface React, PostgreSQL, une API DRF, l’identité institutionnelle, les habilitations, les workflows, l’archivage, les exports DOCX, l’authenticité et la PWA. Ces éléments restent à livrer, ainsi que les PDF de présentation et le manuel illustré.
+- Le projet cible prévoit une interface React, PostgreSQL, une API DRF, l’identité institutionnelle, les habilitations, les workflows, l’archivage, les exports DOCX et l’authenticité. Ces éléments restent à livrer, ainsi que les PDF de présentation et le manuel illustré.
 - Voir [l’architecture de SIGDA](docs/architecture.md) pour le périmètre livré, le modèle de données cible et les invariants de réception.
 

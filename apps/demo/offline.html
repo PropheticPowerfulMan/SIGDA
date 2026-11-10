@@ -1,0 +1,81 @@
+<!doctype html>
+<html lang="fr" data-theme="dark">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Hors ligne · SIGDA</title>
+    <script>
+        try {
+            if (localStorage.getItem("sigda-theme") === "light") {
+                document.documentElement.dataset.theme = "light";
+            }
+        } catch {
+            // Le thème sombre est disponible sans préférence enregistrée.
+        }
+    </script>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #0a0f1d;
+            --panel: #111a2b;
+            --border: #28344d;
+            --text: #edf2fc;
+            --muted: #9caac5;
+            --accent: #a9b8ff;
+            --primary: #475fd5;
+            scrollbar-color: #6679ba var(--bg);
+            font-family: Inter, "Segoe UI", system-ui, sans-serif;
+        }
+        :root[data-theme="light"] {
+            color-scheme: light;
+            --bg: #eef2f9;
+            --panel: #fff;
+            --border: #cfd8e8;
+            --text: #17233a;
+            --muted: #4b5b76;
+            --accent: #374ca6;
+            --primary: #4057c8;
+            scrollbar-color: #566bb3 var(--bg);
+        }
+        * { box-sizing: border-box; }
+        body {
+            display: grid;
+            min-height: 100vh;
+            margin: 0;
+            padding: 16px;
+            place-items: center;
+            background: var(--bg);
+            color: var(--text);
+        }
+        main {
+            width: min(100%, 440px);
+            padding: clamp(20px, 6vw, 36px);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            background: var(--panel);
+        }
+        .brand { margin: 0; color: var(--accent); font-weight: 700; letter-spacing: .08em; }
+        h1 { margin: 10px 0 0; font-size: clamp(1.4rem, 6vw, 1.85rem); line-height: 1.2; }
+        p { color: var(--muted); line-height: 1.5; }
+        a {
+            display: inline-block;
+            margin-top: 8px;
+            padding: 10px 14px;
+            border-radius: 7px;
+            background: var(--primary);
+            color: #fff;
+            font-weight: 650;
+            text-decoration: none;
+        }
+        a:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+    </style>
+</head>
+<body>
+    <main>
+        <p class="brand">SIGDA</p>
+        <h1>Vous êtes hors ligne</h1>
+        <p>Rétablissez la connexion pour accéder à votre espace documentaire.</p>
+        <a href="">Réessayer</a>
+    </main>
+</body>
+</html>

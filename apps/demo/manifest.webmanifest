@@ -1,0 +1,26 @@
+{
+  "id": "/sigda-gestion-documentaire-demo",
+  "name": "SIGDA · Gestion documentaire des agents",
+  "short_name": "SIGDA",
+  "description": "Atelier documentaire SIGDA pour consulter les dossiers agents et préparer des spécimens.",
+  "lang": "fr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#0a0f1d",
+  "theme_color": "#0a0f1d",
+  "icons": [
+    {
+      "src": "./assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "./assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

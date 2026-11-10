@@ -8,3 +8,6 @@
 - Mention de l’indépendance des projets SIGDA et SSDC dans le README et l’atelier.
 - Démonstration statique pour GitHub Pages avec deux dossiers fictifs, deux modèles et quatre spécimens téléchargeables.
 - Tableau de bord avec navigation latérale, recherche de dossiers dans la démonstration publique et thèmes clair et sombre.
+- Connexion simulée pour la démonstration publique et contrôle des accès par session pour Django.
+- Menu rétractable et barres de défilement coordonnées aux deux thèmes, y compris dans l’aperçu.
+- Installation de SIGDA en PWA avec page de reprise hors connexion.
