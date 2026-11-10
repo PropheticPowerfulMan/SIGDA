@@ -199,6 +199,12 @@ button, select { cursor: pointer; }
 }
 .nav-link[aria-current] .icon, .nav-link.is-active .icon { color: var(--accent); }
 
+.nav-exit {
+    width: 100%;
+    border-color: var(--border);
+    background: var(--inset);
+}
+
 .sidebar-footer {
     display: grid;
     gap: 9px;
@@ -638,30 +644,38 @@ h1 { font-size: clamp(1.6rem, 2.65vw, 2.4rem); font-weight: 720; letter-spacing:
 }
 .preview-topline {
     display: flex;
+    flex-wrap: wrap;
     align-items: center;
+    justify-content: space-between;
     gap: 8px;
     min-height: 29px;
-    padding-inline: 9px;
+    padding: 5px 9px;
     border-bottom: 1px solid var(--border);
     background: var(--inset);
     color: var(--muted);
     font-size: 0.625rem;
     font-weight: 650;
 }
-.window-dots {
+.preview-zoom {
     display: flex;
-    flex: none;
+    flex-wrap: wrap;
     align-items: center;
-    gap: 3px;
+    gap: 4px;
 }
-.window-dots i {
-    width: 5px;
-    height: 5px;
-    border-radius: 50%;
-    background: var(--accent);
+.preview-zoom button {
+    min-width: 34px;
+    min-height: 32px;
+    padding: 4px 8px;
+    border: 1px solid var(--border);
+    border-radius: 6px;
+    background: var(--panel);
+    color: var(--text);
+    font-size: 0.75rem;
 }
-.window-dots i:nth-child(2) { background: var(--muted); }
-.window-dots i:nth-child(3) { background: var(--accent-border); }
+.preview-zoom button:hover:not(:disabled) { border-color: var(--accent-border); background: var(--accent-soft); }
+.preview-zoom button:disabled { color: var(--muted); cursor: default; }
+.preview-zoom output { min-width: 3.25rem; text-align: center; font-variant-numeric: tabular-nums; }
+
 .preview-scroll {
     height: clamp(360px, 56vh, 660px);
     overflow: auto;
@@ -670,8 +684,8 @@ h1 { font-size: clamp(1.6rem, 2.65vw, 2.4rem); font-weight: 720; letter-spacing:
 
 .preview-scroll:focus-visible { outline-offset: -3px; }
 .preview-scroll img {
-    width: 100%;
-    max-width: 720px;
+    width: calc(100% * var(--preview-scale, 1));
+    max-width: calc(720px * var(--preview-scale, 1));
     height: auto;
     margin-inline: auto;
     background: #fff;
@@ -736,6 +750,8 @@ h1 { font-size: clamp(1.6rem, 2.65vw, 2.4rem); font-weight: 720; letter-spacing:
     .sidebar > .brand, .sidebar > .brand-mark, .sidebar-footer, .nav-group-label, .nav-caption, .breadcrumb { display: none; }
     .side-nav { display: flex; flex-wrap: wrap; gap: 3px; padding: 5px 10px; }
     .nav-link { flex: 1 1 auto; justify-content: center; min-height: 36px; padding-inline: 6px; }
+    .nav-exit, .nav-exit-form { width: auto; flex: 1 1 auto; }
+    .nav-exit-form .nav-exit { width: 100%; }
     .mobile-brand { display: flex; }
     .mobile-brand img {
         width: 30px;

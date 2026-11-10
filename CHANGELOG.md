@@ -17,3 +17,4 @@
 - Navigation par vues distinctes dans Django et sur GitHub Pages. La démonstration simule le traitement des demandes et calcule les indicateurs de l’onglet.
 - Ressources de la démonstration versionnées à chaque compilation et HTML revalidé par le service worker.
 - Accueil et transitions visuelles modernisés, catalogue par famille et trois nouveaux modèles A4 : attestation de service, convocation administrative et bordereau de transmission.
+- Bouton Exit dans le menu et commandes de zoom jusqu’à 200 % pour l’aperçu du spécimen.

@@ -59,11 +59,14 @@
         });
         submit.disabled = false;
     } else if (workspace) {
-        document.getElementById("demo-logout").addEventListener("click", () => {
+        function logout() {
             sessionStorage.removeItem(key);
             workspace.hidden = true;
             navigate("./login.html");
-        });
+        }
+        for (const button of workspace.querySelectorAll("[data-logout]")) {
+            button.addEventListener("click", logout);
+        }
     }
 
     showSessionPage();

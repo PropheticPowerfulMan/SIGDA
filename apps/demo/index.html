@@ -19,6 +19,7 @@
     <script src="./app.js" defer></script>
     <script src="./requests.js" defer></script>
     <script src="./print.js" defer></script>
+    <script src="./preview.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -51,6 +52,7 @@
                 <a class="nav-link" href="#documents" title="Atelier documentaire"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span class="nav-label">Atelier documentaire</span></a>
                 <a class="nav-link" href="#requests" title="Demandes"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span class="nav-label">Demandes</span></a>
                 <a class="nav-link" href="#activity" title="Activité"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activité</span></a>
+                <button class="nav-link nav-exit" type="button" data-logout title="Exit · Déconnexion" aria-label="Exit, se déconnecter"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span class="nav-label">Exit</span></button>
             </nav>
             <div class="sidebar-footer">
                 <div class="side-status"><span class="status-dot" aria-hidden="true"></span><div><strong>Mode démonstration</strong><p>Données fictives</p></div></div>
@@ -70,7 +72,7 @@
                         <svg class="icon" data-theme-icon="moon" aria-hidden="true" hidden><use href="#i-moon"/></svg>
                         <span data-theme-label>Clair</span>
                     </button>
-                    <button class="button logout-button" id="demo-logout" type="button" aria-label="Déconnexion"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span>Déconnexion</span></button>
+                    <button class="button logout-button" id="demo-logout" type="button" data-logout aria-label="Déconnexion"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span>Déconnexion</span></button>
                 </div>
             </header>
 
@@ -189,8 +191,16 @@
                         </div>
                         <p data-print-error role="alert" hidden>L’aperçu est indisponible. Ouvrez le PDF pour l’imprimer depuis votre lecteur.</p>
                         <div class="preview-surface">
-                            <div class="preview-topline"><span class="window-dots" aria-hidden="true"><i></i><i></i><i></i></span><span>SPÉCIMEN — NON VALABLE</span></div>
-                            <div class="preview-scroll" role="region" tabindex="0" aria-label="Aperçu du document">
+                            <div class="preview-topline">
+                                <span>SPÉCIMEN — NON VALABLE</span>
+                                <div class="preview-zoom" role="group" aria-label="Zoom du document" hidden>
+                                    <button type="button" data-preview-zoom="out" aria-label="Réduire le zoom" aria-controls="specimen-preview">−</button>
+                                    <output aria-live="polite" data-preview-level>100 %</output>
+                                    <button type="button" data-preview-zoom="in" aria-label="Agrandir le document" aria-controls="specimen-preview">+</button>
+                                    <button type="button" data-preview-zoom="fit" aria-label="Ajuster le document à l’écran" aria-controls="specimen-preview">Ajuster</button>
+                                </div>
+                            </div>
+                            <div class="preview-scroll" id="specimen-preview" role="region" tabindex="0" aria-label="Aperçu du document">
                                 <img id="preview-image" src="./assets/specimens/attestation-nuit-alpha.png" alt="Aperçu de l’attestation de travail de nuit de Camille Exemple">
                             </div>
                         </div>

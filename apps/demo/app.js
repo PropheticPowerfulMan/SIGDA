@@ -101,7 +101,7 @@ function updatePreview() {
     previewImage.alt = `Aperçu · ${model.title} · ${agent.name}`;
     if (previewImage.getAttribute("src") !== preview) {
         previewImage.src = preview;
-        previewImage.parentElement.scrollTop = 0;
+        previewImage.parentElement.scrollTo(0, 0);
     }
     downloadLink.href = `${specimen}.pdf`;
     openLink.href = downloadLink.href;
@@ -144,7 +144,7 @@ document.getElementById("preview-button").disabled = false;
 document.getElementById("directory-tools").hidden = false;
 searchInput.addEventListener("input", filterAgents);
 
-const navLinks = document.querySelectorAll(".side-nav .nav-link");
+const navLinks = document.querySelectorAll(".side-nav a.nav-link");
 const views = [...document.querySelectorAll("[data-view]")];
 const breadcrumb = document.getElementById("view-breadcrumb");
 

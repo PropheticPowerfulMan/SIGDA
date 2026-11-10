@@ -45,6 +45,13 @@
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16M8 15v-3m5 3V7m5 8V9"></path></svg>
                     <span class="nav-label">Activité</span>
                 </a>
+                <form class="nav-exit-form" method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="nav-link nav-exit" title="Exit · Déconnexion" aria-label="Exit, se déconnecter">
+                        <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H5v16h4m4-8h8m-4-4 4 4-4 4"></path></svg>
+                        <span class="nav-label">Exit</span>
+                    </button>
+                </form>
             </nav>
             <div class="sidebar-footer">
                 <div class="side-status"><span class="status-dot" aria-hidden="true"></span><div><strong>Mode démonstration</strong><p>Données fictives</p></div></div>

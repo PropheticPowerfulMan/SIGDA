@@ -19,7 +19,7 @@ STATIC_FILES = (
     "index.html", "login.html", "app.css", "login.css",
     "app.js", "theme.js", "demo-auth.js", "menu.js",
     "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
-    "print.css", "print.js",
+    "print.css", "print.js", "preview.js",
     "requests.js",
 )
 ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
