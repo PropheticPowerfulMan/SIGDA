@@ -3,7 +3,7 @@
 const scope = new URL(self.registration.scope);
 const offlinePage = new URL("offline.html", scope);
 const cachePrefix = `sigda-offline:${scope.pathname}:`;
-const cacheName = `${cachePrefix}v1`;
+const cacheName = `${cachePrefix}v2`;
 
 self.addEventListener("install", (event) => {
     event.waitUntil((async () => {

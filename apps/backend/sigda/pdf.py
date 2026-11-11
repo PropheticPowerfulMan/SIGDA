@@ -15,6 +15,7 @@ from reportlab.platypus import Paragraph
 
 from .catalog import Agent, DocumentType
 from .document_qr import specimen_link
+from .document_fonts import BODY_FONT
 from .wording import document_text
 
 
@@ -81,8 +82,8 @@ def centered_title(page, text, top):
 
 def render_body(page, text, top, bottom=220):
     lines = [line.strip() for line in text.split("\n\n") if line.strip()]
-    for size, leading in ((11, 17), (10.5, 15.5), (10, 14)):
-        style = ParagraphStyle("body", fontName="Helvetica", fontSize=size,
+    for size, leading in ((12, 18), (11.5, 17), (11, 16)):
+        style = ParagraphStyle("body", fontName=BODY_FONT, fontSize=size,
                                leading=leading, alignment=TA_JUSTIFY)
         paragraphs = [Paragraph(escape(line).replace("\n", "<br/>"), style) for line in lines]
         heights = [paragraph.wrap(WIDTH - 2 * MARGIN, HEIGHT)[1] for paragraph in paragraphs]

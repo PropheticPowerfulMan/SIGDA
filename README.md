@@ -16,7 +16,7 @@ La connexion simulée ne protège aucune donnée. GitHub Pages sert uniquement d
 
 Le menu ouvre six vues distinctes. Sur GitHub Pages, **Demandes** permet de créer puis de traiter un brouillon fictif. **Activité** calcule les indicateurs de cette simulation et affiche ses actions horodatées. Le journal de démonstration reste dans l’onglet du navigateur.
 
-**Assistant** propose un guidage local fondé sur le catalogue et les procédures. Il suggère des modèles et ouvre les écrans concernés. Ce mode fonctionne sans modèle génératif. L’interface reprend la direction visuelle de SSDC avec un menu bleu nuit et des accents dorés. Le thème Soleil utilise des surfaces gris-vert atténuées. L’aperçu du papier est adouci à l’écran et l’impression utilise le rendu d’origine.
+**Assistant** propose un guidage local fondé sur le catalogue et les procédures. Il suggère des modèles et ouvre les écrans concernés. Ce mode fonctionne sans modèle génératif. L’interface reprend la direction visuelle de SSDC avec un menu bleu nuit et des accents dorés. La police Manrope est hébergée localement, avec des textes agrandis et une hiérarchie plus aérée. Le thème Soleil associe des surfaces ivoire atténuées, des contours sable et des accents dorés. Les barres de défilement reprennent les couleurs de chaque surface, y compris dans le catalogue, le menu sombre et l’aperçu. L’aperçu du papier est adouci à l’écran et l’impression utilise le rendu d’origine.
 
 ### Connexion de l’assistant à GPT
 
@@ -35,6 +35,8 @@ La fiche affiche les indications déclarées dans le QR, dont la référence, le
 Le bouton **Installer SIGDA** ouvre l’installation du navigateur lorsqu’elle est disponible et propose les étapes manuelles sur les autres appareils. L’application installée affiche une icône qui associe l’emblème au sigle SIGDA. La démonstration et l’atelier local ont chacun leur propre identifiant d’installation. L’installation depuis l’application locale nécessite un contexte sécurisé comme `http://127.0.0.1`. Hors connexion, la PWA affiche une page de reprise. Le service worker ne met en cache ni les dossiers, ni les PDF, ni les réponses de connexion.
 
 ### Construire et prévisualiser
+
+Le corps des documents utilise la véritable Times New Roman, incorporée en sous-ensemble dans chaque PDF. Sous Windows, SIGDA utilise `C:/Windows/Fonts/times.ttf`. Sur un autre système, définissez `SIGDA_TIMES_NEW_ROMAN` avec le chemin d’une installation autorisée de cette police. Une police absente ou différente provoque un message explicite. Le fichier de police Microsoft n’est pas publié comme ressource web. La compilation Pages utilise un environnement Windows et inclut l’empreinte de la police dans sa révision. Voir les [indications Microsoft sur l’incorporation documentaire](https://learn.microsoft.com/en-us/typography/fonts/font-faq#document-embedding). La licence de Manrope accompagne sa ressource web dans `apps/demo/manrope-license.txt`.
 
 ```powershell
 python -m pip install "reportlab>=4.4,<5" "pypdfium2>=5.13,<6"

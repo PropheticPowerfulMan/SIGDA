@@ -1,43 +1,43 @@
 <!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>Hors ligne · SIGDA</title>
     <script>
         try {
-            if (localStorage.getItem("sigda-theme") === "light") {
-                document.documentElement.dataset.theme = "light";
-            }
+            document.documentElement.dataset.theme = localStorage.getItem("sigda-theme") === "dark" ? "dark" : "light";
         } catch {
-            // Le thème sombre est disponible sans préférence enregistrée.
+            // Le thème Soleil reste disponible sans préférence enregistrée.
         }
     </script>
     <style>
         :root {
             color-scheme: dark;
-            --bg: #0a0f1d;
-            --panel: #111a2b;
-            --border: #28344d;
-            --text: #edf2fc;
-            --muted: #9caac5;
-            --accent: #a9b8ff;
-            --primary: #475fd5;
-            scrollbar-color: #6679ba var(--bg);
-            font-family: Inter, "Segoe UI", system-ui, sans-serif;
+            --bg: #0b1828;
+            --panel: #12263c;
+            --border: #304961;
+            --text: #e8eef5;
+            --muted: #9eb1c3;
+            --accent: #e0c185;
+            --primary: #2a5e91;
+            --scrollbar-thumb: #7e96ab;
+            font-family: "Manrope", "Segoe UI", system-ui, sans-serif;
+            font-size: 17px;
         }
         :root[data-theme="light"] {
             color-scheme: light;
-            --bg: #eef2f9;
-            --panel: #fff;
-            --border: #cfd8e8;
-            --text: #17233a;
-            --muted: #4b5b76;
-            --accent: #374ca6;
-            --primary: #4057c8;
-            scrollbar-color: #566bb3 var(--bg);
+            --bg: #e5e1d8;
+            --panel: #eee9df;
+            --border: #cdc2af;
+            --text: #25394b;
+            --muted: #5c6a72;
+            --accent: #785524;
+            --primary: #173e61;
+            --scrollbar-thumb: #97805b;
         }
-        * { box-sizing: border-box; }
+        * { box-sizing: border-box; scrollbar-color: var(--scrollbar-thumb) var(--bg); scrollbar-width: thin; }
+        @media (forced-colors: active) { * { scrollbar-color: auto; } }
         body {
             display: grid;
             min-height: 100vh;

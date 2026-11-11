@@ -26,3 +26,6 @@
 - Pied de page institutionnel inspiré de l’attestation de service fournie, avec bande tricolore, coordonnées sur deux lignes et QR vectoriel cliquable.
 - Fiche publique de lecture du QR avec référence, modèle, date, style et empreinte du texte appliqué, sans prétention d’authentification.
 - Accueil enrichi d’accès guidés, repères institutionnels discrets et catalogue latéral sur grand écran pour donner davantage de place à l’aperçu.
+- Corps des documents en Times New Roman incorporée dans le PDF, avec composition à 12 points et ajustement A4 si nécessaire.
+- Interface en Manrope, textes agrandis, thème Soleil ivoire et sable et barres de défilement coordonnées à leurs surfaces.
+- Menus de sélection harmonisés sur les navigateurs compatibles et page hors ligne alignée sur la palette Soleil.

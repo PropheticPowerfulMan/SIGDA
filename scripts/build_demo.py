@@ -23,6 +23,7 @@ STATIC_FILES = (
     "requests.js",
     "assistant.js", "drafting.js", "dm-sans.ttf", "font-license.txt",
     "fiche.html", "fiche.js", "fiche.css",
+    "manrope.ttf", "manrope-license.txt",
 )
 ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
 SPECIMEN_DATE = date(2026, 1, 15)
@@ -35,6 +36,7 @@ from sigda.pdf import EMBLEM, render_pdf
 from sigda.preview import render_preview
 from sigda.guidance import ALIASES, GUIDES, STOPWORDS
 from sigda.wording import STYLES, document_text
+from sigda.document_fonts import BODY_FONT_PATH
 
 
 def validate_output(files: set[Path]) -> None:
@@ -97,8 +99,9 @@ def build_demo() -> None:
             digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
         else:
             digest.update(source.read_bytes())
-    for source in (Path(__file__), ROOT / 'apps/backend/sigda/pdf.py', ROOT / 'apps/backend/sigda/wording.py', ROOT / 'apps/backend/sigda/document_qr.py'):
+    for source in (Path(__file__), ROOT / 'apps/backend/sigda/pdf.py', ROOT / 'apps/backend/sigda/wording.py', ROOT / 'apps/backend/sigda/document_qr.py', ROOT / 'apps/backend/sigda/document_fonts.py'):
         digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
+    digest.update(BODY_FONT_PATH.read_bytes())
     revision = digest.hexdigest()[:12]
 
     previews = {path.with_suffix(".png") for path in specimens}

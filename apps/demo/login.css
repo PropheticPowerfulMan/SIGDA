@@ -6,8 +6,8 @@
 
 :root[data-theme="light"] {
     --login-error: #8e2439;
-    --login-error-bg: #fff0f2;
-    --login-error-border: #e4b0b8;
+    --login-error-bg: #ead8d5;
+    --login-error-border: #c6a49b;
 }
 
 .login-page {
@@ -140,7 +140,7 @@
     margin: 0 auto 14px;
     border: 1px solid var(--accent-border);
     border-radius: 50%;
-    background: #e3e5dc;
+    background: #e7dfcf;
     box-shadow: 0 0 0 8px var(--accent-soft);
 }
 .login-emblem img { border-radius: 50%; }
