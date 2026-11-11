@@ -1,0 +1,94 @@
+.composer-intro, .composer-callout { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; padding: 20px; margin-bottom: 20px; border: 1px solid var(--accent-border); border-radius: 12px; background: var(--accent-soft); }
+.composer-intro { display: block; }
+.workbench > .composer-callout { grid-column: 1 / -1; }
+.database-panel > .field-help { padding-inline: 18px; }
+.database-panel input[type="search"] { width: 100%; margin-top: 8px; padding: 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--inset); color: var(--text); font: inherit; }
+.composer-intro strong, .composer-callout strong { font-size: 1rem; }
+.composer-intro p, .composer-callout p { color: var(--secondary); margin-top: 6px; max-width: 75ch; }
+.composer-steps { list-style: none; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); padding: 0; margin: 0 0 20px; gap: 10px; }
+.composer-steps li { display: flex; align-items: center; gap: 8px; padding: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 9px; color: var(--muted); font-size: .875rem; }
+.composer-steps li > span { display: grid; place-items: center; width: 27px; height: 27px; border: 1px solid var(--border); border-radius: 50%; flex: none; font-variant-numeric: tabular-nums; }
+.composer-steps [aria-current], .composer-steps .is-complete { color: var(--text); border-color: var(--accent-border); }
+.composer-steps [aria-current] > span { background: var(--primary); color: #fff; border-color: var(--primary); }
+.composer-workbench { grid-template-columns: minmax(0, .95fr) minmax(0, 1.05fr); gap: 22px; }
+.composer-fields { padding: 24px; }
+.composer-fields h2 { font-size: 1.2rem; letter-spacing: -.025em; line-height: 1.4; }
+.composer-fields h3 { margin: 25px 0 12px; font-size: 1rem; }
+.field-help { color: var(--muted); font-size: .875rem; line-height: 1.65; margin-block: 12px 18px; }
+.composer-fields label { display: block; font-size: .875rem; font-weight: 650; margin: 15px 0 7px; }
+.composer-fields :is(input, select, textarea) { width: 100%; min-width: 0; min-height: 45px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--inset); color: var(--text); font: inherit; font-size: .9375rem; }
+.composer-fields textarea { resize: vertical; }
+.composer-fields input[readonly] { background: var(--panel); border-style: dashed; color: var(--secondary); }
+.composer-fields [role="status"] { font-size: .875rem; color: var(--secondary); margin-top: 12px; }
+.composer-model-help { color: var(--accent); margin-top: 16px; font-size: .875rem; }
+.composer-field-grid { display: grid; grid-template-columns: minmax(0, 1fr); gap: 4px; }
+.composer-controls { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--border); }
+.composer-errors { white-space: pre-line; color: var(--text); border-left: 3px solid #b04c48; padding: 12px; background: var(--inset); margin-top: 15px; }
+.composition-review > div { padding: 12px 0; border-bottom: 1px solid var(--border); }
+.composition-review dt { font-size: .8125rem; color: var(--muted); }
+.composition-review dd { font-size: .9375rem; overflow-wrap: anywhere; margin-top: 5px; font-weight: 600; }
+.composer-text { margin-top: 20px; }
+.composer-text p { font-family: "Times New Roman", Times, serif; font-size: 1.05rem; white-space: pre-wrap; margin-top: 12px; padding: 14px; background: var(--inset); border-radius: 8px; }
+.composer-empty { min-height: 400px; display: flex; flex-direction: column; justify-content: center; align-items: flex-start; padding: 32px; }
+.composer-empty > span { color: var(--accent); font-size: 2rem; letter-spacing: .1em; margin-bottom: 22px; }
+.composer-empty h3 { font-size: 1.25rem; margin-bottom: 12px; }
+.composer-empty p { color: var(--muted); max-width: 38ch; }
+.composer-preview .document-toolbar { gap: 10px; flex-wrap: wrap; }
+.composer-preview .preview-scroll { height: min(900px, 80vh); }
+.review-mode .composer-intro, .review-mode .composer-steps, .review-mode .composer-controls, .review-mode .composer-storage { display: none; }
+.paper-watermark { top: 380pt; left: 25pt; right: 25pt; text-align: center; font: bold 32pt Arial, sans-serif; color: #a9484866; transform: rotate(-30deg); z-index: 2; pointer-events: none; }
+@media screen and (min-width: 1101px) { .composer-preview { position: sticky; top: calc(var(--topbar-height) + 18px); } }
+.database-panel { margin-bottom: 24px; }
+.table-scroll { overflow: auto; --scrollbar-track: var(--panel); }
+.table-scroll .agent-table { min-width: 650px; }
+.legacy-examples { margin-top: 20px; }
+.legacy-examples > summary { cursor: pointer; color: var(--muted); margin-bottom: 15px; }
+.paper-holder { margin: 0 auto; flex: none; }
+.composed-page { position: relative; width: 210mm; height: 297mm; background: #fff; color: #151515; font-family: Arial, sans-serif; transform-origin: top left; box-shadow: 0 10px 34px #071b3524; }
+.composed-page > div, .composed-page > img, .composed-page > svg, .composed-page > table { position: absolute; }
+.paper-nation { top: 25pt; left: 60pt; right: 60pt; text-align: center; font: 12pt Arial, sans-serif; text-transform: uppercase; }
+.paper-presidency { top: 44pt; left: 60pt; right: 60pt; text-align: center; font-size: 12pt; text-decoration: underline; text-underline-offset: 7pt; }
+.paper-emblem { top: 112pt; left: 94pt; width: 55pt; height: 55pt; }
+.composed-page .paper-emblem { width: 55pt; height: 55pt; max-width: none; margin: 0; filter: none; background: transparent; box-shadow: none; }
+.paper-institution { top: 83pt; left: 60pt; width: 195pt; font-size: 8pt; line-height: 11pt; }
+.paper-issuer { top: 172pt; left: 60pt; width: 220pt; font: italic 10pt/11pt "Times New Roman", Times, serif; }
+.paper-date { top: 83pt; right: 60pt; width: 220pt; text-align: right; font-size: 10pt; }
+.paper-reference { top: 210pt; left: 60pt; font-size: 10pt; }
+.paper-specimen { top: 10pt; left: 60pt; right: 60pt; color: #963238; text-align: center; font-size: 9pt; font-weight: bold; }
+.paper-recipient { top: 252pt; left: 308pt; width: 225pt; white-space: pre-line; font-size: 10pt; line-height: 13pt; font-weight: bold; }
+.paper-title { top: 312pt; left: 60pt; right: 60pt; text-align: center; text-decoration: underline; text-underline-offset: 4pt; font-size: 14pt; font-weight: bold; }
+.paper-body { top: 364pt; left: 60pt; right: 60pt; font: 12pt/18pt "Times New Roman", Times, serif; text-align: justify; }
+.paper-body p { margin: 0 0 14pt; white-space: pre-line; }
+.paper-body, .paper-signature, .paper-date, .paper-issuer, .paper-recipient { overflow-wrap: anywhere; }
+.paper-signature { left: 325pt; right: 60pt; font-size: 10pt; line-height: 12pt; white-space: pre-line; }
+.paper-footer { top: 743pt; left: 60pt; right: 60pt; padding-top: 8pt; border-top: 3pt solid transparent; border-image: linear-gradient(90deg, #174e85 0 40%, #c6993e 40% 70%, #ac2535 70%) 1; font: 7pt/14pt Arial, sans-serif; }
+.paper-footer p { max-width: 390pt; margin: 0; }
+.paper-footer p:last-child { color: #963238; font-weight: bold; }
+.paper-qr { right: 60pt; top: 750pt; width: 68pt; height: 68pt; }
+.paper-table { left: 60pt; width: 475pt; border-collapse: collapse; font: 9pt/11pt "Times New Roman", Times, serif; }
+.paper-table { table-layout: fixed; }
+.paper-table td { border: 1pt solid #151515; padding: 7pt; overflow-wrap: anywhere; }
+.paper-table td:first-child { width: 75%; }
+.paper-table tr:first-child { font-weight: bold; }
+.certificate-paper .paper-nation { top: 18pt; font: italic 16pt "Times New Roman", Times, serif; text-transform: none; }
+.certificate-paper .paper-emblem { top: 46pt; left: calc(50% - 37pt); width: 74pt; height: 74pt; }
+.certificate-paper .paper-institution { top: 131pt; left: 60pt; right: 60pt; width: auto; text-align: center; font: 11pt "Times New Roman", Times, serif; }
+.certificate-paper .paper-issuer, .certificate-paper .paper-date { top: 162pt; }
+.certificate-paper .paper-reference { top: 192pt; }
+.certificate-paper .paper-specimen { top: 209pt; }
+.certificate-paper .paper-title { top: 253pt; }
+.certificate-paper .paper-body { top: 310pt; }
+@media (max-width: 1100px) { .composer-workbench { grid-template-columns: minmax(0, 1fr); } }
+@media (max-width: 600px) { .composer-fields { padding: 18px; } .composer-steps { grid-template-columns: 1fr 1fr; gap: 7px; } .composer-steps li { padding: 9px; font-size: .8125rem; } .composer-controls .button { width: 100%; } }
+@media print {
+    .composition-page [data-view="compose"] > :not([data-composer]) { display: none !important; }
+    .composition-page > :not(.app-shell), .composition-page .app-shell > :not(.main-shell), .composition-page .main-shell > :not(.main-content), .composition-page .main-content > :not([data-composer]):not([data-view="compose"]), .composition-page [data-composer] > :not(.workbench), .composition-page .workbench > :not(.document-panel), .composition-page .document-panel > :not(.preview-surface), .composition-page .preview-surface > :not(.preview-scroll) { display: none !important; }
+    .composition-page, .composition-page :is(.app-shell, .main-shell, .main-content, [data-composer], [data-view="compose"], .workbench, .document-panel, .preview-surface, .preview-scroll, .paper-holder) { display: block !important; position: static !important; width: 100% !important; max-width: none !important; height: auto !important; max-height: none !important; min-height: 0 !important; margin: 0 !important; padding: 0 !important; overflow: visible !important; border: 0 !important; background: #fff !important; box-shadow: none !important; }
+    .composition-page .preview-scroll > img { filter: none !important; width: 209mm; height: 296mm; max-width: 100%; object-fit: contain; margin: 0 auto; box-shadow: none; }
+    .composition-page .composed-page { transform: none !important; width: 210mm; height: 296mm; box-shadow: none; }
+}
+
+@media print {
+    body.composition-page:not([data-print-authorized="true"]) > * { display: none !important; }
+    body.composition-page:not([data-print-authorized="true"])::after { content: "Impression indisponible : validation finale DIRCAB requise."; display:block!important; color:#111; font:14pt Arial,sans-serif; padding:30mm; }
+}

@@ -43,7 +43,7 @@ AUTH_PASSWORD_VALIDATORS = [
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
 ]
 LOGIN_URL = "login"
-LOGIN_REDIRECT_URL = "workspace"
+LOGIN_REDIRECT_URL = "overview"
 LOGOUT_REDIRECT_URL = "login"
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 X_FRAME_OPTIONS = "DENY"
@@ -54,7 +54,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],
         "OPTIONS": {
-            "context_processors": ["django.contrib.auth.context_processors.auth"],
+            "context_processors": ["django.contrib.auth.context_processors.auth", "sigda.roles.workspace_role"],
         },
     }
 ]

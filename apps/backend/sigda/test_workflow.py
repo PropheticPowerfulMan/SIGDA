@@ -1,126 +1,128 @@
-from datetime import timedelta
+from hashlib import sha256
 
 from django.contrib.auth import get_user_model
-from django.contrib.auth.models import Permission
-from django.test import Client, TestCase
+from django.contrib.auth.models import Group
+from django.test import TestCase
 from django.urls import reverse
-from django.utils import timezone
 
-from .models import DocumentRequest, RequestEvent
+from .composition import render_composed
+from .composition_schema import compose_text
+from .models import DocumentRequest, RequestEvent, ValidationTask, UsageEvent
+from .workflow import payload_digest, new_task
 
 
 class WorkflowTests(TestCase):
-    @classmethod
-    def setUpTestData(cls):
-        users = get_user_model()
-        cls.author = users.objects.create_user(username="demandeur-test")
-        cls.reviewer = users.objects.create_user(username="valideur-test")
-        cls.other = users.objects.create_user(username="autre-test")
-        cls.reviewer.user_permissions.add(Permission.objects.get(
-            content_type__app_label="sigda", codename="review_documentrequest",
-        ))
+    def setUp(self):
+        self.accounts = {}
+        for role in ('OPS', 'SECAD', 'AP', 'DIRCAB'):
+            user = get_user_model().objects.create_user(role.lower())
+            user.groups.add(Group.objects.get_or_create(name='SIGDA_' + role)[0])
+            self.accounts[role] = user
+        self.other = get_user_model().objects.create_user('other')
+        self.other.groups.add(Group.objects.get(name='SIGDA_SECAD'))
+        data = {'kind': 'attestation-service', 'wording': 'classique', 'name': 'Agent Fictif', 'registration': 'DEMO-101',
+                'service': 'Archives', 'job': 'Archiviste', 'grade': 'Agent', 'issuer_service': 'Direction administrative',
+                'place': 'Kinshasa', 'issue_date': '2026-11-11', 'signatory': 'Responsable Démo', 'signatory_role': 'Directeur',
+                'since': '2024-01-01', 'purpose': 'compléter le dossier'}
+        payload = {'data': data, 'text': compose_text(data), 'reference': 'SPEC-ATS-DEMO-101-2026'}
+        self.record = DocumentRequest.objects.create(owner=self.accounts['OPS'], agent_key='saisie', document_key=data['kind'], payload=payload, payload_hash=payload_digest(payload))
+        new_task(self.record, 'OPS', self.accounts['OPS'], self.accounts['OPS'])
 
-    def create_draft(self, author):
-        self.client.force_login(author)
-        response = self.client.post(reverse("request_queue"), {
-            "agent": "beta", "document": "notification",
-        })
-        record = DocumentRequest.objects.get()
-        self.assertRedirects(response, reverse("request_detail", args=[record.pk]))
-        return record
+    def act(self, role, action, target=None, **extra):
+        self.record.refresh_from_db()
+        self.client.force_login(self.accounts[role])
+        return self.client.post(reverse('request_transition', args=[self.record.pk]), {
+            'action': action, 'revision': self.record.revision, 'cycle': self.record.cycle,
+            **({'assignee': self.accounts[target].pk} if target else {}), **extra})
 
-    def test_approval_records_actors_and_rejects_a_stale_decision(self):
-        record = self.create_draft(self.author)
-        status = DocumentRequest.Status
-        decision = reverse("request_transition", args=[record.pk])
-        detail = reverse("request_detail", args=[record.pk])
+    def complete(self):
+        for role, action, target in [('OPS', 'submit', 'SECAD'), ('SECAD', 'approve', 'AP'), ('AP', 'approve', 'DIRCAB'), ('DIRCAB', 'approve', None)]:
+            self.assertEqual(self.act(role, action, target).status_code, 302)
+        self.record.refresh_from_db()
 
-        self.assertRedirects(self.client.post(decision, {"action": "submit"}), detail)
-        self.client.force_login(self.reviewer)
-        self.assertRedirects(self.client.post(decision, {
-            "action": "approve", "note": "Dossier vérifié.",
-        }), detail)
-        self.assertEqual(self.client.post(decision, {
-            "action": "reject", "note": "Décision obsolète.",
-        }).status_code, 409)
-        record.refresh_from_db()
-        self.assertEqual(record.status, status.APPROVED)
-        self.assertEqual(list(record.events.values_list("status", "actor_id", "note")), [
-            (status.DRAFT, self.author.pk, ""),
-            (status.SUBMITTED, self.author.pk, ""),
-            (status.APPROVED, self.reviewer.pk, "Dossier vérifié."),
-        ])
-
-    def test_visibility_and_separation_of_roles(self):
-        record = self.create_draft(self.reviewer)
-        decision = reverse("request_transition", args=[record.pk])
-        detail = reverse("request_detail", args=[record.pk])
-
+    def test_named_four_stage_circuit_archives_one_immutable_printable_version(self):
+        self.client.force_login(self.accounts['OPS'])
+        url = reverse('saved_document', args=[self.record.pk, 'pdf'])
+        self.assertEqual(self.client.get(url).status_code, 403)
+        self.assertEqual(self.act('OPS', 'submit', 'SECAD').status_code, 302)
+        self.assertEqual(self.act('AP', 'approve', 'DIRCAB').status_code, 404)
         self.client.force_login(self.other)
-        self.assertEqual(self.client.get(detail).status_code, 404)
-        self.assertEqual(self.client.post(decision, {"action": "approve"}).status_code, 404)
-        self.client.force_login(self.reviewer)
-        self.assertRedirects(self.client.post(decision, {"action": "submit"}), detail)
-        self.assertEqual(self.client.post(decision, {"action": "approve"}).status_code, 403)
+        self.assertEqual(self.client.get(reverse('request_detail', args=[self.record.pk])).status_code, 404)
+        self.assertEqual(self.act('SECAD', 'approve', 'AP').status_code, 302)
+        self.assertEqual(self.act('AP', 'approve', 'DIRCAB').status_code, 302)
+        self.assertEqual(self.client.get(url).status_code, 403)
+        self.assertEqual(self.act('DIRCAB', 'approve').status_code, 302)
+        self.record.refresh_from_db()
+        self.assertEqual(self.record.status, 'approved')
+        self.assertEqual(self.record.issued_hash, sha256(bytes(self.record.issued_pdf)).hexdigest())
+        archived = bytes(self.record.issued_pdf)
+        self.assertTrue(archived.startswith(b'%PDF-'))
+        self.assertIn(b'TimesNewRomanPSMT', archived)
+        self.assertEqual(self.client.get(url).content, archived)
+        self.assertEqual(self.record.accesses.count(), 1)
+        self.assertEqual(self.record.tasks.filter(state='pending').count(), 0)
+        self.assertEqual(self.act('DIRCAB', 'approve').status_code, 403)
+        self.assertEqual(self.client.get(url).content, archived)
 
-    def test_rejection_requires_a_reason_and_mutation_requires_csrf(self):
-        record = self.create_draft(self.author)
-        decision = reverse("request_transition", args=[record.pk])
-        detail = reverse("request_detail", args=[record.pk])
-        self.client.post(decision, {"action": "submit"})
-        self.client.force_login(self.reviewer)
-        self.assertEqual(self.client.get(decision).status_code, 405)
-        self.assertContains(self.client.post(decision, {"action": "reject", "note": " "}),
-                            "Indiquez le motif du refus.", status_code=400)
+    def test_return_requires_reason_and_revalidation_of_new_revision(self):
+        self.assertEqual(self.act('OPS', 'submit', 'SECAD').status_code, 302)
+        self.assertEqual(self.act('SECAD', 'return').status_code, 400)
+        self.assertEqual(self.act('SECAD', 'return', note='Corriger la date').status_code, 302)
+        self.record.refresh_from_db()
+        self.assertEqual(self.record.status, 'draft')
+        task = self.record.tasks.get(state='pending')
+        self.assertEqual(task.assignee, self.accounts['OPS'])
+        self.assertEqual(self.act('OPS', 'submit', 'SECAD', revision=99).status_code, 409)
+        self.assertEqual(self.act('OPS', 'submit', 'SECAD').status_code, 302)
+        self.record.refresh_from_db()
+        self.assertEqual(self.record.cycle, 2)
+        self.assertEqual(self.act('SECAD', 'approve', 'AP').status_code, 302)
+        self.assertEqual(self.act('AP', 'approve', 'DIRCAB').status_code, 302)
+        # A substituted snapshot cannot inherit the approvals.
+        self.record.refresh_from_db()
+        self.record.payload['text'] += ' Altération.'
+        self.record.save(update_fields=['payload'])
+        self.assertEqual(self.act('DIRCAB', 'approve').status_code, 409)
+        self.record.refresh_from_db()
+        self.assertFalse(self.record.issued_pdf)
 
-        csrf_client = Client(enforce_csrf_checks=True)
-        csrf_client.force_login(self.reviewer)
-        self.assertEqual(csrf_client.post(decision, {"action": "approve"}).status_code, 403)
-        self.assertRedirects(self.client.post(decision, {
-            "action": "reject", "note": "Pièce justificative manquante.",
-        }), detail)
-        record.refresh_from_db()
-        self.assertEqual(record.status, DocumentRequest.Status.REJECTED)
-        self.assertEqual(record.events.last().note, "Pièce justificative manquante.")
+    def test_reject_is_final_and_only_dircab_may_use_it(self):
+        self.assertEqual(self.act('OPS', 'submit', 'SECAD').status_code, 302)
+        self.assertEqual(self.act('SECAD', 'reject', note='Refus').status_code, 404)
+        self.assertEqual(self.act('SECAD', 'approve', 'AP').status_code, 302)
+        self.assertEqual(self.act('AP', 'approve', 'DIRCAB').status_code, 302)
+        self.assertEqual(self.act('DIRCAB', 'reject', note='Motif de refus final').status_code, 302)
+        self.record.refresh_from_db()
+        self.assertEqual(self.record.status, 'rejected')
+        self.assertFalse(self.record.issued_pdf)
 
+    def test_statistics_are_reserved_to_dircab_and_exclude_document_bodies(self):
+        self.complete()
+        for role in ('OPS', 'SECAD', 'AP'):
+            self.client.force_login(self.accounts[role])
+            self.assertEqual(self.client.get(reverse('activity')).status_code, 403)
+            self.assertNotContains(self.client.get(reverse('overview')), 'title="Activité"')
+        self.client.force_login(self.accounts['DIRCAB'])
+        response = self.client.get(reverse('activity'))
+        self.assertEqual(response.status_code, 200)
+        data = response.context['statistics_data']
+        self.assertEqual(len(data['records']), 1)
+        self.assertEqual(len(data['records'][0]['tasks']), 4)
+        self.assertNotIn('Agent Fictif', str(data))
+        self.assertTrue(any(e['action'] == 'approve' for e in data['usage']))
+        self.assertIn('no-store', response['Cache-Control'])
 
-    def test_activity_statistics_respect_scope_and_use_submission_before_period(self):
-        status = DocumentRequest.Status
-        finished = timezone.now() - timedelta(days=1)
-        for owner, minutes, decision in (
-            (self.author, 30, status.APPROVED),
-            (self.other, 60, status.REJECTED),
-            (self.other, 120, status.APPROVED),
-        ):
-            record = DocumentRequest.objects.create(
-                owner=owner, agent_key="alpha", document_key="notification", status=decision,
-            )
-            submitted = RequestEvent.objects.create(request=record, actor=owner, status=status.SUBMITTED)
-            decided = RequestEvent.objects.create(request=record, actor=self.reviewer, status=decision)
-            RequestEvent.objects.filter(pk=submitted.pk).update(created_at=finished - timedelta(minutes=minutes))
-            RequestEvent.objects.filter(pk=decided.pk).update(created_at=finished)
+    def test_roles_cannot_prepare_or_modify_agent_data_and_ambiguous_roles_fail_closed(self):
+        for role in ('SECAD', 'AP', 'DIRCAB'):
+            self.client.force_login(self.accounts[role])
+            self.assertEqual(self.client.get(reverse('compose')).status_code, 403)
+            self.assertEqual(self.client.post(reverse('agent_save'), {}).status_code, 403)
+        self.accounts['OPS'].groups.add(Group.objects.get(name='SIGDA_DIRCAB'))
+        self.assertEqual(self.act('OPS', 'submit', 'SECAD').status_code, 403)
+        self.assertEqual(self.client.get(reverse('activity')).status_code, 403)
 
-        older = DocumentRequest.objects.create(
-            owner=self.other, agent_key="beta", document_key="notification", status=status.APPROVED,
-        )
-        submitted = RequestEvent.objects.create(request=older, actor=self.other, status=status.SUBMITTED)
-        decided = RequestEvent.objects.create(request=older, actor=self.reviewer, status=status.APPROVED)
-        RequestEvent.objects.filter(pk=submitted.pk).update(created_at=finished - timedelta(days=10))
-        RequestEvent.objects.filter(pk=decided.pk).update(created_at=finished)
-
-        url = reverse("activity")
-        self.client.force_login(self.author)
-        response = self.client.get(url, {"period": 7})
-        self.assertEqual(response.context["decided"], 1)
-        self.assertEqual(response.context["median_delay"], "30 min")
-        self.assertNotContains(response, self.other.username)
-
-        self.client.force_login(self.reviewer)
-        response = self.client.get(url, {"period": 7})
-        self.assertEqual(response.context["submitted"], 3)
-        self.assertEqual(response.context["decided"], 4)
-        self.assertEqual(response.context["approval_rate"], 75)
-        self.assertEqual(response.context["sample"], 4)
-        self.assertEqual(response.context["median_delay"], "1 h 30 min")
-        self.assertIn("no-store", response["Cache-Control"])
-        self.assertEqual(sum(row["decided"] for row in response.context["buckets"]), 4)
+    def test_final_archive_hash_is_verified_on_every_open(self):
+        self.complete()
+        self.record.issued_pdf = b'altered'
+        self.record.save(update_fields=['issued_pdf'])
+        self.assertEqual(self.client.get(reverse('saved_document', args=[self.record.pk, 'pdf'])).status_code, 409)

@@ -85,3 +85,5 @@
     .activity-bucket { font-size: 0.625rem; }
     .activity-bucket:nth-child(even) > span { visibility: hidden; }
 }
+
+.workflow-circuit{display:grid;grid-template-columns:repeat(4,1fr);gap:.7rem;margin-bottom:1.4rem}.workflow-circuit div{border:1px solid var(--border);padding:1rem;border-radius:12px;background:var(--panel);display:grid;gap:.4rem}.workflow-circuit span{font-size:.75rem;color:var(--muted)}.workflow-circuit .is-current{border-color:var(--accent);background:var(--accent-soft)}.file-hash{display:block;overflow-wrap:anywhere;font-size:.7rem}.workflow-form input{background:var(--bg);border:1px solid var(--border);border-radius:10px;color:var(--text);font:inherit;padding:.7rem;max-width:100%}@media(max-width:600px){.workflow-circuit{grid-template-columns:1fr 1fr}}

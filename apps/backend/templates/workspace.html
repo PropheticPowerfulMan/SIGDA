@@ -12,6 +12,7 @@
 <section class="page-heading" id="overview">
     <div><p class="eyebrow">Production documentaire</p><h1>Atelier documentaire</h1><p class="page-description">Préparez, imprimez ou téléchargez un spécimen A4.</p></div>
 </section>
+<div class="composer-callout"><div><strong>Vous souhaitez utiliser les données d’un agent ?</strong><p>Cet écran présente des exemples. Le parcours guidé vous permet de choisir un dossier et de remplir les informations du document.</p></div><a class="button button-primary" href="{% url 'compose' %}?type={{ selected_type }}">Utiliser ce modèle avec mes données</a></div>
 <div class="workbench view-workbench">
     <section class="panel catalogue-panel" id="catalogue" aria-labelledby="catalogue-title">
         <header class="panel-header"><div><h2 id="catalogue-title">Catalogue de modèles</h2><p>Choisissez un modèle pour actualiser l’aperçu.</p></div><span class="status-pill">A4</span></header>
@@ -86,13 +87,10 @@
             </div>
             <div class="document-actions">
                 <button class="button button-primary" type="button" data-print-specimen hidden>Imprimer</button>
-                <a class="button" id="download-link" href="{% url 'specimen' selected_type selected_agent %}?download=1{% if wording != 'classique' %}&amp;wording={{ wording }}{% endif %}">
-                    <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"></path></svg>
-                    Télécharger le PDF
-                </a>
+                {% if is_ops %}<a class="button" id="download-link" href="{% url 'compose' %}?type={{ selected_type }}">Préparer ce modèle</a>{% endif %}
             </div>
         </div>
-        <p data-print-error role="alert" hidden>L’aperçu est indisponible. Ouvrez le PDF pour l’imprimer depuis votre lecteur.</p>
+        <p data-print-error role="alert" hidden>L’exemple est indisponible. Actualisez la page.</p>
         <div class="preview-surface">
             <div class="preview-topline">
                 <span>SPÉCIMEN — NON VALABLE</span>
@@ -108,7 +106,7 @@
             </div>
         </div>
         <div class="preview-links">
-            <a id="open-link" href="{% url 'specimen' selected_type selected_agent %}{% if wording != 'classique' %}?wording={{ wording }}{% endif %}" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet</a>
+            <a id="open-link" href="{% url 'specimen_preview' selected_type selected_agent %}{% if wording != 'classique' %}?wording={{ wording }}{% endif %}" target="_blank" rel="noopener">Agrandir l’exemple dans un nouvel onglet</a>
             <a href="{% url 'request_queue' %}?agent={{ selected_agent|urlencode }}&amp;type={{ selected_type|urlencode }}">Préparer une demande pour ce dossier</a>
         </div>
     </section>

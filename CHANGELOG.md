@@ -2,6 +2,11 @@
 
 ## En développement
 
+- Parcours guidé en quatre étapes pour composer les onze modèles avec les données d’un dossier agent, d’un service ou de pièces transmises.
+- Base agents locale IndexedDB dans la démonstration et dossiers persistants privés dans Django ; création, modification et sélection des dossiers.
+- Brouillons documentaires conservant une copie des données et du texte, avec référence et événement dans le circuit de validation.
+- Connexion comme point d’entrée à l’ouverture, page de connexion enrichie d’un parcours explicatif et textes agrandis.
+
 - Premier atelier local de sélection et de prévisualisation de documents à partir d’agents fictifs.
 - Génération A4 d’une attestation de travail de nuit et d’une notification administrative avec l’emblème fourni et la mention « SPÉCIMEN — NON VALABLE ».
 - Téléchargement PDF et tests des routes, des paramètres et des réponses.
@@ -29,3 +34,11 @@
 - Corps des documents en Times New Roman incorporée dans le PDF, avec composition à 12 points et ajustement A4 si nécessaire.
 - Interface en Manrope, textes agrandis, thème Soleil ivoire et sable et barres de défilement coordonnées à leurs surfaces.
 - Menus de sélection harmonisés sur les navigateurs compatibles et page hors ligne alignée sur la palette Soleil.
+
+## Circuit nominatif et pilotage DIRCAB — 11 novembre 2026
+
+- Quatre profils distincts OPS, SECAD, AP et DIRCAB, attribution nominative des tâches et échéances facultatives.
+- Retours motivés, corrections versionnées, cycles de revalidation et refus final.
+- Impression après validation finale uniquement ; archivage du PDF final, SHA-256 et journal des ouvertures côté serveur.
+- Activité globale réservée à DIRCAB, séries temporelles, charge et retards par étape, boîte de distribution, médiane/P90, intervalle de Wilson et tableaux de valeurs.
+- Quatre comptes de démonstration, circuit et historique conservés localement sur GitHub Pages ; contrôles réels côté Django.

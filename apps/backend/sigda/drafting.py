@@ -80,9 +80,8 @@ def draft(request):
 
         validate_facts(text, original, agent)
         reference = f"SPEC-{model.prefix}-{agent.registration}-{date.year}"
-        pdf = render_pdf(data["kind"], model, agent, reference, date_label, body_text=text)
+        pdf = render_pdf(data["kind"], model, agent, reference, date_label, body_text=text, preview_only=True)
         return JsonResponse({
-            "pdf": "data:application/pdf;base64," + b64encode(pdf).decode("ascii"),
             "preview": "data:image/png;base64," + b64encode(render_preview(pdf)).decode("ascii"),
             "filename": reference + ".pdf",
         })

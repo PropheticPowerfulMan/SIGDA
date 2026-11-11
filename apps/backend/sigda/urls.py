@@ -3,8 +3,8 @@ from unicodedata import combining, normalize
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
-from django.http import Http404, HttpResponse
-from django.shortcuts import render
+from django.http import Http404, HttpResponse, HttpResponseForbidden
+from django.shortcuts import redirect, render
 from django.urls import include, path
 from django.utils import timezone
 from django.views.decorators.cache import never_cache
@@ -19,6 +19,10 @@ from .catalog import AGENTS, DOCUMENT_TYPES, format_date
 from .pdf import render_pdf
 from .preview import render_preview
 from .pwa import manifest, offline, service_worker
+from . import composition
+from .models import AgentRecord
+from .roles import require_ops
+from django.core.exceptions import PermissionDenied
 
 
 @never_cache
@@ -30,6 +34,7 @@ def overview(request):
         "current_label": "Vue d’ensemble",
         "agents": AGENTS,
         "document_types": DOCUMENT_TYPES,
+        "saved_agent_count": AgentRecord.objects.filter(owner=request.user).count(),
     })
 
 
@@ -40,6 +45,7 @@ def search_text(value):
 @never_cache
 @login_required
 @require_safe
+@require_ops
 def directory(request):
     query = request.GET.get("q", "").strip()
     needle = search_text(query)
@@ -51,6 +57,8 @@ def directory(request):
         "current_view": "directory",
         "current_label": "Dossiers agents",
         "agents": agents,
+        "saved_agents": [record for record in AgentRecord.objects.filter(owner=request.user)
+                         if needle in search_text(f"{record.name} {record.registration} {record.service}")],
         "query": query,
     })
 
@@ -102,7 +110,7 @@ def build_specimen(key, agent_key, wording="classique"):
 
     today = timezone.localdate()
     reference = f"SPEC-{document.prefix}-{agent.registration}-{today.year}"
-    pdf = render_pdf(key, document, agent, reference, format_date(today), wording=wording)
+    pdf = render_pdf(key, document, agent, reference, format_date(today), wording=wording, preview_only=True)
     return pdf, reference
 
 
@@ -114,11 +122,9 @@ def specimen(request, key, agent_key):
     wording = request.GET.get("wording", "classique")
     if wording not in STYLES:
         raise Http404
-    pdf, reference = build_specimen(key, agent_key, wording)
-    disposition = "attachment" if request.GET.get("download") == "1" else "inline"
-    return HttpResponse(pdf, content_type="application/pdf", headers={
-        "Content-Disposition": f'{disposition}; filename="{reference}.pdf"',
-    })
+    if key not in DOCUMENT_TYPES or agent_key not in AGENTS:
+        raise Http404
+    return HttpResponseForbidden('Les exemples ne sont pas imprimables. Préparez un document et faites-le valider par DIRCAB.')
 
 
 @never_cache
@@ -133,7 +139,13 @@ def specimen_preview(request, key, agent_key):
 
 
 urlpatterns = [
-    path("", workspace, name="workspace"),
+    path("composer/", composition.page, name="compose"),
+    path("composer/apercu/", composition.preview, name="compose_preview"),
+    path("composer/enregistrer/", composition.save, name="compose_save"),
+    path("dossiers/enregistrer/", composition.save_agent, name="agent_save"),
+    path("documents/<uuid:pk>.<str:extension>", composition.saved_document, name="saved_document"),
+    path("", lambda request: redirect("login"), name="entry"),
+    path("atelier/", workspace, name="workspace"),
     path("accueil/", overview, name="overview"),
     path("dossiers/", directory, name="agent_directory"),
     path("demandes/", include("sigda.workflow")),

@@ -3,10 +3,11 @@ from os import environ
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import make_password
-from django.contrib.auth.models import Permission
+from django.contrib.auth.models import Permission, Group
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
 from django.core.management.base import BaseCommand, CommandError
+from django.core.management import call_command
 from django.db import transaction
 
 
@@ -22,7 +23,10 @@ class Command(BaseCommand):
         username = "demo-valideur" if reviewer else "demo"
         password_env = "SIGDA_REVIEWER_PASSWORD" if reviewer else "SIGDA_DEMO_PASSWORD"
         if user_model.objects.filter(username=username).exists():
+            user_model.objects.get(username=username).groups.add(Group.objects.get_or_create(name='SIGDA_' + ('SECAD' if reviewer else 'OPS'))[0])
             self.stdout.write(f"Le compte « {username} » existe déjà.")
+            if not reviewer:
+                call_command("seed_demo_agents", username=username)
             return
 
         password = environ.get(password_env)
@@ -45,6 +49,7 @@ class Command(BaseCommand):
                 username=username,
                 defaults={"password": make_password(password)},
             )
+            user.groups.add(Group.objects.get_or_create(name='SIGDA_' + ('SECAD' if reviewer else 'OPS'))[0])
             if created and reviewer:
                 permission = Permission.objects.get(
                     content_type__app_label="sigda", codename="review_documentrequest",
@@ -52,5 +57,7 @@ class Command(BaseCommand):
                 user.user_permissions.add(permission)
         if created:
             self.stdout.write(self.style.SUCCESS(f"Compte local « {username} » créé."))
+            if not reviewer:
+                call_command("seed_demo_agents", username=username)
         else:
             self.stdout.write(f"Le compte « {username} » existe déjà.")

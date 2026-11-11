@@ -107,8 +107,12 @@ function updatePreview() {
         previewImage.src = preview;
         previewImage.parentElement.scrollTo(0, 0);
     }
-    downloadLink.href = `${specimen}.pdf`;
-    openLink.href = downloadLink.href;
+    downloadLink.href = "#compose";
+    downloadLink.textContent = "Préparer ce modèle";
+    downloadLink.dataset.roles = "OPS";
+    downloadLink.toggleAttribute("data-role-hidden", window.SIGDASession?.role !== "OPS");
+    openLink.href = preview;
+    openLink.textContent = "Agrandir l’exemple";
     requestLink.dataset.agent = selectedAgent;
     requestLink.dataset.model = documentKey;
     for (const card of catalogueCards) {
@@ -159,7 +163,10 @@ const views = [...document.querySelectorAll("[data-view]")];
 const breadcrumb = document.getElementById("view-breadcrumb");
 
 function updateNavigation(focusHeading = false) {
-    const route = window.location.hash.slice(1);
+    let route = window.location.hash.slice(1);
+    const role = window.SIGDASession?.role;
+    if ((route === "activity" && role !== "DIRCAB") || ((route === "directory" || route === "compose") && role !== "OPS" && !window.SIGDAReviewMode)) route = "overview";
+    document.body.dataset.printAuthorized = "false";
     const active = views.find((view) => view.dataset.view === route) || views[0];
     for (const view of views) view.hidden = view !== active;
     const heading = active.querySelector("h1");
@@ -174,6 +181,8 @@ function updateNavigation(focusHeading = false) {
     breadcrumb.textContent = heading.textContent;
     document.title = `${heading.textContent} · SIGDA`;
     document.body.classList.toggle("specimen-page", active.dataset.view === "documents");
+    document.body.classList.toggle("composition-page", active.dataset.view === "compose");
+    window.dispatchEvent(new CustomEvent("sigda-view-changed", { detail: { view: active.dataset.view } }));
     if (focusHeading) {
         window.scrollTo(0, 0);
         heading.tabIndex = -1;
@@ -187,3 +196,10 @@ document.querySelector(".skip-link").addEventListener("click", (event) => {
 });
 window.addEventListener("hashchange", () => updateNavigation(true));
 updateNavigation();
+
+for (const node of document.querySelectorAll('[data-roles]')) node.toggleAttribute('data-role-hidden', !node.dataset.roles.split(' ').includes(window.SIGDASession?.role));
+const responsibilities = {OPS:'Préparez les documents depuis la base agents, puis attribuez le contrôle à SECAD.', SECAD:'Contrôlez les données et les pièces. Transmettez à AP ou retournez à OPS avec un motif.', AP:'Vérifiez le dossier et donnez votre visa avant la validation finale DIRCAB.', DIRCAB:'Validez définitivement les documents, autorisez leur impression et consultez le pilotage global.'};
+const banner = document.querySelector('[data-role-banner]');
+if (banner) { const title=document.createElement('strong'), text=document.createElement('p'),link=document.createElement('a');title.textContent=(window.SIGDASession?.role||'Aucun profil')+' · '+(window.SIGDASession?.username||'');text.textContent=responsibilities[window.SIGDASession?.role]||'Reconnectez-vous avec un profil.';link.href='#requests';link.className='button';link.textContent='Ouvrir mes tâches';banner.replaceChildren(title,text,link); }
+
+for (const link of [downloadLink, requestLink]) link.addEventListener('click', () => window.dispatchEvent(new CustomEvent('sigda-compose', {detail:{kind:modelSelect.value}})));

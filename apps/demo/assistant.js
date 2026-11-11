@@ -55,6 +55,7 @@
 
     function appendLinks(row, links) {
         const routes = {
+            compose: root.dataset.composeUrl,
             documents: root.dataset.documentsUrl,
             requests: root.dataset.requestsUrl,
             activity: root.dataset.activityUrl,

@@ -20,10 +20,11 @@ STATIC_FILES = (
     "app.js", "theme.js", "demo-auth.js", "menu.js",
     "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
     "print.css", "print.js", "preview.js",
-    "requests.js",
+    "requests.js", "usage.js", "statistics.js", "statistics.css",
     "assistant.js", "drafting.js", "dm-sans.ttf", "font-license.txt",
     "fiche.html", "fiche.js", "fiche.css",
     "manrope.ttf", "manrope-license.txt",
+    "composer.js", "composer.css", "agent-store.js", "qrcode.js", "qrcode-license.txt",
 )
 ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
 SPECIMEN_DATE = date(2026, 1, 15)
@@ -37,6 +38,7 @@ from sigda.preview import render_preview
 from sigda.guidance import ALIASES, GUIDES, STOPWORDS
 from sigda.wording import STYLES, document_text
 from sigda.document_fonts import BODY_FONT_PATH
+from sigda.composition_schema import COMMON_FIELDS, IDENTITY_FIELDS, MODELS, OPENINGS, CLOSINGS
 
 
 def validate_output(files: set[Path]) -> None:
@@ -77,7 +79,7 @@ def build_demo() -> None:
             raise ValueError(f"Ressource absente ou redirigée : {source}")
 
     public_agents = {
-        key: {"name": agent.name, "registration": agent.registration, "service": agent.service}
+        key: {"name": agent.name, "registration": agent.registration, "service": agent.service, "job": agent.job, "grade": agent.grade}
         for key, agent in AGENTS.items()
     }
     public_documents = {
@@ -92,7 +94,12 @@ def build_demo() -> None:
     wordings = {key: {agent_key: {style: document_text(key, agent, format_date(SPECIMEN_DATE), style)
                 for style in STYLES} for agent_key, agent in AGENTS.items()} for key in DOCUMENT_TYPES}
     catalogue += f"const documentWordings = {dumps(wordings)};\n"
+    catalogue += f"const compositionSchema = {dumps({'models': MODELS, 'identity': IDENTITY_FIELDS, 'common': COMMON_FIELDS, 'openings': OPENINGS, 'closings': CLOSINGS})};\n"
+    fragment = ROOT / 'apps/backend/templates/composer_form.html'
+    digest_fragment = fragment.read_text(encoding='utf-8')
     digest = sha256(catalogue.encode("utf-8"))
+    digest.update(digest_fragment.encode('utf-8'))
+    digest.update((ROOT / 'apps/backend/templates/statistics_panel.html').read_bytes())
     for relative, source in sorted(sources.items()):
         digest.update(relative.as_posix().encode("utf-8"))
         if source.suffix in {".html", ".css", ".js", ".webmanifest", ".txt"}:
@@ -105,8 +112,9 @@ def build_demo() -> None:
     revision = digest.hexdigest()[:12]
 
     previews = {path.with_suffix(".png") for path in specimens}
-    files = {*sources, *specimens, *previews, Path("catalogue.js"), Path(".nojekyll")}
-    validate_output(files)
+    files = {*sources, *previews, Path("catalogue.js"), Path(".nojekyll")}
+    obsolete = set(specimens)
+    validate_output(files | obsolete)
     DIST.mkdir(exist_ok=True)
 
     with TemporaryDirectory(prefix="sigda-demo-", dir=DIST) as temp:
@@ -118,6 +126,8 @@ def build_demo() -> None:
             target.parent.mkdir(parents=True, exist_ok=True)
             if relative.suffix == ".html":
                 html = source.read_text(encoding="utf-8")
+                html = html.replace('<!-- COMPOSER_FORM -->', digest_fragment)
+                html = html.replace('<!-- STATISTICS_PANEL -->', (ROOT / 'apps/backend/templates/statistics_panel.html').read_text(encoding='utf-8'))
                 html = re.sub(r'((?:src|href)="\./[a-z-]+\.(?:css|js))"', rf'\1?v={revision}"', html)
                 target.write_text(html, encoding="utf-8")
             else:
@@ -128,12 +138,11 @@ def build_demo() -> None:
             document = DOCUMENT_TYPES[kind]
             agent = AGENTS[agent_key]
             reference = f"SPEC-{document.prefix}-{agent.registration}-{SPECIMEN_DATE.year}"
-            pdf = render_pdf(kind, document, agent, reference, date_label, wording=style)
-            (staging / relative).write_bytes(pdf)
+            pdf = render_pdf(kind, document, agent, reference, date_label, wording=style, preview_only=True)
             (staging / relative.with_suffix(".png")).write_bytes(render_preview(pdf))
         (staging / ".nojekyll").touch()
 
-        validate_output(files)
+        validate_output(files | obsolete)
         if not OUTPUT.exists():
             staging.rename(OUTPUT)
         else:
@@ -141,6 +150,10 @@ def build_demo() -> None:
                 destination = OUTPUT / relative
                 destination.parent.mkdir(parents=True, exist_ok=True)
                 (staging / relative).replace(destination)
+            for relative in obsolete:
+                old_file = OUTPUT / relative
+                if old_file.is_file() and old_file.resolve().is_relative_to(OUTPUT.resolve()):
+                    old_file.unlink()
 
 
 if __name__ == "__main__":

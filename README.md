@@ -10,11 +10,35 @@ SIGDA et SSDC sont deux projets indépendants, avec leurs propres dépôts, appl
 
 ## Démonstration GitHub Pages
 
-La démonstration publique simule une connexion avec l’identifiant `demo` et le mot de passe `SIGDA-demo-2026!`. Deux dossiers fictifs et onze modèles donnent accès à 22 combinaisons de spécimens A4, chacune proposée en trois styles rédactionnels, soit 66 versions PDF. Le moteur est partagé avec l’atelier Django. Le catalogue se filtre par famille et l’atelier permet de reprendre le dossier et le modèle dans une demande.
+### Produire un document avec les données d’un agent
 
-La connexion simulée ne protège aucune donnée. GitHub Pages sert uniquement des ressources de démonstration publiques. L’application Django utilise ses propres comptes et vérifie les accès au serveur.
+L’ouverture du site affiche la connexion, y compris lorsqu’une session précédente existe. Après connexion, utilisez **Créer un document**.
 
-Le menu ouvre six vues distinctes. Sur GitHub Pages, **Demandes** permet de créer puis de traiter un brouillon fictif. **Activité** calcule les indicateurs de cette simulation et affiche ses actions horodatées. Le journal de démonstration reste dans l’onglet du navigateur.
+1. **Modèle** — choisissez le type de document et le style du texte.
+2. **Données** — sélectionnez un dossier dans la base agents. Pour un nouvel agent, renseignez le nom, le matricule, le service, la fonction et le grade, puis cliquez sur **Enregistrer le dossier agent**. Les données sélectionnées deviennent la source du document.
+3. **Détails** — complétez les champs propres au modèle. Une convocation demande le rendez-vous et son motif ; une mission demande ses dates, son lieu et son objet ; un bordereau demande les pièces, leur nombre et le destinataire.
+4. **Vérification** — relisez les données et le document rempli, puis enregistrez le brouillon et ouvrez **Mes tâches**. Attribuez le contrôle à SECAD. Le document sera imprimable après SECAD → AP → DIRCAB. Le dialogue d’impression permet aussi de choisir « Enregistrer en PDF ».
+
+La démonstration conserve une base agents **IndexedDB locale au navigateur**, initialisée avec deux dossiers fictifs. Les dossiers ajoutés ou modifiés restent disponibles après rechargement sur cet appareil. Ils ne sont pas envoyés à un serveur ni partagés entre appareils. Utilisez des données fictives sur GitHub Pages. Les documents personnalisés y sont composés pour l’impression dans le navigateur ; les 66 exemples du catalogue sont des images avec filigrane « APERÇU — NON VALIDÉ », sans PDF public préémis. La composition imprimée utilise Times New Roman lorsque cette police est installée sur l’appareil, sinon la famille sérif du navigateur. Le moteur serveur incorpore la véritable Times New Roman dans les PDF.
+
+Dans Django, **AgentRecord** conserve les dossiers dans SQLite, avec un matricule unique par compte et contrôle des accès. Le générateur relit le dossier en base. L’enregistrement conserve les données, le texte et une empreinte de la révision. Les aperçus ne livrent aucun PDF imprimable. Chaque tâche est nominative, possède un profil, un cycle et une révision, et peut recevoir une échéance. Le contrôle SECAD, le visa AP et la décision DIRCAB doivent porter sur la même version. Un retour motivé remet le dossier à OPS et impose un nouveau circuit. La validation finale archive les octets du PDF et leur SHA-256 ; les ouvertures ultérieures vérifient cette empreinte et ne régénèrent pas le fichier. Chaque ouverture est journalisée.
+
+Les modèles concernant une pièce ou un service ne demandent pas d’agent : ils utilisent les coordonnées du service émetteur et les champs du document. Le catalogue historique reste un espace d’exemples, avec un accès explicite au parcours de création.
+
+Le QR de la composition navigateur est généré localement avec [qrcode-generator](https://github.com/kazuhikoarase/qrcode-generator/tree/83b7e8fe3fddd3b0368dbafd6ce56995bd25e3c8), dont la licence MIT accompagne les sources.
+
+La démonstration publique propose quatre comptes fictifs, tous avec le mot de passe `SIGDA-demo-2026!` :
+
+| Identifiant | Responsabilité |
+| --- | --- |
+| `ops` (ou `demo`) | Base agents, saisie, correction et attribution du contrôle à SECAD. |
+| `secad` | Contrôle administratif ; transmission à AP ou retour motivé à OPS. |
+| `ap` | Visa hiérarchique ; transmission à DIRCAB ou retour motivé à OPS. |
+| `dircab` | Validation finale autorisant l’impression, retour ou refus final, pilotage global. |
+
+Pour tester le circuit, restez dans le même navigateur et changez de compte à chaque étape. Les données fictives et l’historique de cette simulation sont conservés dans IndexedDB sur cet appareil. La connexion simulée et les contrôles JavaScript ne constituent pas une protection de données ; les habilitations réelles sont vérifiées côté Django. GitHub Pages ne contient aucune donnée institutionnelle réelle.
+
+**Mes tâches** présente les documents du périmètre du compte et leurs responsables nominatifs. **Activité et traçabilité** est réservé à DIRCAB. Le tableau affiche les courbes quotidiennes, la charge par étape et les retards, la distribution des délais (Q1, médiane, Q3, P90), le taux d’approbation et son intervalle de Wilson à 95 %, les utilisateurs distincts et le journal des actions. Les chiffres sont calculés à partir des événements enregistrés, sans activité historique inventée. Les périodes couvrent 7, 30 ou 90 jours calendaires à Kinshasa. Chaque graphique dispose d’un tableau de valeurs et d’une méthode explicite. Les autres profils conservent l’historique de leurs documents et tâches. Une ouverture de PDF ou du dialogue d’impression ne prouve pas une impression physique.
 
 **Assistant** propose un guidage local fondé sur le catalogue et les procédures. Il suggère des modèles et ouvre les écrans concernés. Ce mode fonctionne sans modèle génératif. L’interface reprend la direction visuelle de SSDC avec un menu bleu nuit et des accents dorés. La police Manrope est hébergée localement, avec des textes agrandis et une hiérarchie plus aérée. Le thème Soleil associe des surfaces ivoire atténuées, des contours sable et des accents dorés. Les barres de défilement reprennent les couleurs de chaque surface, y compris dans le catalogue, le menu sombre et l’aperçu. L’aperçu du papier est adouci à l’écran et l’impression utilise le rendu d’origine.
 
@@ -26,7 +50,7 @@ L’application utilise l’API Responses avec `store=false`. L’Assistant envo
 
 Le guidage local est disponible dans la démonstration GitHub Pages. Le mode GPT requiert le serveur Django et une clé API utilisable. La connexion réelle à OpenAI doit être testée après configuration de cette clé. Les tests automatisés vérifient le contrat de l’API avec des réponses simulées. [API Responses](https://developers.openai.com/api/reference/resources/responses/methods/create), [modèle configurable](https://developers.openai.com/api/docs/models/gpt-5.4-mini).
 
-Dans les deux ateliers, **Imprimer** ouvre le dialogue d’impression avec le spécimen seul sur une feuille A4. Le PDF original peut aussi être ouvert et imprimé dans un lecteur PDF.
+Après la décision finale DIRCAB, la version validée peut être imprimée seule sur une feuille A4. Dans Django, ouvrez le PDF final conservé ; dans la simulation publique, ouvrez le document validé puis **Imprimer la version validée**. Les exemples et les aperçus restent non validés. Tous les documents de démonstration conservent la mention SPÉCIMEN — NON VALABLE.
 
 Les onze modèles utilisent un pied de page inspiré de l’attestation de service fournie le 11 novembre 2026. Il reprend la bande bleue, dorée et rouge ainsi que la disposition des coordonnées sur deux lignes. Les coordonnées sont transcrites de cet exemple, sans vérification de leur actualité. Le QR à droite ouvre une fiche publique lisible sur mobile, sans connexion. Il fonctionne aussi comme lien cliquable dans le PDF.
 
@@ -52,7 +76,7 @@ Le workflow [Démonstration GitHub Pages](.github/workflows/pages.yml) construit
 
 Sélectionnez l’un des deux dossiers fictifs et un modèle. L’aperçu, l’impression et le téléchargement utilisent le même moteur PDF A4. Les gabarits reprennent les structures de l’attestation de travail de nuit et de la notification de régularisation fournies. Le catalogue ajoute des attestations de service, de présence et d’affectation, une convocation, un bordereau, une lettre de transmission, une note de service, une autorisation de sortie et un ordre de mission. Les [repères documentaires](docs/documentary-sources.md) précisent les sources institutionnelles consultées et les limites de cette adaptation. Les PDF portent la mention « SPÉCIMEN — NON VALABLE », un préfixe de référence `SPEC-` et une zone de signature et de cachet vierge.
 
-Dans **Rédaction et reformulation**, changez la variante locale ou modifiez le corps du texte. Si GPT est configuré, il peut proposer une nouvelle formulation. Les identités et chiffres présents dans la rédaction initiale sont contrôlés. Relisez les faits et le sens, puis utilisez **Appliquer à l’aperçu** pour imprimer cette version. Le gabarit institutionnel reste fixe. La rédaction personnalisée n’est pas encore enregistrée dans le circuit des demandes et reste dans la page ouverte.
+Dans **Rédaction et reformulation**, changez la variante locale ou modifiez le corps du texte. Si GPT est configuré, il peut proposer une nouvelle formulation. Les identités et chiffres présents dans la rédaction initiale sont contrôlés. Relisez les faits et le sens, puis utilisez **Appliquer à l’aperçu** pour examiner cet exemple non validé. Le gabarit institutionnel reste fixe. La rédaction personnalisée n’est pas encore enregistrée dans le circuit des demandes et reste dans la page ouverte.
 
 L’image de l’emblème fournie par le porteur du projet est utilisée dans l’atelier et les PDF. L’usage institutionnel de l’identité visuelle relève de l’autorisation de l’institution.
 
@@ -62,28 +86,25 @@ L’image de l’emblème fournie par le porteur du projet est utilisée dans l�
 python -m venv .venv
 .venv/Scripts/python -m pip install -r apps/backend/requirements.txt
 .venv/Scripts/python apps/backend/manage.py migrate
-.venv/Scripts/python apps/backend/manage.py create_demo_user
-.venv/Scripts/python apps/backend/manage.py create_demo_user --reviewer
+$env:SIGDA_DEMO_PASSWORD = "Choisissez-un-mot-de-passe-local"
+.venv/Scripts/python apps/backend/manage.py create_workflow_demo_users
 .venv/Scripts/python apps/backend/manage.py runserver 127.0.0.1:8000 --insecure
 ```
 
-Ouvrir [l’atelier local](http://127.0.0.1:8000/), puis saisir `demo` et le mot de passe choisi lors de la création du compte. Django protège le tableau de bord, les aperçus et les PDF avec une session. Le serveur est prévu pour une exécution locale avec données fictives. L’option `--insecure` permet au serveur Django de développement de distribuer le CSS et l’emblème avec `DEBUG=False`.
-
-Dans **Demandes**, créez un brouillon avec `demo` et soumettez-le. Connectez-vous avec `demo-valideur` et le mot de passe choisi pour ce compte afin d’approuver ou de refuser la demande. Un refus exige un motif. Chaque étape conserve l’auteur, la date et le commentaire éventuel. Même approuvé, le PDF reste un spécimen. Les installations locales existantes doivent exécuter `migrate` avant d’utiliser ce parcours.
-
-**Activité** agrège ce journal sur 7, 30 ou 90 jours calendaires dans le fuseau de Kinshasa. Le taux d’approbation est le rapport entre les approbations et toutes les décisions de la période. La médiane et le P90 mesurent le délai entre soumission et décision, même si la soumission est antérieure à la période. Le tableau indique l’effectif mesuré et distingue le stock actuel des événements sur la période. Chaque compte voit uniquement les demandes auxquelles il a accès.
+Ouvrir [l’atelier local](http://127.0.0.1:8000/) et utiliser `ops`, `secad`, `ap` ou `dircab` avec le mot de passe local choisi. La commande ne remplace pas les mots de passe de comptes existants. Le serveur est prévu pour une exécution locale avec données fictives. `--insecure` distribue les ressources du serveur de développement avec `DEBUG=False`. Les installations existantes doivent exécuter `migrate` : les anciennes demandes sans copie des données restent consultables, mais un nouveau document doit être préparé pour suivre le circuit complet.
 
 ### Vérification
 
 ```powershell
 .venv/Scripts/python apps/backend/manage.py check
 .venv/Scripts/python apps/backend/manage.py test sigda
+node scripts/test_statistics.cjs
 ```
 
 ## Périmètre
 
 - `apps/backend/sigda/catalog.py` contient le catalogue de démonstration.
 - `apps/backend/sigda/pdf.py` compose les PDF avec ReportLab.
-- L’atelier utilise des gabarits HTML Django. Les agents et les modèles sont en mémoire. Les références de spécimen sont reproductibles par agent, modèle et année.
-- Le projet cible prévoit une interface React, PostgreSQL, une API DRF, l’identité institutionnelle, les habilitations, les workflows, l’archivage, les exports DOCX et l’authenticité. Ces éléments restent à livrer, ainsi que les PDF de présentation et le manuel illustré.
+- L’atelier utilise des gabarits HTML Django. Le catalogue d’exemples est en mémoire ; les dossiers du parcours guidé sont conservés en base. Les références de spécimen sont reproductibles par agent, modèle et année.
+- Le projet cible prévoit une interface React, PostgreSQL, une API DRF, l’identité institutionnelle, les habilitations à l’échelle de l’administration, la signature électronique et l’archivage institutionnel, les exports DOCX et l’authenticité. Ces éléments restent à livrer, ainsi que les PDF de présentation et le manuel illustré.
 - Voir [l’architecture de SIGDA](docs/architecture.md) pour le périmètre livré, le modèle de données cible et les invariants de réception.

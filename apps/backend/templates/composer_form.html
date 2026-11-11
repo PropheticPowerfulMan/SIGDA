@@ -1,0 +1,25 @@
+<div class="composer-intro"><strong>Un document rempli avec les bonnes informations</strong><p>Choisissez le modèle, sélectionnez un dossier dans la base agents, complétez les détails puis vérifiez le document.</p></div>
+<ol class="composer-steps" aria-label="Étapes de création"><li aria-current="step"><span>1</span> Modèle</li><li><span>2</span> Données</li><li><span>3</span> Détails</li><li><span>4</span> Vérification</li></ol>
+<div class="workbench composer-workbench">
+    <section class="panel composer-fields">
+        <form data-composition-form novalidate>
+            <section data-compose-step="0"><p class="eyebrow">Étape 1 sur 4</p><h2>Quel document voulez-vous créer ?</h2><p class="field-help">Le modèle détermine les informations qui vous seront demandées.</p><label for="compose-kind">Modèle de document</label><select id="compose-kind" name="kind" required></select><label for="compose-wording">Style du texte</label><select id="compose-wording" name="wording"></select><p class="composer-model-help"></p></section>
+            <section data-compose-step="1" hidden><p class="eyebrow">Étape 2 sur 4</p><h2 data-subject-title>Quel agent est concerné ?</h2>
+                <div data-agent-section><p class="field-help">Choisissez un dossier enregistré. Ses données rempliront automatiquement le document.</p><label for="compose-agent">Dossier dans la base agents</label><select id="compose-agent" name="agent_id"></select><div class="draft-controls"><button class="button" type="button" data-agent-new>Nouveau dossier</button><button class="button" type="button" data-agent-edit>Modifier ce dossier</button></div><div data-identity-fields class="composer-field-grid"></div><button class="button button-secondary" type="button" data-agent-save>Enregistrer le dossier agent</button><p role="status" data-agent-status></p></div>
+                <p class="field-help" data-service-help hidden>Ce modèle porte sur une pièce ou un service. Renseignez le service émetteur ci-dessous ; les pièces et le destinataire seront précisés à l’étape suivante.</p>
+                <h3>Qui établit le document ?</h3><div data-common-fields class="composer-field-grid"></div>
+            </section>
+            <section data-compose-step="2" hidden><p class="eyebrow">Étape 3 sur 4</p><h2>Quelles informations faut-il mentionner ?</h2><p class="field-help">Ces valeurs seront insérées dans le texte du document. Les exemples gris sont des indications de saisie.</p><div data-detail-fields class="composer-field-grid"></div></section>
+            <section data-compose-step="3" hidden><p class="eyebrow">Étape 4 sur 4</p><h2>Vérifiez avant de soumettre</h2><p class="field-help">Relisez les données et l’aperçu. Le document devra ensuite obtenir les validations SECAD, AP et DIRCAB.</p><button class="button" type="button" data-compose-view>Voir le document</button><a class="button" href="#requests" data-tasks-back>Retour à mes tâches</a><dl class="composition-review" data-review></dl><details class="composer-text"><summary>Lire le texte du document</summary><p data-composed-text></p></details><p class="field-help" data-storage-help></p><button class="button button-secondary" type="button" data-compose-save hidden>Enregistrer et ouvrir le circuit de validation</button><button class="button" type="button" data-compose-another>Créer un autre document</button></section>
+            <div class="composer-errors" role="alert" data-compose-errors hidden></div>
+            <div class="composer-controls"><button class="button" type="button" data-compose-back hidden>Précédent</button><button class="button button-primary" type="submit" data-compose-next>Continuer vers les données →</button></div>
+            <p class="field-help composer-storage" data-database-help></p>
+        </form>
+    </section>
+    <section class="panel document-panel composer-preview">
+        <header class="panel-header"><div><h2>Votre document</h2><p data-composition-status>L’aperçu sera généré avec vos données à l’étape 4.</p></div><span class="status-pill">A4</span></header>
+        <div class="composer-empty" data-compose-empty><span aria-hidden="true">01 → 04</span><h3>Du dossier au document</h3><p>Les données de l’agent, les dates, les lieux et les pièces apparaîtront ici après vérification de votre saisie.</p></div>
+        <div class="document-toolbar"><button class="button button-primary" type="button" data-compose-print disabled>Imprimer la version validée</button><a class="button" data-compose-download hidden download>Télécharger le PDF</a></div><p class="field-help print-lock">Impression autorisée après le circuit OPS → SECAD → AP → DIRCAB.</p>
+        <div class="preview-surface" data-compose-surface hidden><div class="preview-topline"><span>SPÉCIMEN — NON VALABLE</span></div><div class="preview-scroll" data-compose-preview tabindex="0" role="region" aria-label="Aperçu du document personnalisé"></div></div>
+    </section>
+</div>

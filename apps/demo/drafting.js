@@ -11,7 +11,7 @@
     const controls = [...form.querySelectorAll("button")];
     const availability = controls.map((button) => button.disabled);
     text.addEventListener("input", () => {
-        status.textContent = "Texte modifié. Appliquez-le pour mettre à jour l’aperçu avant impression.";
+        status.textContent = "Texte modifié. Appliquez-le pour mettre à jour l’aperçu de démonstration.";
     });
     const blobUrl = (uri) => {
         const [header, data] = uri.split(",");
@@ -36,18 +36,12 @@
             const result = await response.json();
             if (!response.ok) throw new Error(result.error || "La demande n’a pas abouti.");
             if (action === "preview") {
-                const nextPdf = blobUrl(result.pdf);
-                const nextImage = blobUrl(result.preview);
-                if (pdfUrl) URL.revokeObjectURL(pdfUrl);
+                const nextPreview = blobUrl(result.preview);
                 if (imageUrl) URL.revokeObjectURL(imageUrl);
-                pdfUrl = nextPdf;
-                imageUrl = nextImage;
-                document.getElementById("preview-image").src = imageUrl;
-                const download = document.getElementById("download-link");
-                download.href = pdfUrl;
-                download.download = result.filename;
-                document.getElementById("open-link").href = pdfUrl;
-                status.textContent = "Texte appliqué. L’aperçu, le PDF et l’impression utilisent cette version. Cette rédaction reste dans la page et n’est pas enregistrée avec une demande.";
+                imageUrl = nextPreview;
+                document.querySelector(".preview-scroll img").src = imageUrl;
+                document.getElementById("open-link").href = imageUrl;
+                status.textContent = "Texte appliqué. L’exemple non validé utilise cette version. Cette rédaction reste dans la page et n’est pas enregistrée avec une demande.";
             } else {
                 text.value = result.text;
                 form.elements.wording.value = result.wording;

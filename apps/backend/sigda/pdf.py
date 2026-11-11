@@ -7,7 +7,7 @@ from reportlab.graphics.barcode.qr import QrCodeWidget
 from reportlab.graphics.shapes import Drawing
 from reportlab.lib import colors
 from reportlab.lib.colors import HexColor
-from reportlab.lib.enums import TA_JUSTIFY
+from reportlab.lib.enums import TA_JUSTIFY, TA_RIGHT
 from reportlab.lib.pagesizes import A4
 from reportlab.lib.styles import ParagraphStyle
 from reportlab.pdfgen.canvas import Canvas
@@ -23,6 +23,16 @@ EMBLEM = Path(__file__).parent / "static" / "sigda" / "EmblemRDC.jpg"
 WIDTH, HEIGHT = A4
 MARGIN = 60
 INK = HexColor("#151515")
+
+
+def right_date(page, text, top):
+    for size in (10, 9, 8):
+        block = Paragraph(escape(text), ParagraphStyle("date", fontName="Helvetica", fontSize=size, leading=size + 1, alignment=TA_RIGHT))
+        _, height = block.wrap(220, 40)
+        if height <= 22:
+            block.drawOn(page, WIDTH - MARGIN - 220, top - height)
+            return
+    raise ValueError("Le lieu d’établissement est trop long. Indiquez seulement la ville.")
 
 
 def institutional_footer(page, key, reference, date_label, style, text):
@@ -97,21 +107,30 @@ def render_body(page, text, top, bottom=220):
     return top
 
 
-def certificate_header(page, document, reference, date_label):
+def certificate_header(page, document, reference, date_label, context=None):
     page.setFont("Times-Italic", 16)
     page.drawCentredString(WIDTH / 2, 808, "République Démocratique du Congo")
     page.drawImage(str(EMBLEM), WIDTH / 2 - 37, 722, width=74, height=74)
     page.setFont("Times-Roman", 11)
     page.drawCentredString(WIDTH / 2, 700, "SECRÉTARIAT GÉNÉRAL AUPRÈS DU PRÉSIDENT DE LA RÉPUBLIQUE")
     page.setFont("Times-Italic", 10)
-    page.drawString(MARGIN, 670, "Service des ressources humaines")
-    page.drawRightString(WIDTH - MARGIN, 670, f"Kinshasa, le {date_label}")
-    page.drawString(MARGIN, 652, f"N/Réf. : {reference}")
+    place = context["place"] if context else "Kinshasa"
+    if context:
+        block = Paragraph(escape(context["issuer_service"]), ParagraphStyle("issuer", fontName="Times-Italic", fontSize=10, leading=11))
+        _, height = block.wrap(220, 40)
+        block.drawOn(page, MARGIN, 680 - height)
+    else:
+        page.drawString(MARGIN, 670, "Service des ressources humaines")
+    if context:
+        right_date(page, f"{place}, le {date_label}", 680)
+    else:
+        page.drawRightString(WIDTH - MARGIN, 670, f"{place}, le {date_label}")
+    page.drawString(MARGIN, 640 if context else 652, f"N/Réf. : {reference}")
     centered_title(page, document.title.upper(), 575)
     return 532
 
 
-def letter_header(page, key, document, agent, reference, date_label):
+def letter_header(page, key, document, agent, reference, date_label, context=None):
     page.setFont("Helvetica", 12)
     page.drawCentredString(WIDTH / 2, 805, "RÉPUBLIQUE DÉMOCRATIQUE DU CONGO")
     page.drawCentredString(WIDTH / 2, 786, "PRÉSIDENCE DE LA RÉPUBLIQUE")
@@ -119,20 +138,35 @@ def letter_header(page, key, document, agent, reference, date_label):
     page.setFont("Helvetica", 8)
     page.drawString(MARGIN, 750, "SECRÉTARIAT GÉNÉRAL AUPRÈS")
     page.drawString(MARGIN, 739, "DU PRÉSIDENT DE LA RÉPUBLIQUE")
-    page.drawRightString(WIDTH - MARGIN, 750, f"Kinshasa, le {date_label}")
+    place = context["place"] if context else "Kinshasa"
+    if context:
+        right_date(page, f"{place}, le {date_label}", 760)
+    else:
+        page.drawRightString(WIDTH - MARGIN, 750, f"{place}, le {date_label}")
     page.drawImage(str(EMBLEM), 94, 675, width=55, height=55)
     page.setFont("Times-Italic", 10)
-    page.drawString(MARGIN, 659, "Service des ressources humaines")
+    if context:
+        block = Paragraph(escape(context["issuer_service"]), ParagraphStyle("issuer", fontName="Times-Italic", fontSize=10, leading=11))
+        _, height = block.wrap(220, 40)
+        block.drawOn(page, MARGIN, 670 - height)
+    else:
+        page.drawString(MARGIN, 659, "Service des ressources humaines")
     page.setFont("Helvetica", 10)
-    page.drawString(MARGIN, 638, f"N/Réf. : {reference}")
+    page.drawString(MARGIN, 623 if context else 638, f"N/Réf. : {reference}")
     page.setFont("Helvetica", 8)
     page.drawString(308, 613, "Copie pour information")
     page.drawString(308, 601, "Service concerné")
     page.setFont("Helvetica-Bold", 10)
     destination = "Au service des ressources humaines" if key in {"bordereau-transmission", "lettre-transmission", "note-service"} else f"À {agent.name}"
-    page.drawString(308, 577, destination)
+    if context:
+        destination = context.get("recipient") or f"À {agent.name}"
+        block = Paragraph(escape(destination), ParagraphStyle("recipient", fontName="Helvetica-Bold", fontSize=10, leading=12))
+        _, height = block.wrap(WIDTH - MARGIN - 308, 60)
+        block.drawOn(page, 308, 590 - height)
+    else:
+        page.drawString(308, 577, destination)
     page.setFont("Helvetica", 9)
-    page.drawString(308, 560, "à KINSHASA – GOMBE")
+    page.drawString(308, 548 if context else 560, "à " + place.upper() if context else "à KINSHASA – GOMBE")
     if key in {"notification", "convocation", "lettre-transmission"}:
         page.setFont("Helvetica-Bold", 11)
         page.drawString(MARGIN, 516, "Concerne : " + document.title)
@@ -142,7 +176,7 @@ def letter_header(page, key, document, agent, reference, date_label):
 
 
 def render_pdf(key: str, document: DocumentType, agent: Agent, reference: str, date_label: str,
-               *, wording="classique", body_text=None) -> bytes:
+               *, wording="classique", body_text=None, context=None, preview_only=False) -> bytes:
     output = BytesIO()
     page = Canvas(output, pagesize=A4)
     page.setTitle(f"{document.title} — Spécimen SIGDA")
@@ -150,10 +184,10 @@ def render_pdf(key: str, document: DocumentType, agent: Agent, reference: str, d
     page.setFillColor(INK)
     page.setStrokeColor(INK)
     if document.category == "Attestations":
-        top = certificate_header(page, document, reference, date_label)
+        top = certificate_header(page, document, reference, date_label, context)
         specimen_y = 624
     else:
-        top = letter_header(page, key, document, agent, reference, date_label)
+        top = letter_header(page, key, document, agent, reference, date_label, context)
         specimen_y = 825
     page.setFillColor(HexColor("#963238"))
     page.setFont("Helvetica-Bold", 9)
@@ -171,18 +205,41 @@ def render_pdf(key: str, document: DocumentType, agent: Agent, reference: str, d
         page.drawString(MARGIN + 8, top - 15, "Désignation de la pièce")
         page.drawString(398, top - 15, "Nombre")
         page.setFont("Helvetica", 9)
-        page.drawString(MARGIN + 8, top - 41, "Fiche de situation administrative")
-        page.drawString(398, top - 41, "1")
+        item = context["item"] if context else "Fiche de situation administrative"
+        block = Paragraph(escape(item), ParagraphStyle("item", fontName=BODY_FONT, fontSize=9, leading=10))
+        _, height = block.wrap(310, 28)
+        if height > 27:
+            raise ValueError("Raccourcissez la désignation des pièces pour préserver le tableau du bordereau.")
+        block.drawOn(page, MARGIN + 8, top - 27 - height)
+        page.drawString(398, top - 41, context["quantity"] if context else "1")
         top -= 68
     signature_y = min(top - 35, 270)
     page.setFont("Helvetica", 10)
-    page.drawRightString(WIDTH - MARGIN, signature_y, f"Fait à Kinshasa, le {date_label}")
+    place = context["place"] if context else "Kinshasa"
+    if context:
+        right_date(page, f"Fait à {place}, le {date_label}", signature_y + 10)
+    else:
+        page.drawRightString(WIDTH - MARGIN, signature_y, f"Fait à {place}, le {date_label}")
     page.setFont("Helvetica-Bold", 10)
-    page.drawString(325, signature_y - 31, "Autorité habilitée")
+    label = (context.get("signatory") or context["signatory_role"]) if context else "Autorité habilitée"
+    block = Paragraph(escape(label), ParagraphStyle("signatory", fontName="Helvetica-Bold", fontSize=10, leading=11))
+    _, height = block.wrap(WIDTH - MARGIN - 325, 35)
+    if height > 22:
+        raise ValueError("Raccourcissez le nom ou la qualité du signataire pour préserver sa zone de signature.")
+    block.drawOn(page, 325, signature_y - 22 - height)
     page.setFont("Helvetica", 9)
     page.drawString(325, signature_y - 54, "Signature et cachet")
     institutional_footer(page, key, reference, date_label,
                          wording if body_text is None else "personnalise", text)
+    if preview_only:
+        page.saveState()
+        page.setFillColor(HexColor("#ac5a5a"))
+        page.setFillAlpha(0.25)
+        page.translate(WIDTH / 2, HEIGHT / 2)
+        page.rotate(32)
+        page.setFont("Helvetica-Bold", 32)
+        page.drawCentredString(0, 0, "APERÇU — NON VALIDÉ")
+        page.restoreState()
     page.showPage()
     page.save()
     return output.getvalue()

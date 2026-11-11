@@ -1,51 +1,10 @@
 {% extends "workspace_base.html" %}
 {% load static %}
-{% block title %}Demandes documentaires · SIGDA{% endblock %}
+{% block title %}Mes tâches et documents · SIGDA{% endblock %}
 {% block extra_head %}<link rel="stylesheet" href="{% static 'sigda/workflow.css' %}">{% endblock %}
 {% block content %}
-<section class="page-heading">
-    <div>
-        <p class="eyebrow">Suivi documentaire</p>
-        <h1>Demandes documentaires</h1>
-        <p class="page-description">Préparez une demande et suivez sa décision.</p>
-    </div>
-    <span class="status-pill">{% if reviewer %}Compte valideur{% else %}Compte demandeur{% endif %}</span>
-</section>
-
-<div class="workbench">
-    <section class="panel" aria-labelledby="draft-title">
-        <div class="panel-header"><h2 id="draft-title">Nouvelle demande</h2></div>
-        <form class="workflow-form" method="post" action="{% url 'request_queue' %}">
-            {% csrf_token %}
-            {{ draft_form.as_div }}
-            <button class="button button-primary" type="submit">Créer le brouillon</button>
-        </form>
-    </section>
-    <section class="panel" aria-labelledby="queue-title">
-        <div class="panel-header">
-            <h2 id="queue-title">{% if reviewer %}Demandes à suivre{% else %}Mes demandes{% endif %}</h2>
-            <span class="status-pill">{{ page.paginator.count }}</span>
-        </div>
-        <ul class="workflow-list">
-            {% for record, agent_label, document_label in rows %}
-                <li>
-                    <a href="{% url 'request_detail' record.pk %}">
-                        <strong>{{ document_label }}</strong>
-                        <span>{{ agent_label }} · {{ record.owner.get_username }}</span>
-                    </a>
-                    <span class="status-pill">{{ record.get_status_display }}</span>
-                </li>
-            {% empty %}
-                <li>Aucune demande à afficher.</li>
-            {% endfor %}
-        </ul>
-        {% if page.has_other_pages %}
-            <nav class="workflow-pagination" aria-label="Pages de demandes">
-                {% if page.has_previous %}<a class="button" href="?page={{ page.previous_page_number }}">Précédente</a>{% endif %}
-                <span>Page {{ page.number }} sur {{ page.paginator.num_pages }}</span>
-                {% if page.has_next %}<a class="button" href="?page={{ page.next_page_number }}">Suivante</a>{% endif %}
-            </nav>
-        {% endif %}
-    </section>
-</div>
+<section class="page-heading"><div><p class="eyebrow">Circuit de responsabilité</p><h1>Mes tâches et documents</h1><p class="page-description">OPS → SECAD → AP → DIRCAB · L’impression est ouverte après la validation finale.</p></div>{% if is_ops %}<a class="button button-primary" href="{% url 'compose' %}">Préparer un nouveau document</a>{% endif %}</section>
+<section class="panel"><header class="panel-header"><h2>Les tâches qui vous sont attribuées</h2></header><ul class="workflow-list">{% for task in assigned_tasks %}<li><strong>{{ task.stage }} · {{ task.request.payload.reference }}</strong><p>{% if task.stage == 'OPS' %}Préparer ou corriger le document, puis le confier à SECAD.{% elif task.stage == 'SECAD' %}Contrôler les informations et les pièces avant transmission à AP.{% elif task.stage == 'AP' %}Vérifier le dossier et donner le visa hiérarchique.{% else %}Prendre la décision finale autorisant la sortie du document.{% endif %}</p><p>Attribuée par {{ task.assigned_by.get_username }} · Révision {{ task.revision }}{% if task.due_at %} · Échéance {{ task.due_at|date:"d/m/Y H:i" }}{% endif %}</p><a class="button button-primary" href="{% url 'request_detail' task.request_id %}">Traiter cette tâche</a></li>{% empty %}<li>Aucune tâche à traiter pour le moment.</li>{% endfor %}</ul></section>
+<section class="panel" style="margin-top:20px"><header class="panel-header"><h2>Documents auxquels vous avez accès</h2><span class="status-pill">{{ page.paginator.count }}</span></header><ul class="workflow-list">{% for record, subject, model, pending in rows %}<li><a href="{% url 'request_detail' record.pk %}"><strong>{{ model }}</strong><span>{{ subject }} · {{ record.owner.get_username }}</span></a><span class="status-pill">{{ record.get_status_display }}</span><p>{{ record.payload.reference }} · Révision {{ record.revision }}{% if pending %} · Responsable actuel : {{ pending.assignee.get_username }} ({{ pending.stage }}){% endif %}</p></li>{% empty %}<li>Aucun document dans votre périmètre.</li>{% endfor %}</ul></section>
+{% if page.has_previous or page.has_next %}<nav class="view-actions" aria-label="Pagination">{% if page.has_previous %}<a class="button" href="?page={{ page.previous_page_number }}">Précédent</a>{% endif %}<span>{{ page.number }} / {{ page.paginator.num_pages }}</span>{% if page.has_next %}<a class="button" href="?page={{ page.next_page_number }}">Suivant</a>{% endif %}</nav>{% endif %}
 {% endblock %}

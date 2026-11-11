@@ -47,7 +47,7 @@ class DraftingTests(TestCase):
             self.assertEqual(response.status_code, 400)
         response = self.client.post(self.url, {**self.payload, "action": "preview"})
         self.assertEqual(response.status_code, 200)
-        self.assertTrue(response.json()["pdf"].startswith("data:application/pdf;base64,JVBER"))
+        self.assertNotIn("pdf", response.json())
         self.assertTrue(response.json()["preview"].startswith("data:image/png;base64,iVBOR"))
         self.assertIn("no-store", response["Cache-Control"])
         self.assertEqual(self.client.post(self.url, {**self.payload, "text": "x" * 1801}).status_code, 400)
@@ -68,5 +68,5 @@ class DraftingTests(TestCase):
     def test_style_query_reaches_pdf_and_preview_links(self):
         response = self.client.get(reverse("workspace"), {"type": "ordre-mission", "wording": "formel"})
         self.assertContains(response, ".png?wording=formel")
-        self.assertContains(response, "?download=1&amp;wording=formel")
+        self.assertNotContains(response, "?download=1")
         self.assertEqual(self.client.get(reverse("specimen", args=["ordre-mission", "alpha"]), {"wording": "unknown"}).status_code, 404)

@@ -41,7 +41,7 @@
     --topbar-height: 68px;
     --paper-brightness: 0.85;
     font-family: "Manrope", "Segoe UI", system-ui, sans-serif;
-    font-size: 17px;
+    font-size: 18px;
 }
 :root[data-theme="light"] {
     color-scheme: light;
@@ -800,8 +800,10 @@ h1 { font-size: clamp(1.6rem, 2.65vw, 2.4rem); font-weight: 720; letter-spacing:
 .catalogue-panel, .assistant-messages { --scrollbar-track: var(--panel); }
 input, select, textarea { --scrollbar-track: var(--inset); }
 .agent-table { font-size: .8125rem; }
-.nav-link { font-size: .8125rem; min-height: 43px; }
-.button { font-size: .8125rem; min-height: 38px; }
+.nav-link { font-size: .875rem; min-height: 45px; }
+.button { font-size: .875rem; min-height: 42px; }
+.panel-header p, .document-form label, .catalogue-description, .metric-label { font-size: .875rem; }
+.metric-meta, .field-help, .directory-status { font-size: .8125rem; }
 .panel-header h2 { font-size: 1rem; }
 .panel-header p, .catalogue-description { font-size: .8125rem; }
 :root[data-theme="light"] .panel { box-shadow: var(--shadow), inset 0 1px #f3efe7; }
@@ -902,7 +904,7 @@ input, select, textarea { --scrollbar-track: var(--inset); }
 
 @media (max-width: 760px) {
     :root { --topbar-height: 54px; }
-    html { font-size: 16px; }
+    html { font-size: 17px; }
     .app-shell { display: block; }
     .sidebar {
         position: static;
@@ -942,7 +944,7 @@ input, select, textarea { --scrollbar-track: var(--inset); }
     .metric-value { font-size: 1.2rem; }
     .metric-meta { font-size: 0.625rem; }
     .workbench { gap: 12px; }
-    .nav-link { font-size: 0.6875rem; }
+    .nav-link { font-size: 0.8125rem; }
     .nav-link .icon { width: 14px; height: 14px; }
     .panel-header, .directory-tools, .directory-footer, .document-form, .document-toolbar, .preview-links { padding-inline: 10px; }
     .agent-table th:first-child, .agent-table td:first-child { padding-left: 10px; }
@@ -953,6 +955,9 @@ input, select, textarea { --scrollbar-track: var(--inset); }
     .search-field input { font-size: 1rem; }
     .preview-scroll { height: 420px; }
 }
+
+.panel-header p, .document-form label, .catalogue-description, .metric-label, .agent-table { font-size: .875rem; }
+.view-workbench .catalogue-card strong { font-size: .875rem; }
 
 @media (max-width: 375px) {
     .topbar-leading, .topbar-actions, .mobile-brand { gap: 6px; }

@@ -10,6 +10,7 @@
     <link rel="apple-touch-icon" href="{% static 'sigda/icons/apple-touch-icon.png' %}">
     <link rel="icon" href="{% static 'sigda/EmblemRDC.jpg' %}">
     <link rel="stylesheet" href="{% static 'app.css' %}">
+    <link rel="stylesheet" href="{% static 'composer.css' %}"><link rel="stylesheet" href="{% static 'statistics.css' %}">
     <script src="{% static 'theme.js' %}" defer></script>
     <script src="{% static 'menu.js' %}" defer></script>
     <script src="{% static 'pwa.js' %}" data-worker="{% url 'service_worker' %}" defer></script>
@@ -25,27 +26,30 @@
             </a>
             <div class="institution-caption">Présidence de la République<span>Secrétariat général</span></div>
             <nav id="side-nav" class="side-nav" aria-label="Navigation principale">
+                {% if is_ops %}<a class="nav-link" href="{% url 'compose' %}" title="Créer un document"{% if current_view == 'compose' %} aria-current="page"{% endif %}><span class="assistant-mark" aria-hidden="true">＋</span><span class="nav-label">Créer un document</span></a>{% endif %}
                 <p class="nav-group-label">Espace de travail</p>
                 <a class="nav-link" href="{% url 'overview' %}" title="Vue d’ensemble"{% if current_view == 'overview' %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg>
                     <span class="nav-label">Vue d’ensemble</span>
                 </a>
-                <a class="nav-link" href="{% url 'agent_directory' %}" title="Dossiers agents"{% if current_view == "directory" %} aria-current="page"{% endif %}>
+                {% if is_ops %}<a class="nav-link" href="{% url 'agent_directory' %}" title="Dossiers agents"{% if current_view == "directory" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path></svg>
                     <span class="nav-label">Dossiers agents</span>
                 </a>
+                {% endif %}
                 <a class="nav-link" href="{% url 'workspace' %}" title="Atelier documentaire"{% if current_view == "workspace" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><path d="M14 2v6h6M8 13h8m-8 4h8"></path></svg>
                     <span class="nav-label">Atelier documentaire</span>
                 </a>
                 <a class="nav-link" href="{% url 'request_queue' %}" title="Demandes"{% if current_view == "requests" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zm3 5h8m-8 4h8m-8 4h5"></path></svg>
-                    <span class="nav-label">Demandes</span>
+                    <span class="nav-label">Mes tâches</span>
                 </a>
-                <a class="nav-link" href="{% url 'activity' %}" title="Activité"{% if current_view == "activity" %} aria-current="page"{% endif %}>
+                {% if workspace_role == 'DIRCAB' %}<a class="nav-link" href="{% url 'activity' %}" title="Activité"{% if current_view == "activity" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16M8 15v-3m5 3V7m5 8V9"></path></svg>
                     <span class="nav-label">Activité</span>
                 </a>
+                {% endif %}
                 <a class="nav-link" href="{% url 'assistant' %}" title="Assistant"{% if current_view == "assistant" %} aria-current="page"{% endif %}>
                     <span class="assistant-mark" aria-hidden="true">IA</span><span class="nav-label">Assistant</span>
                 </a>

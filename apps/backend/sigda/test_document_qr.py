@@ -7,7 +7,8 @@ from django.test import TestCase
 from django.urls import reverse
 from django.utils import timezone
 
-from .catalog import AGENTS, format_date
+from .catalog import AGENTS, DOCUMENT_TYPES, format_date
+from .pdf import render_pdf
 from .document_qr import specimen_link
 from .wording import document_text
 
@@ -36,8 +37,9 @@ class DocumentQrTests(TestCase):
             text = document_text("attestation-service", AGENTS["alpha"], self.date, style)
             expected = specimen_link("attestation-service", self.reference, self.date, style, text)
             response = self.client.get(reverse("specimen", args=["attestation-service", "alpha"]), {"wording": style})
-            self.assertEqual(response.status_code, 200)
-            self.assertIn(expected.encode("ascii"), response.content)
+            self.assertEqual(response.status_code, 403)
+            pdf = render_pdf("attestation-service", DOCUMENT_TYPES["attestation-service"], AGENTS["alpha"], self.reference, self.date, wording=style)
+            self.assertIn(expected.encode("ascii"), pdf)
 
     def test_custom_preview_qr_follows_the_applied_text(self):
         text = document_text("attestation-service", AGENTS["alpha"], self.date)
@@ -47,7 +49,8 @@ class DocumentQrTests(TestCase):
             "action": "preview", "mode": "local", "text": text,
         })
         self.assertEqual(response.status_code, 200)
-        pdf = b64decode(response.json()["pdf"].split(",", 1)[1])
+        self.assertNotIn("pdf", response.json())
+        pdf = render_pdf("attestation-service", DOCUMENT_TYPES["attestation-service"], AGENTS["alpha"], self.reference, self.date, body_text=text, preview_only=True)
         expected = specimen_link("attestation-service", self.reference, self.date, "personnalise", text)
         self.assertIn(expected.encode("ascii"), pdf)
         windows = self.client.post(reverse("document_draft"), {
@@ -55,4 +58,5 @@ class DocumentQrTests(TestCase):
             "action": "preview", "mode": "local", "text": text.replace("\n", "\r\n"),
         })
         self.assertEqual(windows.status_code, 200)
-        self.assertIn(expected.encode("ascii"), b64decode(windows.json()["pdf"].split(",", 1)[1]))
+        self.assertNotIn("pdf", windows.json())
+        self.assertEqual(windows.json()["preview"], response.json()["preview"])

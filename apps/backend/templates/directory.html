@@ -2,6 +2,8 @@
 {% block title %}Dossiers agents · SIGDA{% endblock %}
 {% block content %}
 <section class="page-heading"><div><p class="eyebrow">Répertoire de démonstration</p><h1>Dossiers agents</h1></div></section>
+<section class="panel database-panel"><header class="panel-header"><div><h2>Ma base agents</h2><p>Les documents sont remplis à partir des données de ces dossiers.</p></div><a class="button button-primary" href="{% url 'compose' %}">Ajouter un dossier</a></header><div class="table-scroll"><table class="agent-table"><thead><tr><th>Nom</th><th>Matricule</th><th>Service</th><th>Document</th></tr></thead><tbody>{% for row in saved_agents %}<tr><td>{{ row.name }}</td><td>{{ row.registration }}</td><td>{{ row.service }}</td><td><a class="button" href="{% url 'compose' %}?agent={{ row.pk }}">Créer un document</a></td></tr>{% empty %}<tr><td colspan="4">Aucun dossier enregistré. Ouvrez « Ajouter un dossier », puis enregistrez les données à l’étape 2.</td></tr>{% endfor %}</tbody></table></div></section>
+<details class="legacy-examples"><summary>Voir les deux exemples prédéfinis</summary>
 <section class="panel directory-panel" id="dossiers" aria-labelledby="directory-title" tabindex="-1">
     <header class="panel-header">
         <div><h2 class="panel-title" id="directory-title">Dossiers agents</h2><p>Choisissez un dossier pour ouvrir son atelier documentaire.</p></div>
@@ -35,4 +37,5 @@
     </table>
     <div class="directory-footer"><p class="directory-status">{{ agents|length }} dossiers affichés</p></div>
 </section>
+</details>
 {% endblock %}

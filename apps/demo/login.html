@@ -11,9 +11,10 @@
     <link rel="manifest" href="./manifest.webmanifest">
     <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
     <link rel="stylesheet" href="./app.css">
-    <link rel="stylesheet" href="./login.css">
+    <link rel="stylesheet" href="./login.css"><link rel="stylesheet" href="./statistics.css">
     <script src="./theme.js" defer></script>
     <script src="./pwa.js" defer></script>
+    <script src="./usage.js" defer></script>
     <script src="./demo-auth.js" defer></script>
 </head>
 <body class="login-page">
@@ -44,20 +45,10 @@
                 <span class="status-pill"><span class="status-dot" aria-hidden="true"></span>Démonstration publique</span>
                 <div class="login-intro-copy">
                     <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Espace de travail</p>
-                    <p class="login-intro-title">Système intégré de gestion documentaire des agents</p>
-                    <p>Consultez les dossiers de démonstration, choisissez un modèle et préparez vos spécimens.</p>
+                    <p class="login-intro-title">Préparez vos documents institutionnels</p>
+                    <p>SIGDA relie la base agents à la composition et à l’impression de vos documents administratifs.</p>
                 </div>
-                <div class="login-art" aria-hidden="true">
-                    <svg viewBox="0 0 200 120" fill="none">
-                        <rect x="38" y="10" width="82" height="96" rx="10" fill="var(--accent-soft)" stroke="var(--accent-border)" transform="rotate(-12 79 58)"/>
-                        <rect x="65" y="13" width="82" height="96" rx="10" fill="var(--surface)" stroke="var(--accent-border)" transform="rotate(9 106 61)"/>
-                        <rect x="51" y="10" width="82" height="96" rx="10" fill="var(--panel)" stroke="var(--accent-border)"/>
-                        <rect x="65" y="26" width="18" height="18" rx="4" fill="var(--accent-soft)" stroke="var(--accent-border)"/>
-                        <path d="M91 29h27m-27 10h19M65 58h53M65 70h53M65 82h38" stroke="var(--accent)" stroke-opacity=".65" stroke-width="2" stroke-linecap="round"/>
-                        <rect x="124" y="72" width="40" height="37" rx="9" fill="var(--teal-soft)" stroke="var(--teal)"/>
-                        <path d="m136 90 5 5 10-10" stroke="var(--teal)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-                    </svg>
-                </div>
+                <ol class="login-journey"><li><span>01</span><div><strong>Retrouver l’agent</strong><p>Ses données sont conservées dans son dossier.</p></div></li><li><span>02</span><div><strong>Composer le document</strong><p>Un formulaire vous guide selon le modèle.</p></div></li><li><span>03</span><div><strong>Faire valider et imprimer</strong><p>SECAD contrôle, AP vise et DIRCAB autorise la sortie.</p></div></li></ol>
             </section>
 
             <section class="login-card" aria-labelledby="login-title">
@@ -68,9 +59,9 @@
                         <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg>
                     </span>
                     <h1 id="login-title">Connexion</h1>
-                    <p id="login-description">Accédez à l’atelier avec le compte fictif ci-dessous.</p>
+                    <p id="login-description">Choisissez un profil pour découvrir ses responsabilités.</p>
                 </div>
-                <form class="login-form" id="demo-login" method="post" aria-describedby="login-description" autocomplete="off">
+                <div class="profile-choices" aria-label="Profils de démonstration"><button type="button" data-demo-profile="ops">OPS<span>Saisie et préparation</span></button><button type="button" data-demo-profile="secad">SECAD<span>Contrôle administratif</span></button><button type="button" data-demo-profile="ap">AP<span>Visa hiérarchique</span></button><button type="button" data-demo-profile="dircab">DIRCAB<span>Validation finale et pilotage</span></button></div><form class="login-form" id="demo-login" method="post" aria-describedby="login-description" autocomplete="off">
                     <div class="login-field">
                         <label for="username">Identifiant</label>
                         <input id="username" type="text" autocapitalize="none" spellcheck="false" required>
@@ -89,7 +80,7 @@
                 <aside class="login-credentials" aria-labelledby="demo-credentials-title">
                     <h2 id="demo-credentials-title">Compte de démonstration</h2>
                     <dl>
-                        <div><dt>Identifiant</dt><dd><code>demo</code></dd></div>
+                        <div><dt>Identifiant</dt><dd><code>ops / secad / ap / dircab</code></dd></div>
                         <div><dt>Mot de passe</dt><dd><code>SIGDA-demo-2026!</code></dd></div>
                     </dl>
                     <p>La connexion est simulée et l’atelier utilise des données fictives.</p>

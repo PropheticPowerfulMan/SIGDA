@@ -9,18 +9,20 @@
 }
 
 @media print {
-    body.specimen-page > :not(.app-shell),
-    .specimen-page .app-shell > :not(.main-shell),
-    .specimen-page .main-shell > :not(.main-content),
-    .specimen-page .main-content > :not(.workbench),
-    .specimen-page .workbench > :not(.document-panel),
-    .specimen-page .document-panel > :not(.preview-surface),
-    .specimen-page .preview-surface > :not(.preview-scroll) {
+    body:is(.specimen-page, .composition-page):not([data-print-authorized="true"]) > * { display: none !important; }
+    body:is(.specimen-page, .composition-page):not([data-print-authorized="true"])::after { content: "Impression indisponible — validation finale DIRCAB requise."; display: block; margin: 30mm; font: 14pt Arial, sans-serif; color: #151515; }
+    body.specimen-page:not(.composition-page) > :not(.app-shell),
+    .specimen-page:not(.composition-page) .app-shell > :not(.main-shell),
+    .specimen-page:not(.composition-page) .main-shell > :not(.main-content),
+    .specimen-page:not(.composition-page) .main-content > :not(.workbench),
+    .specimen-page:not(.composition-page) .workbench > :not(.document-panel),
+    .specimen-page:not(.composition-page) .document-panel > :not(.preview-surface),
+    .specimen-page:not(.composition-page) .preview-surface > :not(.preview-scroll) {
         display: none !important;
     }
 
-    body.specimen-page,
-    .specimen-page :is(.app-shell, .main-shell, .main-content, .workbench, .document-panel, .preview-surface, .preview-scroll) {
+    body.specimen-page:not(.composition-page),
+    .specimen-page:not(.composition-page) :is(.app-shell, .main-shell, .main-content, .workbench, .document-panel, .preview-surface, .preview-scroll) {
         display: block;
         position: static;
         width: 100%;
@@ -37,7 +39,7 @@
         box-shadow: none;
     }
 
-    .specimen-page .preview-scroll img {
+    .specimen-page:not(.composition-page) .preview-scroll img {
         filter: none;
         display: block;
         width: 209mm;

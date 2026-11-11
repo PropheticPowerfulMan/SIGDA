@@ -7,7 +7,9 @@ from django.db import models
 class DocumentRequest(models.Model):
     class Status(models.TextChoices):
         DRAFT = "draft", "Brouillon"
-        SUBMITTED = "submitted", "En attente de décision"
+        SUBMITTED = "submitted", "Contrôle SECAD"
+        AP = "ap", "Visa AP"
+        DIRCAB = "dircab", "Validation DIRCAB"
         APPROVED = "approved", "Approuvée"
         REJECTED = "rejected", "Refusée"
 
@@ -15,6 +17,13 @@ class DocumentRequest(models.Model):
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     agent_key = models.SlugField(max_length=64)
     document_key = models.SlugField(max_length=64)
+    payload = models.JSONField(default=dict, blank=True)
+    revision = models.PositiveIntegerField(default=1)
+    cycle = models.PositiveIntegerField(default=0)
+    payload_hash = models.CharField(max_length=64, blank=True)
+    issued_pdf = models.BinaryField(default=bytes, blank=True)
+    issued_hash = models.CharField(max_length=64, blank=True)
+    issued_at = models.DateTimeField(null=True, blank=True)
     status = models.CharField(max_length=16, choices=Status.choices, default=Status.DRAFT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -30,7 +39,65 @@ class RequestEvent(models.Model):
     actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
     status = models.CharField(max_length=16, choices=DocumentRequest.Status.choices)
     note = models.CharField(max_length=500, blank=True)
+    actor_role = models.CharField(max_length=12, blank=True)
+    event_type = models.CharField(max_length=24, blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
         ordering = ["created_at", "id"]
+
+
+class AgentRecord(models.Model):
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    name = models.CharField(max_length=100)
+    registration = models.CharField(max_length=40)
+    service = models.CharField(max_length=100)
+    job = models.CharField(max_length=100)
+    grade = models.CharField(max_length=100)
+
+    class Meta:
+        ordering = ["name"]
+        constraints = [models.UniqueConstraint(fields=["owner", "registration"], name="agent_registration_per_owner")]
+
+
+class ValidationTask(models.Model):
+    class State(models.TextChoices):
+        PENDING = "pending", "À traiter"
+        APPROVED = "approved", "Validée"
+        RETURNED = "returned", "Retournée en correction"
+        COMPLETED = "completed", "Terminée"
+        REJECTED = "rejected", "Refusée"
+
+    request = models.ForeignKey(DocumentRequest, related_name="tasks", on_delete=models.PROTECT)
+    stage = models.CharField(max_length=12)
+    assignee = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="validation_tasks", on_delete=models.PROTECT)
+    assigned_by = models.ForeignKey(settings.AUTH_USER_MODEL, related_name="assigned_validation_tasks", on_delete=models.PROTECT)
+    cycle = models.PositiveIntegerField(default=0)
+    revision = models.PositiveIntegerField(default=1)
+    snapshot_hash = models.CharField(max_length=64)
+    state = models.CharField(max_length=12, choices=State.choices, default=State.PENDING)
+    note = models.CharField(max_length=500, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    due_at = models.DateTimeField(null=True, blank=True)
+    completed_at = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ["created_at", "pk"]
+        constraints = [models.UniqueConstraint(fields=["request"], condition=models.Q(state="pending"), name="one_pending_validation_task")]
+
+
+class DocumentAccess(models.Model):
+    request = models.ForeignKey(DocumentRequest, related_name="accesses", on_delete=models.PROTECT)
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    action = models.CharField(max_length=24)
+    file_hash = models.CharField(max_length=64)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+
+class UsageEvent(models.Model):
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    actor_role = models.CharField(max_length=12, blank=True)
+    action = models.CharField(max_length=32)
+    document = models.ForeignKey(DocumentRequest, null=True, blank=True, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)

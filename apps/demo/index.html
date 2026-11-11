@@ -11,17 +11,22 @@
     <link rel="icon" href="./assets/EmblemRDC.jpg">
     <link rel="stylesheet" href="./app.css">
     <link rel="stylesheet" href="./print.css">
+    <link rel="stylesheet" href="./composer.css"><link rel="stylesheet" href="./statistics.css">
     <script src="./theme.js" defer></script>
+    <script src="./usage.js" defer></script>
     <script src="./demo-auth.js" defer></script>
     <script src="./menu.js" defer></script>
     <script src="./pwa.js" defer></script>
     <script src="./catalogue.js" defer></script>
+    <script src="./agent-store.js" defer></script>
     <script src="./app.js" defer></script>
-    <script src="./requests.js" defer></script>
+    <script src="./requests.js" defer></script><script src="./statistics.js" defer></script>
     <script src="./print.js" defer></script>
     <script src="./preview.js" defer></script>
     <script src="./assistant.js" defer></script>
     <script src="./drafting.js" defer></script>
+    <script src="./qrcode.js" defer></script>
+    <script src="./composer.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -49,12 +54,13 @@
             </a>
             <div class="institution-caption">Présidence de la République<span>Secrétariat général</span></div>
             <nav id="side-nav" class="side-nav" aria-label="Navigation principale">
+                <a class="nav-link" data-roles="OPS" href="#compose" title="Créer un document"><span class="assistant-mark" aria-hidden="true">＋</span><span class="nav-label">Créer un document</span></a>
                 <p class="nav-group-label">Espace de travail</p>
                 <a class="nav-link" href="#overview" title="Vue d’ensemble" aria-current="location"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span class="nav-label">Vue d’ensemble</span></a>
-                <a class="nav-link" href="#directory" title="Dossiers agents"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span class="nav-label">Dossiers agents</span></a>
+                <a class="nav-link" data-roles="OPS" href="#directory" title="Dossiers agents"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span class="nav-label">Dossiers agents</span></a>
                 <a class="nav-link" href="#documents" title="Atelier documentaire"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span class="nav-label">Atelier documentaire</span></a>
-                <a class="nav-link" href="#requests" title="Demandes"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span class="nav-label">Demandes</span></a>
-                <a class="nav-link" href="#activity" title="Activité"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activité</span></a>
+                <a class="nav-link" href="#requests" title="Demandes"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span class="nav-label">Mes tâches</span></a>
+                <a class="nav-link" data-roles="DIRCAB" href="#activity" title="Activité"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activité</span></a>
                 <a class="nav-link" href="#assistant" title="Assistant"><span class="assistant-mark" aria-hidden="true">IA</span><span class="nav-label">Assistant</span></a>
                 <button class="nav-link nav-exit" type="button" data-logout title="Exit · Déconnexion" aria-label="Exit, se déconnecter"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span class="nav-label">Exit</span></button>
             </nav>
@@ -81,13 +87,13 @@
             </header>
 
             <main id="main" class="main-content" tabindex="-1">
-                <section data-view="overview">
+                <section data-view="overview"><div class="role-banner" data-role-banner></div>
                     <section class="page-heading overview-hero" aria-labelledby="page-title" tabindex="-1">
                         <div>
                         <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Secrétariat général · Présidence de la République</p>
                             <h1 id="page-title">Vue d’ensemble</h1>
                             <p class="page-description">Du dossier agent au document imprimé. Retrouvez vos modèles, vos demandes et votre journal d’activité au même endroit.</p>
-                        <div class="hero-actions"><a class="button button-primary" href="#documents">Préparer un document <span aria-hidden="true">↗</span></a><a class="hero-link" href="#assistant">Consulter l’assistant <span aria-hidden="true">→</span></a></div>
+                        <div class="hero-actions"><a class="button button-primary" data-roles="OPS" href="#compose">Créer un document <span aria-hidden="true">↗</span></a><a class="hero-link" href="#assistant">Consulter l’assistant <span aria-hidden="true">→</span></a></div>
                         </div>
                     <img class="hero-emblem" src="./assets/EmblemRDC.jpg" alt="" aria-hidden="true" width="180" height="180">
                         <div class="install-actions">
@@ -104,7 +110,7 @@
                     <section class="metrics" aria-label="Catalogue de démonstration">
                         <article class="metric-card">
                             <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg></span>
-                            <div class="metric-copy"><p class="metric-label">Dossiers agents</p><p class="metric-value">02</p><p class="metric-meta">Agents fictifs</p></div>
+                            <div class="metric-copy"><p class="metric-label">Dossiers agents</p><p class="metric-value" data-agent-count>02</p><p class="metric-meta">Agents fictifs</p></div>
                         </article>
                         <article class="metric-card">
                             <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg></span>
@@ -112,21 +118,22 @@
                         </article>
                         <article class="metric-card">
                             <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg></span>
-                            <div class="metric-copy"><p class="metric-label">Spécimens</p><p class="metric-value" id="specimen-count"></p><p class="metric-meta">PDF A4 prêts à imprimer</p></div>
+                            <div class="metric-copy"><p class="metric-label">Exemples A4</p><p class="metric-value" id="specimen-count"></p><p class="metric-meta">PDF A4 prêts à imprimer</p></div>
                         </article>
                     </section>
                     <div class="panel">
                         <div class="panel-header"><h2>Accès rapide</h2></div>
                         <div class="overview-actions">
-                            <a class="quick-card" href="#directory"><span class="quick-index">01 <span aria-hidden="true">↗</span></span><strong>Consulter les dossiers</strong><span>Retrouver un agent et son affectation.</span></a>
-                            <a class="quick-card" href="#documents"><span class="quick-index">02 <span aria-hidden="true">↗</span></span><strong>Composer un document</strong><span>Choisir un modèle, relire et imprimer.</span></a>
+                            <a class="quick-card" data-roles="OPS" href="#directory"><span class="quick-index">01 <span aria-hidden="true">↗</span></span><strong>Consulter les dossiers</strong><span>Retrouver un agent et son affectation.</span></a>
+                            <a class="quick-card" data-roles="OPS" href="#compose"><span class="quick-index">02 <span aria-hidden="true">↗</span></span><strong>Composer un document</strong><span>Choisir un modèle, relire et imprimer.</span></a>
                             <a class="quick-card" href="#requests"><span class="quick-index">03 <span aria-hidden="true">↗</span></span><strong>Suivre une demande</strong><span>Soumettre le dossier et consulter son historique.</span></a>
                         </div>
                     </div>
                 </section>
                 <section data-view="directory" hidden>
                     <div class="page-heading"><div><p class="eyebrow">Répertoire de démonstration</p><h1>Dossiers agents</h1><p class="page-description">Recherchez par nom, matricule ou service.</p></div></div>
-                    <section class="panel directory-panel" aria-labelledby="directory-title" tabindex="-1">
+                    <section class="panel database-panel"><header class="panel-header"><div><h2>Base agents de démonstration</h2><p>Choisissez un dossier enregistré pour remplir un document.</p></div><button class="button button-primary" type="button" data-new-agent>Ajouter un dossier</button></header><div class="directory-tools"><label for="database-search">Rechercher par nom, matricule ou service</label><input id="database-search" data-database-search type="search" placeholder="Rechercher dans la base agents"></div><div class="table-scroll"><table class="agent-table"><thead><tr><th>Nom</th><th>Matricule</th><th>Service</th><th>Document</th></tr></thead><tbody data-database-list></tbody></table></div><p class="directory-footer" data-database-status role="status"></p><p class="field-help">Base locale à cet appareil. Les dossiers restent disponibles après rechargement. Utilisez des données fictives dans cette démonstration.</p></section>
+                    <section hidden class="panel directory-panel" aria-labelledby="directory-title" tabindex="-1">
                         <div class="panel-header">
                             <div><h2 class="panel-title" id="directory-title">Dossiers agents</h2><p>Sélectionnez un agent pour ouvrir son atelier documentaire.</p></div>
                             <span class="status-pill">Fictifs</span>
@@ -162,8 +169,10 @@
                         </div>
                     </section>
                 </section>
+                <section data-view="compose" hidden><div class="page-heading"><div><p class="eyebrow">Création guidée</p><h1>Créer un document</h1><p class="page-description">Choisissez un dossier dans la base agents, complétez les détails et soumettez votre document au circuit de validation.</p></div></div><div data-composer data-tasks-url="#requests" data-emblem="./assets/EmblemRDC.jpg"><!-- COMPOSER_FORM --></div></section>
                 <div class="workbench view-workbench" data-view="documents" hidden>
                     <div class="page-heading"><div><p class="eyebrow">Production documentaire</p><h1>Atelier documentaire</h1><p class="page-description">Sélectionnez un dossier et un modèle pour imprimer ou télécharger le spécimen A4.</p></div></div>
+                    <div class="composer-callout"><div><strong>Vous souhaitez utiliser les données d’un agent ?</strong><p>Cet écran présente des exemples déjà remplis. Le parcours guidé utilise les dossiers de votre base agents.</p></div><button class="button button-primary" type="button" data-use-model>Utiliser ce modèle avec mes données</button></div>
                     <section class="panel catalogue-panel" aria-labelledby="catalogue-title">
                         <div class="panel-header"><div><h2 id="catalogue-title">Catalogue de modèles</h2><p>Choisissez un modèle pour actualiser l’aperçu.</p></div><span class="status-pill">A4</span></div>
                         <div class="catalogue-filters" id="catalogue-filters" role="group" aria-label="Familles de documents"></div>
@@ -201,7 +210,7 @@
                             </div>
                             <div class="document-actions">
                                 <button class="button button-primary" type="button" data-print-specimen hidden>Imprimer</button>
-                                <a class="button" id="download-link" href="./assets/specimens/attestation-nuit-alpha.pdf" download><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Télécharger le PDF</a>
+                                <a class="button" id="download-link" data-roles="OPS" href="#compose"><svg class="icon" aria-hidden="true"><use href="#i-download"/></svg>Préparer ce modèle</a>
                             </div>
                         </div>
                         <p data-print-error role="alert" hidden>L’aperçu est indisponible. Ouvrez le PDF pour l’imprimer depuis votre lecteur.</p>
@@ -220,41 +229,20 @@
                             </div>
                         </div>
                         <div class="preview-links">
-                            <a id="open-link" href="./assets/specimens/attestation-nuit-alpha.pdf" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
-                            <a href="#requests" id="request-specimen">Préparer une demande pour ce spécimen</a>
+                            <a id="open-link" href="./assets/specimens/attestation-nuit-alpha.png" target="_blank" rel="noopener">Agrandir l’exemple <svg class="icon" aria-hidden="true"><use href="#i-arrow"/></svg></a>
+                            <a data-roles="OPS" href="#compose" id="request-specimen">Créer un document avec ce modèle</a>
                         </div>
                         <p id="preview-status" role="status" class="sr-only"></p>
                     </section>
                 </div>
                 <section data-view="requests" hidden>
-                    <div class="page-heading"><div><p class="eyebrow">Suivi de la démonstration</p><h1>Demandes documentaires</h1><p class="page-description">Créez, soumettez et décidez des demandes fictives dans cet onglet.</p></div><span class="status-pill">Simulation</span></div>
-                    <div class="workbench">
-                        <section class="panel">
-                            <div class="panel-header"><h2>Nouvelle demande</h2></div>
-                            <form id="demo-request-form" class="document-form">
-                                <div><label for="request-agent">Agent fictif</label><select id="request-agent" required></select></div>
-                                <div><label for="request-model">Modèle</label><select id="request-model" required></select></div>
-                                <button class="button button-primary" type="submit">Créer le brouillon</button>
-                            </form>
-                            <p id="demo-request-status" class="view-actions" role="status"></p>
-                        </section>
-                        <section class="panel">
-                            <div class="panel-header"><h2>Demandes de cet onglet</h2></div>
-                            <ul class="demo-list" id="demo-request-list"></ul>
-                        </section>
-                    </div>
+                    <div class="page-heading"><div><p class="eyebrow">Responsabilités et validations</p><h1>Mes tâches et documents</h1><p class="page-description">OPS → SECAD → AP → DIRCAB. Chaque tâche est attribuée à un compte ; l’impression est autorisée après validation finale.</p></div><span class="status-pill"><span data-my-task-count>0</span> tâche(s) à traiter</span></div>
+                    <p id="demo-request-status" role="status" aria-live="polite"></p>
+                    <ul class="demo-list" id="demo-request-list"></ul>
                 </section>
                 <section data-view="activity" hidden>
-                    <div class="page-heading"><div><p class="eyebrow">Pilotage de la démonstration</p><h1>Activité et traçabilité</h1><p class="page-description">Indicateurs calculés à partir des actions réalisées dans cet onglet.</p></div><span class="status-pill">Simulation</span></div>
-                    <div class="metrics" aria-label="Indicateurs de la session">
-                        <article class="metric-card"><div class="metric-copy"><p class="metric-label">Soumises</p><p class="metric-value" id="demo-count-submitted">0</p></div></article>
-                        <article class="metric-card"><div class="metric-copy"><p class="metric-label">En attente</p><p class="metric-value" id="demo-count-pending">0</p></div></article>
-                        <article class="metric-card"><div class="metric-copy"><p class="metric-label">Taux d’approbation</p><p class="metric-value" id="demo-approval-rate">—</p><p class="metric-meta" id="demo-decision-count">0 décision</p></div></article>
-                    </div>
-                    <section class="panel">
-                        <div class="panel-header"><h2>Journal des actions</h2><a class="button" href="#requests">Ouvrir les demandes</a></div>
-                        <ol class="demo-list" id="demo-activity-log"></ol>
-                    </section>
+                    <div class="page-heading"><div><p class="eyebrow">DIRCAB · Supervision institutionnelle</p><h1>Activité et traçabilité</h1><p class="page-description">Mesurer les flux, comprendre les délais et suivre les responsabilités.</p></div><span class="status-pill">Accès réservé à DIRCAB</span></div>
+                    <!-- STATISTICS_PANEL -->
                 </section>
                 <section data-view="assistant" hidden>
 <section class="page-heading">
@@ -262,6 +250,7 @@
     <p class="page-description">Trouvez un modèle ou clarifiez une étape du circuit documentaire.</p></div>
 </section>
 <section class="assistant-layout" data-assistant
+    data-compose-url="#compose"
     data-documents-url="#documents" data-requests-url="#requests" data-activity-url="#activity">
     <aside class="panel assistant-context">
         <h2>Comment puis-je vous aider ?</h2>
