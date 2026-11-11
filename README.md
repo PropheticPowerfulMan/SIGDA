@@ -10,11 +10,21 @@ SIGDA et SSDC sont deux projets indépendants, avec leurs propres dépôts, appl
 
 ## Démonstration GitHub Pages
 
-La démonstration publique simule une connexion avec l’identifiant `demo` et le mot de passe `SIGDA-demo-2026!`. Deux dossiers fictifs et cinq modèles donnent accès à dix spécimens A4, générés par le même moteur que l’atelier Django. Le catalogue se filtre par famille et l’atelier permet de reprendre le dossier et le modèle dans une demande.
+La démonstration publique simule une connexion avec l’identifiant `demo` et le mot de passe `SIGDA-demo-2026!`. Deux dossiers fictifs et onze modèles donnent accès à 22 combinaisons de spécimens A4, chacune proposée en trois styles rédactionnels, soit 66 versions PDF. Le moteur est partagé avec l’atelier Django. Le catalogue se filtre par famille et l’atelier permet de reprendre le dossier et le modèle dans une demande.
 
 La connexion simulée ne protège aucune donnée. GitHub Pages sert uniquement des ressources de démonstration publiques. L’application Django utilise ses propres comptes et vérifie les accès au serveur.
 
-Le menu ouvre cinq vues distinctes. Sur GitHub Pages, **Demandes** permet de créer puis de traiter un brouillon fictif. **Activité** calcule les indicateurs de cette simulation et affiche ses actions horodatées. Le journal de démonstration reste dans l’onglet du navigateur.
+Le menu ouvre six vues distinctes. Sur GitHub Pages, **Demandes** permet de créer puis de traiter un brouillon fictif. **Activité** calcule les indicateurs de cette simulation et affiche ses actions horodatées. Le journal de démonstration reste dans l’onglet du navigateur.
+
+**Assistant** propose un guidage local fondé sur le catalogue et les procédures. Il suggère des modèles et ouvre les écrans concernés. Ce mode fonctionne sans modèle génératif. L’interface reprend la direction visuelle de SSDC avec un menu bleu nuit et des accents dorés. Le thème Soleil utilise des surfaces gris-vert atténuées. L’aperçu du papier est adouci à l’écran et l’impression utilise le rendu d’origine.
+
+### Connexion de l’assistant à GPT
+
+Dans Django, définissez `OPENAI_API_KEY` dans l’environnement du serveur puis redémarrez-le. Le mode GPT devient sélectionnable sur la page Assistant. Le modèle par défaut est `gpt-5.4-mini`, configurable avec `SIGDA_OPENAI_MODEL`.
+
+L’application utilise l’API Responses avec `store=false`. L’Assistant envoie la question saisie et le descriptif public des modèles. L’atelier envoie uniquement le corps du texte soumis pour reformulation et ses consignes de préservation des faits. Chaque appel est indépendant. Le formulaire Assistant accepte 2 000 caractères, l’éditeur documentaire 1 800. La sortie est limitée à 1 200 tokens et les deux écrans partagent dix appels GPT par minute et par compte. Le compteur utilise le cache Django, local au processus par défaut. Un déploiement multi-processus doit configurer un cache partagé pour appliquer cette limite globalement.
+
+Le guidage local est disponible dans la démonstration GitHub Pages. Le mode GPT requiert le serveur Django et une clé API utilisable. La connexion réelle à OpenAI doit être testée après configuration de cette clé. Les tests automatisés vérifient le contrat de l’API avec des réponses simulées. [API Responses](https://developers.openai.com/api/reference/resources/responses/methods/create), [modèle configurable](https://developers.openai.com/api/docs/models/gpt-5.4-mini).
 
 Dans les deux ateliers, **Imprimer** ouvre le dialogue d’impression avec le spécimen seul sur une feuille A4. Le PDF original peut aussi être ouvert et imprimé dans un lecteur PDF.
 
@@ -28,13 +38,15 @@ python scripts/build_demo.py
 python -m http.server 8080 --bind 127.0.0.1 --directory dist/demo
 ```
 
-Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni et les dix PDF fictifs avec leurs aperçus.
+Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni et les 66 PDF fictifs avec leurs aperçus.
 
 Le workflow [Démonstration GitHub Pages](.github/workflows/pages.yml) construit et publie cet artefact depuis `main`. Dans le dépôt SIGDA, choisir **GitHub Actions** comme source dans **Settings → Pages** pour activer la publication. L’adresse cible est [propheticpowerfulman.github.io/SIGDA](https://propheticpowerfulman.github.io/SIGDA/).
 
 ## Atelier documentaire local
 
-Sélectionnez l’un des deux dossiers fictifs et un modèle. L’aperçu et le téléchargement utilisent le même moteur PDF A4. Les deux modèles reprennent la structure de l’attestation de travail de nuit et de la notification de régularisation fournies. Les textes, les identités et les matricules sont des exemples. Les PDF portent la mention « SPÉCIMEN — NON VALABLE », un préfixe de référence `SPEC-` et une zone de signature et de cachet vierge.
+Sélectionnez l’un des deux dossiers fictifs et un modèle. L’aperçu, l’impression et le téléchargement utilisent le même moteur PDF A4. Les gabarits reprennent les structures de l’attestation de travail de nuit et de la notification de régularisation fournies. Le catalogue ajoute des attestations de service, de présence et d’affectation, une convocation, un bordereau, une lettre de transmission, une note de service, une autorisation de sortie et un ordre de mission. Les [repères documentaires](docs/documentary-sources.md) précisent les sources institutionnelles consultées et les limites de cette adaptation. Les PDF portent la mention « SPÉCIMEN — NON VALABLE », un préfixe de référence `SPEC-` et une zone de signature et de cachet vierge.
+
+Dans **Rédaction et reformulation**, changez la variante locale ou modifiez le corps du texte. Si GPT est configuré, il peut proposer une nouvelle formulation. Les identités et chiffres présents dans la rédaction initiale sont contrôlés. Relisez les faits et le sens, puis utilisez **Appliquer à l’aperçu** pour imprimer cette version. Le gabarit institutionnel reste fixe. La rédaction personnalisée n’est pas encore enregistrée dans le circuit des demandes et reste dans la page ouverte.
 
 L’image de l’emblème fournie par le porteur du projet est utilisée dans l’atelier et les PDF. L’usage institutionnel de l’identité visuelle relève de l’autorisation de l’institution.
 
@@ -69,4 +81,3 @@ Dans **Demandes**, créez un brouillon avec `demo` et soumettez-le. Connectez-vo
 - L’atelier utilise des gabarits HTML Django. Les agents et les modèles sont en mémoire. Les références de spécimen sont reproductibles par agent, modèle et année.
 - Le projet cible prévoit une interface React, PostgreSQL, une API DRF, l’identité institutionnelle, les habilitations, les workflows, l’archivage, les exports DOCX et l’authenticité. Ces éléments restent à livrer, ainsi que les PDF de présentation et le manuel illustré.
 - Voir [l’architecture de SIGDA](docs/architecture.md) pour le périmètre livré, le modèle de données cible et les invariants de réception.
-

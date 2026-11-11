@@ -61,6 +61,30 @@ DOCUMENT_TYPES = {
         "BOR",
         "Transmission",
     ),
+    "attestation-presence": DocumentType(
+        "Attestation de présence", "Constater la présence d’un agent au service.",
+        "APR", "Attestations",
+    ),
+    "attestation-affectation": DocumentType(
+        "Attestation d’affectation", "Présenter le service d’affectation et la fonction exercée.",
+        "AAF", "Attestations",
+    ),
+    "note-service": DocumentType(
+        "Note de service", "Communiquer une consigne interne de gestion documentaire.",
+        "NDS", "Correspondances",
+    ),
+    "lettre-transmission": DocumentType(
+        "Lettre de transmission", "Adresser une pièce au service compétent.",
+        "LTR", "Transmission",
+    ),
+    "autorisation-sortie": DocumentType(
+        "Autorisation de sortie", "Préparer une autorisation pour une démarche administrative.",
+        "ASO", "Autorisations",
+    ),
+    "ordre-mission": DocumentType(
+        "Ordre de mission", "Préciser l’objet, le lieu et la durée d’une mission de démonstration.",
+        "OM", "Missions",
+    ),
 }
 
 MONTHS = (

@@ -38,6 +38,7 @@
     }
 
     .specimen-page .preview-scroll img {
+        filter: none;
         display: block;
         width: 209mm;
         height: 296mm;

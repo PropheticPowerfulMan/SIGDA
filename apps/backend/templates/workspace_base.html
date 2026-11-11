@@ -1,6 +1,6 @@
 {% load static %}
 <!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -44,6 +44,9 @@
                 <a class="nav-link" href="{% url 'activity' %}" title="Activité"{% if current_view == "activity" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16M8 15v-3m5 3V7m5 8V9"></path></svg>
                     <span class="nav-label">Activité</span>
+                </a>
+                <a class="nav-link" href="{% url 'assistant' %}" title="Assistant"{% if current_view == "assistant" %} aria-current="page"{% endif %}>
+                    <span class="assistant-mark" aria-hidden="true">IA</span><span class="nav-label">Assistant</span>
                 </a>
                 <form class="nav-exit-form" method="post" action="{% url 'logout' %}">
                     {% csrf_token %}

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="fr" data-theme="dark">
+<html lang="fr" data-theme="light">
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -20,6 +20,8 @@
     <script src="./requests.js" defer></script>
     <script src="./print.js" defer></script>
     <script src="./preview.js" defer></script>
+    <script src="./assistant.js" defer></script>
+    <script src="./drafting.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -52,6 +54,7 @@
                 <a class="nav-link" href="#documents" title="Atelier documentaire"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span class="nav-label">Atelier documentaire</span></a>
                 <a class="nav-link" href="#requests" title="Demandes"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span class="nav-label">Demandes</span></a>
                 <a class="nav-link" href="#activity" title="Activité"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activité</span></a>
+                <a class="nav-link" href="#assistant" title="Assistant"><span class="assistant-mark" aria-hidden="true">IA</span><span class="nav-label">Assistant</span></a>
                 <button class="nav-link nav-exit" type="button" data-logout title="Exit · Déconnexion" aria-label="Exit, se déconnecter"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span class="nav-label">Exit</span></button>
             </nav>
             <div class="sidebar-footer">
@@ -179,6 +182,15 @@
                             <button class="button button-secondary" type="submit" id="preview-button" disabled><svg class="icon" aria-hidden="true"><use href="#i-eye"/></svg>Actualiser l’aperçu</button>
                         </form>
                         <noscript><p>Activez JavaScript pour choisir un autre dossier ou modèle.</p></noscript>
+                        <details class="draft-editor">
+                            <summary>Rédaction et variantes du français</summary>
+                            <p>Trois variantes contrôlées conservent les mêmes faits et la même forme institutionnelle.</p>
+                            <div class="draft-controls"><label for="wording">Style rédactionnel</label><select id="wording"></select><button class="button button-secondary" type="button" data-vary-wording>Varier le français</button></div>
+                            <label for="document-text">Texte du document</label>
+                            <textarea id="document-text" rows="7" readonly aria-describedby="wording-help"></textarea>
+                            <p id="wording-help">La démonstration utilise des variantes préparées. La rédaction libre et GPT sont disponibles sur le serveur SIGDA configuré. Relisez le texte avant impression.</p>
+                            <p role="status" data-draft-status></p>
+                        </details>
                         <div class="document-toolbar">
                             <div class="document-meta">
                                 <h3 id="document-title">Attestation de travail de nuit</h3>
@@ -240,6 +252,39 @@
                         <div class="panel-header"><h2>Journal des actions</h2><a class="button" href="#requests">Ouvrir les demandes</a></div>
                         <ol class="demo-list" id="demo-activity-log"></ol>
                     </section>
+                </section>
+                <section data-view="assistant" hidden>
+<section class="page-heading">
+    <div><p class="eyebrow">Assistance documentaire</p><h1>Assistant SIGDA</h1>
+    <p class="page-description">Trouvez un modèle ou clarifiez une étape du circuit documentaire.</p></div>
+</section>
+<section class="assistant-layout" data-assistant
+    data-documents-url="#documents" data-requests-url="#requests" data-activity-url="#activity">
+    <aside class="panel assistant-context">
+        <h2>Comment puis-je vous aider ?</h2>
+        <p>Le guidage local s’appuie sur le catalogue et les procédures de SIGDA.</p>
+        <button class="assistant-suggestion" type="button" data-ai-suggestion>Quel document pour certifier un emploi ?</button>
+        <button class="assistant-suggestion" type="button" data-ai-suggestion>Comment imprimer en A4 ?</button>
+        <button class="assistant-suggestion" type="button" data-ai-suggestion>Comment soumettre une demande ?</button>
+        <p class="assistant-note">GPT sera disponible après configuration du serveur.</p>
+    </aside>
+    <div class="panel assistant-chat">
+        <div class="panel-header"><h2>Votre question</h2><button class="button" type="button" data-ai-clear>Effacer l’échange</button></div>
+        <div class="assistant-messages" role="log" aria-label="Échange avec l’assistant" tabindex="0">
+            <p class="assistant-intro">Posez une question ou choisissez une suggestion. Les réponses du mode local sont des indications guidées.</p>
+        </div>
+        <form class="assistant-form" data-ai-form data-endpoint="" method="post" action="">
+
+            <label for="ai-mode">Mode d’assistance</label>
+            <select name="mode" id="ai-mode"><option value="local">Guidage local</option><option value="gpt" disabled>GPT · à connecter</option></select>
+            <p class="assistant-note">En mode GPT, votre question est transmise à OpenAI. Saisissez uniquement des informations autorisées à être transmises.</p>
+            <label for="ai-question">Question</label>
+            <textarea id="ai-question" name="question" rows="3" maxlength="2000" required placeholder="Décrivez ce que vous souhaitez faire…"></textarea>
+            <div class="assistant-submit"><p role="status" data-ai-status></p><button class="button button-primary" type="submit">Envoyer</button></div>
+            <noscript><p>Activez JavaScript pour utiliser cet espace de questions et réponses.</p></noscript>
+        </form>
+    </div>
+</section>
                 </section>
             </main>
             <footer class="app-footer">

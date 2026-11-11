@@ -1,5 +1,6 @@
 from unicodedata import combining, normalize
 
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import Http404, HttpResponse
@@ -11,6 +12,9 @@ from django.views.decorators.clickjacking import xframe_options_sameorigin
 from django.views.decorators.http import require_POST, require_safe
 
 from .activity import dashboard
+from .assistant import ask as assistant_ask, page as assistant_page
+from .drafting import draft
+from .wording import STYLES, document_text
 from .catalog import AGENTS, DOCUMENT_TYPES, format_date
 from .pdf import render_pdf
 from .preview import render_preview
@@ -64,6 +68,9 @@ def workspace(request):
     family = request.GET.get("family", "")
     if family not in families:
         family = ""
+    wording = request.GET.get("wording", "classique")
+    if wording not in STYLES:
+        wording = "classique"
     return render(request, "workspace.html", {
         "current_view": "workspace",
         "current_label": "Atelier documentaire",
@@ -72,6 +79,10 @@ def workspace(request):
         "selected_agent": selected_agent,
         "selected_type": selected_type,
         "family": family,
+        "wording": wording,
+        "styles": STYLES,
+        "body_text": document_text(selected_type, AGENTS[selected_agent], format_date(timezone.localdate()), wording),
+        "gpt_available": bool(settings.OPENAI_API_KEY),
         "families": families,
         "catalogue_items": {
             key: kind for key, kind in DOCUMENT_TYPES.items()
@@ -82,7 +93,7 @@ def workspace(request):
     })
 
 
-def build_specimen(key, agent_key):
+def build_specimen(key, agent_key, wording="classique"):
     try:
         document = DOCUMENT_TYPES[key]
         agent = AGENTS[agent_key]
@@ -91,7 +102,7 @@ def build_specimen(key, agent_key):
 
     today = timezone.localdate()
     reference = f"SPEC-{document.prefix}-{agent.registration}-{today.year}"
-    pdf = render_pdf(key, document, agent, reference, format_date(today))
+    pdf = render_pdf(key, document, agent, reference, format_date(today), wording=wording)
     return pdf, reference
 
 
@@ -100,7 +111,10 @@ def build_specimen(key, agent_key):
 @require_safe
 @xframe_options_sameorigin
 def specimen(request, key, agent_key):
-    pdf, reference = build_specimen(key, agent_key)
+    wording = request.GET.get("wording", "classique")
+    if wording not in STYLES:
+        raise Http404
+    pdf, reference = build_specimen(key, agent_key, wording)
     disposition = "attachment" if request.GET.get("download") == "1" else "inline"
     return HttpResponse(pdf, content_type="application/pdf", headers={
         "Content-Disposition": f'{disposition}; filename="{reference}.pdf"',
@@ -111,7 +125,10 @@ def specimen(request, key, agent_key):
 @login_required
 @require_safe
 def specimen_preview(request, key, agent_key):
-    pdf, _ = build_specimen(key, agent_key)
+    wording = request.GET.get("wording", "classique")
+    if wording not in STYLES:
+        raise Http404
+    pdf, _ = build_specimen(key, agent_key, wording)
     return HttpResponse(render_preview(pdf), content_type="image/png")
 
 
@@ -121,6 +138,9 @@ urlpatterns = [
     path("dossiers/", directory, name="agent_directory"),
     path("demandes/", include("sigda.workflow")),
     path("activite/", dashboard, name="activity"),
+    path("assistant/", assistant_page, name="assistant"),
+    path("assistant/question/", assistant_ask, name="assistant_ask"),
+    path("atelier/reformulation/", draft, name="document_draft"),
     path("connexion/", LoginView.as_view(), name="login"),
     path("deconnexion/", require_POST(LogoutView.as_view()), name="logout"),
     path("manifest.webmanifest", manifest, name="manifest"),

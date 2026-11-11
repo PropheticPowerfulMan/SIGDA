@@ -25,7 +25,7 @@
     } catch {
         // Le thème reste utilisable lorsque le navigateur bloque le stockage.
     }
-    applyTheme(savedTheme === "light" ? "light" : "dark");
+    applyTheme(savedTheme === "dark" ? "dark" : "light");
     button.hidden = false;
 
     button.addEventListener("click", () => {

@@ -21,6 +21,7 @@ STATIC_FILES = (
     "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
     "print.css", "print.js", "preview.js",
     "requests.js",
+    "assistant.js", "drafting.js", "dm-sans.ttf", "font-license.txt",
 )
 ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
 SPECIMEN_DATE = date(2026, 1, 15)
@@ -31,6 +32,8 @@ sys.path.insert(0, str(ROOT / "apps" / "backend"))
 from sigda.catalog import AGENTS, DOCUMENT_TYPES, format_date
 from sigda.pdf import EMBLEM, render_pdf
 from sigda.preview import render_preview
+from sigda.guidance import ALIASES, GUIDES, STOPWORDS
+from sigda.wording import STYLES, document_text
 
 
 def validate_output(files: set[Path]) -> None:
@@ -56,10 +59,10 @@ def build_demo() -> None:
         raise ValueError("Les identifiants du catalogue doivent être des slugs ASCII.")
 
     specimens = {
-        Path("assets/specimens") / f"{kind}-{agent}.pdf": (kind, agent)
-        for kind, agent in product(DOCUMENT_TYPES, AGENTS)
+        Path("assets/specimens") / f"{kind}-{agent}{'' if style == 'classique' else '-' + style}.pdf": (kind, agent, style)
+        for kind, agent, style in product(DOCUMENT_TYPES, AGENTS, STYLES)
     }
-    if len(specimens) != len(DOCUMENT_TYPES) * len(AGENTS):
+    if len(specimens) != len(DOCUMENT_TYPES) * len(AGENTS) * len(STYLES):
         raise ValueError("Deux spécimens partagent le même nom de fichier.")
 
     sources = {Path(name): DEMO / name for name in STATIC_FILES}
@@ -79,10 +82,22 @@ def build_demo() -> None:
         for key, kind in DOCUMENT_TYPES.items()
     }
     catalogue = f"const agents = {dumps(public_agents)};\nconst documents = {dumps(public_documents)};\n"
+    catalogue += f"const assistantGuides = {dumps(GUIDES)};\n"
+    catalogue += f"const assistantAliases = {dumps(ALIASES)};\n"
+    catalogue += f"const assistantStopwords = {dumps(sorted(STOPWORDS))};\n"
+    catalogue += f"const wordingStyles = {dumps(STYLES)};\n"
+    wordings = {key: {agent_key: {style: document_text(key, agent, format_date(SPECIMEN_DATE), style)
+                for style in STYLES} for agent_key, agent in AGENTS.items()} for key in DOCUMENT_TYPES}
+    catalogue += f"const documentWordings = {dumps(wordings)};\n"
     digest = sha256(catalogue.encode("utf-8"))
     for relative, source in sorted(sources.items()):
         digest.update(relative.as_posix().encode("utf-8"))
-        digest.update(source.read_bytes())
+        if source.suffix in {".html", ".css", ".js", ".webmanifest", ".txt"}:
+            digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
+        else:
+            digest.update(source.read_bytes())
+    for source in (Path(__file__), ROOT / 'apps/backend/sigda/pdf.py', ROOT / 'apps/backend/sigda/wording.py'):
+        digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
     revision = digest.hexdigest()[:12]
 
     previews = {path.with_suffix(".png") for path in specimens}
@@ -105,11 +120,11 @@ def build_demo() -> None:
                 copyfile(source, target)
 
         date_label = format_date(SPECIMEN_DATE)
-        for relative, (kind, agent_key) in specimens.items():
+        for relative, (kind, agent_key, style) in specimens.items():
             document = DOCUMENT_TYPES[kind]
             agent = AGENTS[agent_key]
             reference = f"SPEC-{document.prefix}-{agent.registration}-{SPECIMEN_DATE.year}"
-            pdf = render_pdf(kind, document, agent, reference, date_label)
+            pdf = render_pdf(kind, document, agent, reference, date_label, wording=style)
             (staging / relative).write_bytes(pdf)
             (staging / relative.with_suffix(".png")).write_bytes(render_preview(pdf))
         (staging / ".nojekyll").touch()

@@ -75,15 +75,15 @@
     align-items: flex-start;
     gap: 30px;
     border-right: 1px solid var(--border);
-    background:
-        linear-gradient(90deg, var(--border) 1px, transparent 1px) 0 0 / 32px 32px,
-        linear-gradient(0deg, var(--border) 1px, transparent 1px) 0 0 / 32px 32px,
-        linear-gradient(145deg, var(--accent-soft), var(--inset) 67%);
+    color: #edf2f8;
+    background: radial-gradient(ellipse at top left, #244467, #071b35 80%);
 }
 
 .login-intro > .status-pill {
     padding: 6px 9px;
-    background: var(--panel);
+    background: #142e4a;
+    color: #e5c88e;
+    border-color: #756444;
 }
 
 .login-intro-copy {
@@ -101,7 +101,7 @@
 
 .login-intro-copy > p:last-child {
     max-width: 38ch;
-    color: var(--secondary);
+    color: #b9c8d9;
     line-height: 1.6;
 }
 
@@ -132,6 +132,23 @@
     height: 42px;
     margin-bottom: 14px;
 }
+.login-emblem {
+    display: grid;
+    place-items: center;
+    width: 106px;
+    height: 106px;
+    margin: 0 auto 14px;
+    border: 1px solid var(--accent-border);
+    border-radius: 50%;
+    background: #e3e5dc;
+    box-shadow: 0 0 0 8px var(--accent-soft);
+}
+.login-emblem img { border-radius: 50%; }
+.login-card-heading { text-align: center; }
+.login-card-heading .login-card-icon { display: none; }
+.login-card-heading .login-institution { margin-bottom: 10px; color: var(--accent); font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.08em; }
+.login-intro .eyebrow { color: #e5c88e; }
+.login-intro .eyebrow-dot { background: #e5c88e; }
 
 .login-card-heading > p {
     margin-top: 7px;

@@ -18,3 +18,8 @@
 - Ressources de la démonstration versionnées à chaque compilation et HTML revalidé par le service worker.
 - Accueil et transitions visuelles modernisés, catalogue par famille et trois nouveaux modèles A4 : attestation de service, convocation administrative et bordereau de transmission.
 - Bouton Exit dans le menu et commandes de zoom jusqu’à 200 % pour l’aperçu du spécimen.
+- Identité visuelle inspirée de SSDC, police DM Sans hébergée localement et thème clair atténué.
+- Assistant documentaire guidé localement et connexion GPT côté serveur configurable par clé API.
+- Catalogue étendu à onze modèles et trois styles rédactionnels, soit 66 versions de spécimens A4 pour les deux dossiers fictifs.
+- Gabarits d’attestation et de correspondance rapprochés des exemples fournis, bordereau avec tableau des pièces et sources institutionnelles documentées.
+- Éditeur du corps du texte dans Django avec variation locale, reformulation GPT optionnelle, contrôle des identités et chiffres, puis application explicite à l’aperçu imprimable.

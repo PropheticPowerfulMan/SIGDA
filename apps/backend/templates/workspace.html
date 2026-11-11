@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="{% static 'print.css' %}">
 <script src="{% static 'print.js' %}" defer></script>
 <script src="{% static 'preview.js' %}" defer></script>
+<script src="{% static 'drafting.js' %}" defer></script>
 {% endblock %}
 {% block content %}
 <section class="page-heading" id="overview">
@@ -53,11 +54,31 @@
                     {% endfor %}
                 </select>
             </div>
+            <div class="form-field"><label for="wording">Style rédactionnel</label><select id="wording" name="wording">{% for key, label in styles.items %}<option value="{{ key }}"{% if wording == key %} selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
             <button class="button button-secondary" type="submit">
                 <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12Z"></path><circle cx="12" cy="12" r="2.75"></circle></svg>
                 Actualiser l’aperçu
             </button>
         </form>
+        <details class="draft-editor" data-draft-editor>
+            <summary>Rédaction et reformulation</summary>
+            <p>Le corps du texte peut varier. L’en-tête, les références, les marges et la zone de signature restent institutionnels.</p>
+            <form data-draft-form action="{% url 'document_draft' %}" method="post">
+                {% csrf_token %}
+                <input type="hidden" name="agent" value="{{ selected_agent }}">
+                <input type="hidden" name="kind" value="{{ selected_type }}">
+                <input type="hidden" name="wording" value="{{ wording }}">
+                <label for="document-text">Texte à relire</label>
+                <textarea id="document-text" name="text" rows="8" maxlength="1800" required>{{ body_text }}</textarea>
+                <div class="draft-controls">
+                    <button class="button button-secondary" type="submit" name="action" value="local">Varier le français</button>
+                    <button class="button" type="submit" name="action" value="gpt"{% if not gpt_available %} disabled{% endif %}>Reformuler avec GPT</button>
+                    <button class="button button-primary" type="submit" name="action" value="preview">Appliquer à l’aperçu</button>
+                </div>
+                <p>La variation locale utilise trois rédactions préparées et remplace le texte en cours. {% if not gpt_available %}GPT nécessite une clé configurée dans le serveur. {% endif %}Après reformulation, relisez puis appliquez le texte. Les identités et chiffres sont contrôlés ; la fidélité du sens reste à vérifier.</p>
+                <p role="status" data-draft-status></p>
+            </form>
+        </details>
         <div class="document-toolbar">
             <div class="document-meta">
                 <h3 id="preview-title">{{ document.title }}</h3>
@@ -65,7 +86,7 @@
             </div>
             <div class="document-actions">
                 <button class="button button-primary" type="button" data-print-specimen hidden>Imprimer</button>
-                <a class="button" href="{% url 'specimen' selected_type selected_agent %}?download=1">
+                <a class="button" id="download-link" href="{% url 'specimen' selected_type selected_agent %}?download=1{% if wording != 'classique' %}&amp;wording={{ wording }}{% endif %}">
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 15v5h14v-5"></path></svg>
                     Télécharger le PDF
                 </a>
@@ -83,11 +104,11 @@
                 </div>
             </div>
             <div class="preview-scroll" id="specimen-preview" role="region" tabindex="0" aria-label="Aperçu du document">
-                <img src="{% url 'specimen_preview' selected_type selected_agent %}" alt="Aperçu · {{ document.title }} · {{ agent.name }}">
+                <img id="preview-image" src="{% url 'specimen_preview' selected_type selected_agent %}{% if wording != 'classique' %}?wording={{ wording }}{% endif %}" alt="Aperçu · {{ document.title }} · {{ agent.name }}">
             </div>
         </div>
         <div class="preview-links">
-            <a href="{% url 'specimen' selected_type selected_agent %}" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet</a>
+            <a id="open-link" href="{% url 'specimen' selected_type selected_agent %}{% if wording != 'classique' %}?wording={{ wording }}{% endif %}" target="_blank" rel="noopener">Ouvrir le PDF dans un nouvel onglet</a>
             <a href="{% url 'request_queue' %}?agent={{ selected_agent|urlencode }}&amp;type={{ selected_type|urlencode }}">Préparer une demande pour ce dossier</a>
         </div>
     </section>

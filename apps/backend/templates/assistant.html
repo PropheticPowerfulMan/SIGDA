@@ -1,0 +1,37 @@
+{% extends "workspace_base.html" %}
+{% load static %}
+{% block title %}Assistant · SIGDA{% endblock %}
+{% block extra_head %}<script src="{% static 'assistant.js' %}" defer></script>{% endblock %}
+{% block content %}
+<section class="page-heading">
+    <div><p class="eyebrow">Assistance documentaire</p><h1>Assistant SIGDA</h1>
+    <p class="page-description">Trouvez un modèle ou clarifiez une étape du circuit documentaire.</p></div>
+</section>
+<section class="assistant-layout" data-assistant
+    data-documents-url="{% url 'workspace' %}" data-requests-url="{% url 'request_queue' %}" data-activity-url="{% url 'activity' %}">
+    <aside class="panel assistant-context">
+        <h2>Comment puis-je vous aider ?</h2>
+        <p>Le guidage local s’appuie sur le catalogue et les procédures de SIGDA.</p>
+        <button class="assistant-suggestion" type="button" data-ai-suggestion>Quel document pour certifier un emploi ?</button>
+        <button class="assistant-suggestion" type="button" data-ai-suggestion>Comment imprimer en A4 ?</button>
+        <button class="assistant-suggestion" type="button" data-ai-suggestion>Comment soumettre une demande ?</button>
+        <p class="assistant-note">{% if gpt_available %}La connexion GPT est disponible.{% else %}GPT sera disponible après configuration du serveur.{% endif %}</p>
+    </aside>
+    <div class="panel assistant-chat">
+        <div class="panel-header"><h2>Votre question</h2><button class="button" type="button" data-ai-clear>Effacer l’échange</button></div>
+        <div class="assistant-messages" role="log" aria-label="Échange avec l’assistant" tabindex="0">
+            <p class="assistant-intro">Posez une question ou choisissez une suggestion. Les réponses du mode local sont des indications guidées.</p>
+        </div>
+        <form class="assistant-form" data-ai-form data-endpoint="{% url 'assistant_ask' %}" method="post" action="{% url 'assistant_ask' %}">
+            {% csrf_token %}
+            <label for="ai-mode">Mode d’assistance</label>
+            <select name="mode" id="ai-mode"><option value="local">Guidage local</option><option value="gpt"{% if not gpt_available %} disabled{% endif %}>GPT{% if not gpt_available %} · à connecter{% endif %}</option></select>
+            <p class="assistant-note">En mode GPT, votre question est transmise à OpenAI. Saisissez uniquement des informations autorisées à être transmises.</p>
+            <label for="ai-question">Question</label>
+            <textarea id="ai-question" name="question" rows="3" maxlength="2000" required placeholder="Décrivez ce que vous souhaitez faire…"></textarea>
+            <div class="assistant-submit"><p role="status" data-ai-status></p><button class="button button-primary" type="submit">Envoyer</button></div>
+            <noscript><p>Activez JavaScript pour utiliser cet espace de questions et réponses.</p></noscript>
+        </form>
+    </div>
+</section>
+{% endblock %}

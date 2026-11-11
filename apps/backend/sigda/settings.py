@@ -6,6 +6,8 @@ from secrets import token_urlsafe
 
 BASE_DIR = Path(__file__).resolve().parents[1]
 SECRET_KEY = environ.get("SIGDA_SECRET_KEY") or token_urlsafe(48)
+OPENAI_API_KEY = environ.get("OPENAI_API_KEY", "")
+SIGDA_OPENAI_MODEL = environ.get("SIGDA_OPENAI_MODEL", "gpt-5.4-mini")
 DEBUG = False
 ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
 ROOT_URLCONF = "sigda.urls"

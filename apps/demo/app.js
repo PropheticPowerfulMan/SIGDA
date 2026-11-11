@@ -3,6 +3,7 @@
 const form = document.getElementById("specimen-form");
 const workshopAgent = document.getElementById("workshop-agent");
 const modelSelect = document.getElementById("model");
+const wordingSelect = document.getElementById("wording");
 const agentButtons = [...document.querySelectorAll(".agent-pick")];
 const searchInput = document.getElementById("agent-search");
 const directoryStatus = document.getElementById("directory-status");
@@ -26,6 +27,7 @@ function setFamily(family) {
 }
 
 function setupCatalogue() {
+    for (const [key, label] of Object.entries(wordingStyles)) wordingSelect.add(new Option(label, key));
     const models = Object.entries(documents);
     document.getElementById("model-count").textContent = models.length;
     document.getElementById("specimen-count").textContent = models.length * Object.keys(agents).length;
@@ -90,7 +92,9 @@ function updatePreview() {
 
     const agent = agents[selectedAgent];
     const model = documents[documentKey];
-    const specimen = `./assets/specimens/${documentKey}-${selectedAgent}`;
+    const style = wordingSelect.value;
+    const specimen = `./assets/specimens/${documentKey}-${selectedAgent}${style === "classique" ? "" : `-${style}`}`;
+    document.getElementById("document-text").value = documentWordings[documentKey][selectedAgent][style];
 
     document.getElementById("agent-name").textContent = agent.name;
     document.getElementById("agent-registration").textContent = agent.registration;
@@ -143,6 +147,12 @@ modelSelect.disabled = false;
 document.getElementById("preview-button").disabled = false;
 document.getElementById("directory-tools").hidden = false;
 searchInput.addEventListener("input", filterAgents);
+wordingSelect.addEventListener("change", () => selectAgent(workshopAgent.value));
+document.querySelector("[data-vary-wording]").addEventListener("click", () => {
+    wordingSelect.selectedIndex = (wordingSelect.selectedIndex + 1) % wordingSelect.length;
+    selectAgent(workshopAgent.value);
+    document.querySelector("[data-draft-status]").textContent = `Variante ${wordingSelect.selectedOptions[0].textContent} appliquée à l’aperçu.`;
+});
 
 const navLinks = document.querySelectorAll(".side-nav a.nav-link");
 const views = [...document.querySelectorAll("[data-view]")];

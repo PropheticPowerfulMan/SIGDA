@@ -4,7 +4,11 @@ SIGDA et SSDC sont des projets indépendants. SIGDA aura ses propres comptes, do
 
 ## Atelier livré
 
-Le serveur Django présente le catalogue fictif et génère les deux PDF à la demande. Un compte Django et sa session donnent accès à l’atelier et à ses documents. La sélection ne transmet que deux identifiants de catalogue. Les PDF sont marqués comme spécimens et leurs réponses interdisent la mise en cache. L’aperçu et le téléchargement appellent le même générateur. Le catalogue en mémoire est réservé à cet atelier local.
+Le serveur Django présente onze modèles et deux agents fictifs. Un compte Django et sa session donnent accès à l’atelier et à ses documents. La sélection transmet les identifiants du catalogue et un style rédactionnel parmi trois variantes préparées. Les PDF sont marqués comme spécimens et leurs réponses interdisent la mise en cache. L’aperçu, l’impression et le téléchargement utilisent le même générateur A4. Les agents et modèles en mémoire sont réservés à cet atelier local.
+
+L’éditeur peut soumettre le corps du texte au serveur pour vérifier les identités et chiffres connus, puis produire un PDF et un aperçu conservés en mémoire dans le navigateur. Le gabarit institutionnel reste composé par le serveur. La rédaction personnalisée n’est pas encore persistée ni liée aux transitions d’une demande. Les demandes et leurs événements sont enregistrés séparément en SQLite avec contrôle d’accès et séparation entre demandeur et valideur.
+
+L’Assistant dispose d’un guidage local par correspondance de termes. Le mode GPT optionnel appelle l’API Responses depuis le serveur avec une clé issue de l’environnement, jamais livrée au navigateur. La reformulation transmet le corps du texte à OpenAI uniquement lorsque l’utilisateur choisit cette action. Les sorties sont proposées à la relecture et ne modifient ni le statut d’une demande ni les gabarits.
 
 La PWA de démonstration publique simule la connexion sur GitHub Pages. Elle publie uniquement des données fictives. Pour la démonstration et l’atelier local, le service worker conserve seulement la page de reprise hors connexion.
 
