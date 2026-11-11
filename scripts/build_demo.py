@@ -22,6 +22,7 @@ STATIC_FILES = (
     "print.css", "print.js", "preview.js",
     "requests.js",
     "assistant.js", "drafting.js", "dm-sans.ttf", "font-license.txt",
+    "fiche.html", "fiche.js", "fiche.css",
 )
 ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
 SPECIMEN_DATE = date(2026, 1, 15)
@@ -96,7 +97,7 @@ def build_demo() -> None:
             digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
         else:
             digest.update(source.read_bytes())
-    for source in (Path(__file__), ROOT / 'apps/backend/sigda/pdf.py', ROOT / 'apps/backend/sigda/wording.py'):
+    for source in (Path(__file__), ROOT / 'apps/backend/sigda/pdf.py', ROOT / 'apps/backend/sigda/wording.py', ROOT / 'apps/backend/sigda/document_qr.py'):
         digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
     revision = digest.hexdigest()[:12]
 
@@ -112,7 +113,7 @@ def build_demo() -> None:
         for relative, source in sources.items():
             target = staging / relative
             target.parent.mkdir(parents=True, exist_ok=True)
-            if relative.name in {"index.html", "login.html"}:
+            if relative.suffix == ".html":
                 html = source.read_text(encoding="utf-8")
                 html = re.sub(r'((?:src|href)="\./[a-z-]+\.(?:css|js))"', rf'\1?v={revision}"', html)
                 target.write_text(html, encoding="utf-8")

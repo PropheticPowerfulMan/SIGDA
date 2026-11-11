@@ -798,6 +798,50 @@ h1 { font-size: clamp(1.6rem, 2.65vw, 2.4rem); font-weight: 720; letter-spacing:
     font-size: 0.6875rem;
 }
 
+.institution-caption { margin: -12px 9px 24px; padding-left: 10px; border-left: 2px solid var(--accent-border); color: var(--secondary); font-size: .6875rem; line-height: 1.6; }
+.institution-caption span { display: block; color: var(--accent); letter-spacing: .06em; text-transform: uppercase; font-size: .625rem; }
+.topbar::after { content: ""; position: absolute; bottom: -1px; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #174e85 0 40%, #c6993e 40% 70%, #ac2535 70%); opacity: .75; pointer-events: none; }
+.hero-emblem { position: absolute; z-index: -1; right: 42px; top: 50%; transform: translateY(-50%); width: 180px; height: 180px; opacity: .065; border-radius: 50%; pointer-events: none; }
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 20px; margin-top: 26px; }
+.hero-actions .button { padding: 10px 16px; gap: 24px; }
+.hero-link { display: inline-flex; align-items: center; gap: 14px; color: var(--text); text-decoration: none; font-size: .8125rem; font-weight: 600; }
+.hero-link:hover { color: var(--accent); }
+.overview-actions { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; padding: 18px; }
+.quick-card { display: grid; align-content: start; gap: 9px; min-width: 0; padding: 18px; border: 1px solid var(--border); border-radius: 10px; background: var(--inset); color: var(--text); text-decoration: none; }
+.quick-index { display: flex; justify-content: space-between; color: var(--accent); font-size: .75rem; font-weight: 600; margin-bottom: 10px; font-variant-numeric: tabular-nums; }
+.quick-index > span { font-size: 1rem; }
+.quick-card > strong { font-size: .875rem; }
+.quick-card > span:last-child { color: var(--muted); font-size: .75rem; line-height: 1.6; }
+.quick-card:hover { border-color: var(--accent-border); background: var(--accent-soft); }
+.preview-scroll img { box-shadow: 0 10px 34px #071b3524; }
+.catalogue-card[aria-current="true"], .catalogue-card[aria-pressed="true"] { box-shadow: inset 3px 0 var(--accent); }
+
+@media screen and (min-width: 1200px) {
+    .workbench.view-workbench { grid-template-columns: 280px minmax(0, 1fr); gap: 20px; }
+    .view-workbench > .page-heading { grid-column: 1 / -1; }
+    .view-workbench > .catalogue-panel { position: sticky; top: calc(var(--topbar-height) + 18px); max-height: calc(100vh - var(--topbar-height) - 36px); overflow: auto; scrollbar-width: thin; }
+    .view-workbench .catalogue-grid { grid-template-columns: minmax(0, 1fr); }
+    .view-workbench .catalogue-card { padding: 11px 12px; }
+    .view-workbench .catalogue-card strong { font-size: .8125rem; }
+    .view-workbench .catalogue-filters .button { padding: 5px 8px; font-size: .65rem; }
+    .view-workbench .document-form { align-items: flex-end; }
+    .view-workbench .document-form > div { flex-basis: 40%; }
+}
+@media screen and (prefers-reduced-motion: no-preference) {
+    .quick-card { transition: transform 160ms ease, border-color 160ms ease, background-color 160ms ease; }
+    .quick-card:hover { transform: translateY(-2px); }
+}
+@media (max-width: 760px) {
+    .institution-caption { display: none; }
+    .hero-emblem { right: 12px; width: 140px; height: 140px; }
+    .overview-actions { grid-template-columns: minmax(0, 1fr); padding: 12px; }
+    .quick-card { padding: 15px; }
+    .quick-index { margin-bottom: 0; }
+}
+@media (min-width: 761px) {
+    .app-shell[data-menu-collapsed="true"] .institution-caption { display: none; }
+}
+
 @media (max-width: 1150px) {
     :root { --sidebar-width: 190px; }
     .sidebar { padding-inline: 10px; }

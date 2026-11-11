@@ -28,6 +28,10 @@ Le guidage local est disponible dans la démonstration GitHub Pages. Le mode GPT
 
 Dans les deux ateliers, **Imprimer** ouvre le dialogue d’impression avec le spécimen seul sur une feuille A4. Le PDF original peut aussi être ouvert et imprimé dans un lecteur PDF.
 
+Les onze modèles utilisent un pied de page inspiré de l’attestation de service fournie le 11 novembre 2026. Il reprend la bande bleue, dorée et rouge ainsi que la disposition des coordonnées sur deux lignes. Les coordonnées sont transcrites de cet exemple, sans vérification de leur actualité. Le QR à droite ouvre une fiche publique lisible sur mobile, sans connexion. Il fonctionne aussi comme lien cliquable dans le PDF.
+
+La fiche affiche les indications déclarées dans le QR, dont la référence, le modèle, la date, le style et l’empreinte SHA-256 du corps du texte. L’empreinte suit la rédaction effectivement appliquée, y compris un texte personnalisé. Les retours de ligne sont normalisés en LF dans l’éditeur. Le corps du texte et les noms ne figurent pas dans le QR ; ses champs sont dans le fragment de l’URL, lu localement par la page. Cette fiche n’est pas comparée à un registre d’émission et n’authentifie pas le document. L’URL de démonstration est définie dans `apps/backend/sigda/document_qr.py`.
+
 Le bouton **Installer SIGDA** ouvre l’installation du navigateur lorsqu’elle est disponible et propose les étapes manuelles sur les autres appareils. L’application installée affiche une icône qui associe l’emblème au sigle SIGDA. La démonstration et l’atelier local ont chacun leur propre identifiant d’installation. L’installation depuis l’application locale nécessite un contexte sécurisé comme `http://127.0.0.1`. Hors connexion, la PWA affiche une page de reprise. Le service worker ne met en cache ni les dossiers, ni les PDF, ni les réponses de connexion.
 
 ### Construire et prévisualiser

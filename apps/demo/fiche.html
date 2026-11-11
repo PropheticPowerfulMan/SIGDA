@@ -1,0 +1,47 @@
+<!doctype html>
+<html lang="fr" data-theme="light">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="referrer" content="no-referrer">
+    <meta name="robots" content="noindex">
+    <title>Fiche du spécimen · SIGDA</title>
+    <link rel="icon" href="./assets/icons/icon-192.png">
+    <link rel="stylesheet" href="./app.css">
+    <link rel="stylesheet" href="./fiche.css">
+    <script src="./theme.js" defer></script>
+    <script src="./catalogue.js" defer></script>
+    <script src="./fiche.js" defer></script>
+</head>
+<body class="sheet-page">
+    <header class="sheet-header">
+        <a class="brand" href="./"><span class="brand-mark"><img src="./assets/EmblemRDC.jpg" width="42" height="42" alt=""></span><span class="brand-copy"><strong>SIGDA</strong><span>Gestion documentaire</span></span></a>
+        <button class="theme-toggle" type="button" id="theme-toggle" hidden>
+            <svg class="icon" viewBox="0 0 24 24" data-theme-icon="sun" aria-hidden="true"><circle cx="12" cy="12" r="4"/><path d="M12 2v2m0 16v2M2 12h2m16 0h2M5 5l1.5 1.5m11 11L19 19M5 19l1.5-1.5m11-11L19 5"/></svg>
+            <svg class="icon" viewBox="0 0 24 24" data-theme-icon="moon" aria-hidden="true" hidden><path d="M20.5 14.3A8.7 8.7 0 0 1 9.7 3.5 8.8 8.8 0 1 0 20.5 14.3Z"/></svg>
+            <span data-theme-label>Sombre</span>
+        </button>
+    </header>
+    <main class="sheet-main">
+        <p class="eyebrow">Lecture du QR documentaire</p>
+        <h1>Fiche du spécimen</h1>
+        <p class="page-description">Les indications encodées dans le document, réunies dans une fiche lisible.</p>
+        <section class="panel sheet-card" aria-labelledby="sheet-title">
+            <div class="sheet-state"><span class="status-pill">SPÉCIMEN — NON VALABLE</span><span class="sheet-symbol" aria-hidden="true">S</span></div>
+            <h2 id="sheet-title">Lecture du QR</h2>
+            <p id="sheet-error" role="alert" hidden>Ce lien ne contient pas une fiche SIGDA reconnue. Scannez le QR du document complet.</p>
+            <noscript><p>Activez JavaScript pour afficher les indications contenues dans le QR.</p></noscript>
+            <dl class="sheet-fields" id="sheet-data" hidden>
+                <div><dt>Référence déclarée</dt><dd id="sheet-reference"></dd></div>
+                <div><dt>Modèle</dt><dd id="sheet-model"></dd></div>
+                <div><dt>Date du spécimen</dt><dd id="sheet-date"></dd></div>
+                <div><dt>Rédaction</dt><dd id="sheet-style"></dd></div>
+                <div class="sheet-hash"><dt>Empreinte SHA-256 du texte</dt><dd><code id="sheet-hash"></code></dd></div>
+            </dl>
+            <aside class="sheet-note"><strong>Une fiche de lecture</strong><p>Ces indications proviennent du QR. Elles ne sont pas comparées à un registre d’émission et ne certifient pas l’authenticité du document. L’empreinte concerne le corps du texte, pas le fichier PDF complet.</p></aside>
+            <a class="button button-primary" href="./#documents">Ouvrir l’atelier SIGDA</a>
+        </section>
+        <p class="sheet-caption">Démonstration documentaire · SIGDA et SSDC sont deux projets indépendants.</p>
+    </main>
+</body>
+</html>

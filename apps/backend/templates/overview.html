@@ -1,12 +1,15 @@
 {% extends "workspace_base.html" %}
+{% load static %}
 {% block title %}Vue d’ensemble · SIGDA{% endblock %}
 {% block content %}
 <section class="page-heading overview-hero" id="overview" aria-labelledby="title" tabindex="-1">
     <div>
-        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Espace de travail</p>
+        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Secrétariat général · Présidence de la République</p>
         <h1 id="title">Vue d’ensemble</h1>
         <p class="page-description">Du dossier agent au document imprimé. Retrouvez vos modèles, vos demandes et votre journal d’activité au même endroit.</p>
+        <div class="hero-actions"><a class="button button-primary" href="{% url 'workspace' %}">Préparer un document <span aria-hidden="true">↗</span></a><a class="hero-link" href="{% url 'assistant' %}">Consulter l’assistant <span aria-hidden="true">→</span></a></div>
     </div>
+    <img class="hero-emblem" src="{% static 'sigda/EmblemRDC.jpg' %}" alt="" aria-hidden="true" width="180" height="180">
     <div class="install-actions">
         <span class="status-pill heading-badge"><span class="status-dot" aria-hidden="true"></span>Démonstration locale</span>
         <button type="button" class="button" data-install-button aria-expanded="false" aria-controls="install-help" hidden>Installer SIGDA</button>
@@ -34,10 +37,10 @@
 </section>
 <section class="panel">
     <div class="panel-header"><h2>Accès rapide</h2></div>
-    <div class="view-actions">
-        <a class="button button-primary" href="{% url 'agent_directory' %}">Consulter les dossiers</a>
-        <a class="button" href="{% url 'workspace' %}">Préparer un spécimen</a>
-        <a class="button" href="{% url 'request_queue' %}">Créer une demande</a>
+    <div class="overview-actions">
+        <a class="quick-card" href="{% url 'agent_directory' %}"><span class="quick-index">01 <span aria-hidden="true">↗</span></span><strong>Consulter les dossiers</strong><span>Retrouver un agent et son affectation.</span></a>
+        <a class="quick-card" href="{% url 'workspace' %}"><span class="quick-index">02 <span aria-hidden="true">↗</span></span><strong>Composer un document</strong><span>Choisir un modèle, relire et imprimer.</span></a>
+        <a class="quick-card" href="{% url 'request_queue' %}"><span class="quick-index">03 <span aria-hidden="true">↗</span></span><strong>Suivre une demande</strong><span>Soumettre le dossier et consulter son historique.</span></a>
     </div>
 </section>
 {% endblock %}

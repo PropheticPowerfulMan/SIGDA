@@ -1,0 +1,19 @@
+.sheet-page { min-height: 100vh; background-image: radial-gradient(ellipse at 100% 0%, var(--accent-soft), transparent 60%); }
+.sheet-header { display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 22px clamp(18px, 5vw, 72px); border-top: 3px solid transparent; border-image: linear-gradient(90deg, #174e85 0 40%, #c6993e 40% 70%, #ac2535 70%) 1; }
+.sheet-main { width: min(100%, 780px); margin: 32px auto 0; padding: 0 20px 30px; }
+.sheet-main > .page-description { margin-bottom: 26px; max-width: 55ch; }
+.sheet-card { padding: clamp(20px, 4vw, 36px); position: relative; overflow: hidden; }
+.sheet-state { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; }
+.sheet-symbol { display: grid; place-items: center; width: 42px; height: 42px; border: 1px solid var(--accent-border); border-radius: 12px; background: var(--accent-soft); color: var(--accent); font-size: 1.25rem; font-weight: 700; }
+.sheet-card h2 { font-size: 1.35rem; letter-spacing: -.025em; margin-bottom: 22px; }
+.sheet-fields { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; }
+.sheet-fields dt { color: var(--muted); font-size: .75rem; margin-bottom: 5px; }
+.sheet-fields dd { font-weight: 600; overflow-wrap: anywhere; }
+.sheet-hash { grid-column: 1 / -1; padding: 14px; border: 1px solid var(--border); background: var(--inset); border-radius: 9px; }
+.sheet-hash code { font-size: .75rem; font-weight: 400; word-break: break-all; }
+.sheet-note { padding: 16px; border-left: 3px solid var(--accent-border); background: var(--surface); margin: 25px 0; border-radius: 0 8px 8px 0; }
+.sheet-note strong { font-size: .8125rem; }
+.sheet-note p, .sheet-caption, #sheet-error { color: var(--secondary); font-size: .75rem; line-height: 1.65; }
+.sheet-note p { margin-top: 5px; }
+.sheet-caption { margin-top: 22px; text-align: center; }
+@media (max-width: 460px) { .sheet-fields { grid-template-columns: 1fr; gap: 17px; } .sheet-main { margin-top: 18px; padding-inline: 14px; } .sheet-header { padding: 18px 14px; } }

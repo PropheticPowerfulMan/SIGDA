@@ -2,6 +2,10 @@ from io import BytesIO
 from pathlib import Path
 from xml.sax.saxutils import escape
 
+from reportlab.graphics import renderPDF
+from reportlab.graphics.barcode.qr import QrCodeWidget
+from reportlab.graphics.shapes import Drawing
+from reportlab.lib import colors
 from reportlab.lib.colors import HexColor
 from reportlab.lib.enums import TA_JUSTIFY
 from reportlab.lib.pagesizes import A4
@@ -10,6 +14,7 @@ from reportlab.pdfgen.canvas import Canvas
 from reportlab.platypus import Paragraph
 
 from .catalog import Agent, DocumentType
+from .document_qr import specimen_link
 from .wording import document_text
 
 
@@ -17,6 +22,51 @@ EMBLEM = Path(__file__).parent / "static" / "sigda" / "EmblemRDC.jpg"
 WIDTH, HEIGHT = A4
 MARGIN = 60
 INK = HexColor("#151515")
+
+
+def institutional_footer(page, key, reference, date_label, style, text):
+    """Two contact rows, a tricolour rule and a printable QR with a quiet zone."""
+    page.saveState()
+    width = WIDTH - 2 * MARGIN
+    start = MARGIN
+    for ratio, colour in ((0.40, "#174e85"), (0.30, "#c6993e"), (0.30, "#ac2535")):
+        page.setFillColor(HexColor(colour))
+        page.rect(start, 96, width * ratio, 3, stroke=0, fill=1)
+        start += width * ratio
+
+    page.setFillColor(HexColor("#40464d"))
+    page.setFont("Helvetica", 7)
+    for x, first, second in (
+        (MARGIN, "+243 81 940 21 22", "Palais de la Nation"),
+        (178, "sgpr@presidence.cd", "Avenue Roi Baudouin, Gombe"),
+        (333, "www.presidence.cd", "Kinshasa · B.P. 201 Kin 38"),
+    ):
+        page.drawString(x, 80, first)
+        page.drawString(x, 66, second)
+
+    page.setFont("Helvetica", 6.5)
+    page.drawString(MARGIN, 44, reference + " · Empreinte du texte dans le QR")
+    page.setFillColor(HexColor("#963238"))
+    page.setFont("Helvetica-Bold", 6.5)
+    page.drawString(MARGIN, 29, "SPÉCIMEN — NON VALABLE · Données fictives")
+
+    size = 68
+    qr_x = WIDTH - MARGIN - size
+    # Explicit black/white and four-module quiet zone remain readable in both themes.
+    code = QrCodeWidget(specimen_link(key, reference, date_label, style, text),
+                        barLevel="M", barBorder=4, barFillColor=colors.black)
+    x0, y0, x1, y1 = code.getBounds()
+    drawing = Drawing(size, size, transform=[size / (x1 - x0), 0, 0, size / (y1 - y0), 0, 0])
+    drawing.add(code)
+    page.setFillColor(colors.white)
+    page.rect(qr_x, 24, size, size, fill=1, stroke=0)
+    renderPDF.draw(drawing, page, qr_x, 24)
+    page.linkURL(specimen_link(key, reference, date_label, style, text),
+                 (qr_x, 24, qr_x + size, 24 + size), relative=0, thickness=0)
+    page.setFont("Helvetica", 6)
+    page.setFillColor(HexColor("#40464d"))
+    page.drawCentredString(qr_x + size / 2, 18, "Fiche du spécimen")
+    page.restoreState()
 
 
 def centered_title(page, text, top):
@@ -130,9 +180,8 @@ def render_pdf(key: str, document: DocumentType, agent: Agent, reference: str, d
     page.drawString(325, signature_y - 31, "Autorité habilitée")
     page.setFont("Helvetica", 9)
     page.drawString(325, signature_y - 54, "Signature et cachet")
-    page.line(MARGIN, 58, WIDTH - MARGIN, 58)
-    page.setFont("Times-Roman", 9)
-    page.drawCentredString(WIDTH / 2, 41, "SIGDA · Kinshasa / Gombe · Données fictives · Spécimen")
+    institutional_footer(page, key, reference, date_label,
+                         wording if body_text is None else "personnalise", text)
     page.showPage()
     page.save()
     return output.getvalue()

@@ -26,6 +26,9 @@ class DraftingForm(forms.Form):
     mode = forms.ChoiceField(choices=[("local", "local"), ("gpt", "gpt")])
     text = forms.CharField(max_length=1800)
 
+    def clean_text(self):
+        return self.cleaned_data["text"].replace("\r\n", "\n").replace("\r", "\n")
+
 
 def validate_facts(text, original, agent):
     protected = [agent.name, agent.registration, agent.service, agent.job, agent.grade]
@@ -69,7 +72,7 @@ def draft(request):
                     "nombres et faits. N’ajoute aucune décision ni aucun fait. "
                     "Varie la syntaxe et emploie un registre administratif sobre. "
                     "Le résultat doit rester inférieur à 1800 caractères."
-                ))
+                )).replace("\r\n", "\n").replace("\r", "\n")
             if len(text) > 1800:
                 raise ValueError("La reformulation est trop longue. Raccourcissez-la avant de l’appliquer.")
             validate_facts(text, original, agent)

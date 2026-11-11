@@ -4,6 +4,8 @@ Consultation du 11 novembre 2026. Les modèles SIGDA sont des spécimens de dém
 
 Les deux documents transmis par le porteur du projet restent les références principales de composition. L’attestation reprend le titre national centré, l’emblème, le service émetteur, la référence, la date, le titre souligné, le texte justifié, la signature à droite et le pied de page. La correspondance reprend le bloc national, l’émetteur à gauche, la date à droite, les copies, le destinataire et l’objet.
 
+L’attestation de service transmise le 11 novembre 2026 complète ces repères pour le pied de page. SIGDA en reprend la bande horizontale tricolore, les coordonnées sur deux lignes et le placement du QR à droite. Les coordonnées sont celles visibles sur cet exemple, sans vérification d’actualité. Le QR SIGDA ouvre sa propre fiche descriptive ; le QR du document fourni n’est pas recopié. Les signatures, cachets et identités du document source restent exclus des spécimens.
+
 La recherche documentaire a également porté sur les sources publiques suivantes.
 
 - [Notes de service de la DGI](https://dgi.gouv.cd/notes-de-service/). Cette page décrit la communication interne et donne des exemples de notes référencées.

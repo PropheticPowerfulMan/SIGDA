@@ -23,3 +23,6 @@
 - Catalogue étendu à onze modèles et trois styles rédactionnels, soit 66 versions de spécimens A4 pour les deux dossiers fictifs.
 - Gabarits d’attestation et de correspondance rapprochés des exemples fournis, bordereau avec tableau des pièces et sources institutionnelles documentées.
 - Éditeur du corps du texte dans Django avec variation locale, reformulation GPT optionnelle, contrôle des identités et chiffres, puis application explicite à l’aperçu imprimable.
+- Pied de page institutionnel inspiré de l’attestation de service fournie, avec bande tricolore, coordonnées sur deux lignes et QR vectoriel cliquable.
+- Fiche publique de lecture du QR avec référence, modèle, date, style et empreinte du texte appliqué, sans prétention d’authentification.
+- Accueil enrichi d’accès guidés, repères institutionnels discrets et catalogue latéral sur grand écran pour donner davantage de place à l’aperçu.
