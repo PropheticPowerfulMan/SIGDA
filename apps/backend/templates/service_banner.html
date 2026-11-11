@@ -1,0 +1,4 @@
+<aside class="service-banner" data-state="{{ service_policy.state }}" aria-label="Validité et maintenance">
+    <div><strong>{% if service_policy.expired %}Renouvellement annuel requis{% elif service_policy.state == 'reminder' %}Échéance dans {{ service_policy.days }} jour(s){% elif service_policy.state == 'preparation' %}Préparation · période annuelle à venir{% else %}Période annuelle active{% endif %}</strong><span>Du {{ service_policy.start|date:"d/m/Y" }} au {{ service_policy.last_day|date:"d/m/Y" }} inclus.{% if service_policy.expired %} Les nouvelles créations sont suspendues. Les documents validés restent consultables et imprimables.{% endif %}</span></div>
+    <a class="button" href="{% url 'support' %}">Contacter la maintenance</a>
+</aside>

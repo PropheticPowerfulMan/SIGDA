@@ -42,3 +42,16 @@
 - Impression après validation finale uniquement ; archivage du PDF final, SHA-256 et journal des ouvertures côté serveur.
 - Activité globale réservée à DIRCAB, séries temporelles, charge et retards par étape, boîte de distribution, médiane/P90, intervalle de Wilson et tableaux de valeurs.
 - Quatre comptes de démonstration, circuit et historique conservés localement sur GitHub Pages ; contrôles réels côté Django.
+
+## Cabinet, maintenance et interface scientifique — 11 novembre 2026
+
+- Retrait de première ligne au centre de chaque paragraphe du corps documentaire, en aperçu et à l’impression.
+- Police EB Garamond du mode Scientifique d’EduPay, embarquée sous licence OFL ; corps documentaire Times New Roman conservé.
+- Affichage/masquage du mot de passe, masquage à la soumission et au changement de visibilité.
+- Ajout et correction des agents réservés à la maintenance, imports CSV transactionnels et demandes d’intervention.
+- Validité initiale du 1er janvier au 31 décembre 2027, rappel et renouvellement technique journalisé ; archives validées accessibles après échéance.
+- Menu mobile latéral accessible, formulaires et dossiers adaptés, tailles tactiles et graphiques mobiles renforcés.
+- Identité visuelle PWA SIGDA distincte, icône maskable et Apple ; identifiants stables et consignes par système.
+
+- Micro-interactions, indicateurs pendant les traitements réels et transitions respectant la réduction des animations.
+- Fenêtre centrée de confirmation ou d’échec, accessible au clavier, pour les opérations et validations de saisie.

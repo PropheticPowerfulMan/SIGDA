@@ -51,7 +51,7 @@ class CompositionTests(TestCase):
         self.assertIn("no-store", response["Cache-Control"])
         self.client.force_login(self.other)
         self.assertEqual(self.client.post(reverse("compose_preview"), self.base).status_code, 400)
-        self.assertEqual(self.client.post(reverse("agent_save"), {"id": self.agent.pk, "name": "Modification"}).status_code, 404)
+        self.assertEqual(self.client.post(reverse("agent_save"), {"id": self.agent.pk, "name": "Modification"}).status_code, 403)
 
     def test_brouillon_is_idempotent_and_preserves_snapshot_after_profile_change(self):
         result = self.client.post(reverse("compose_preview"), self.base).json()
@@ -70,13 +70,12 @@ class CompositionTests(TestCase):
         self.assertEqual(self.client.get(reverse("saved_document", args=[record.pk, "pdf"])).status_code, 404)
         self.assertEqual(self.client.post(reverse("compose_save"), {"ticket": result["ticket"]}).status_code, 400)
 
-    def test_agent_save_normalizes_and_rejects_duplicate_registration(self):
+    def test_operations_cannot_add_or_edit_agents(self):
+        before = AgentRecord.objects.count()
         data = {key: getattr(self.agent, key) for key in ("name", "registration", "service", "job", "grade")}
-        self.assertEqual(self.client.post(reverse("agent_save"), data).status_code, 400)
-        response = self.client.post(reverse("agent_save"), {**data, "registration": "test-099"})
-        self.assertEqual(response.status_code, 200)
-        self.assertEqual(response.json()["agent"]["registration"], "TEST-099")
-        self.assertEqual(self.client.post(reverse("agent_save"), {**data, "id": "invalid"}).status_code, 400)
+        for payload in [data, {**data, 'id': self.agent.pk}, {**data, 'registration': 'NEW-099'}]:
+            self.assertEqual(self.client.post(reverse('agent_save'), payload).status_code, 403)
+        self.assertEqual(AgentRecord.objects.count(), before)
 
     def test_each_model_generates_a_filled_a4_and_invalid_ranges_are_rejected(self):
         sample = {"since": "2024-01-10", "purpose": "vérification", "schedule": "de 20 h à 6 h", "presence_date": "2026-11-10", "presence_place": "Bureau des archives", "effective_date": "2026-01-01", "decision_ref": "DEMO/084", "decision_date": "2026-11-01", "reason": "mise à jour du dossier", "meeting_date": "2026-11-20", "meeting_time": "10:30", "meeting_place": "Bureau administratif", "recipient": "Direction des ressources humaines", "item": "Dossier de vérification", "quantity": "3", "subject": "Mise à jour des dossiers", "instructions": "Transmettre les fiches actualisées au secrétariat.", "exit_date": "2026-11-20", "from_time": "10:00", "to_time": "12:00", "destination": "Kinshasa / Gombe", "mission_start": "2026-11-20", "mission_end": "2026-11-22", "objective": "Vérifier et inventorier les dossiers d’archives."}

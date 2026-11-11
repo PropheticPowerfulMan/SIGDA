@@ -22,6 +22,7 @@ window.SIGDAWorkflow = (() => {
     async function digest(value) {const hash=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(JSON.stringify(value)));return [...new Uint8Array(hash)].map(n=>n.toString(16).padStart(2,'0')).join('');}
     async function saveDraft(snapshot,id='',expectedRevision=0) {
         const who=session();if(who.role!=='OPS')throw new Error('La préparation appartient au profil OPS.');
+        SIGDAService.assertCreation();
         const snapshotHash=await digest(snapshot);
         let record;
         if(id){record=await mutate(id,record=>{if(!record||record.owner!==who.username||record.status!=='draft'||record.revision!==expectedRevision)throw new Error('Ce brouillon a changé ou est déjà en validation.');if(record.snapshotHash===snapshotHash)return record;record.snapshot=snapshot;record.snapshotHash=snapshotHash;record.revision+=1;record.tasks.filter(t=>t.state==='pending').forEach(t=>{t.revision=record.revision;t.snapshotHash=snapshotHash;});record.events.push({type:'updated',status:'draft',actor:who.username,role:who.role,at:Date.now(),note:'Nouvelle révision enregistrée.',revision:record.revision,cycle:record.cycle});return record;});}
@@ -34,6 +35,7 @@ window.SIGDAWorkflow = (() => {
     }
     async function act(id,action,assignee,note,due,revision,cycle) {
         const who=session();
+        if(action==='submit')SIGDAService.assertCreation();
         const record=await mutate(id,record=>{
             if(!record||!canSee(record)||record.revision!==revision||record.cycle!==cycle)throw new Error('Le dossier ou sa révision a changé. Actualisez.');
             const active=record.tasks.find(t=>t.state==='pending');

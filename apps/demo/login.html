@@ -2,7 +2,8 @@
 <html lang="fr" data-theme="light">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SIGDA"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="SIGDA Cabinet">
     <meta name="description" content="Connexion à l’atelier documentaire de démonstration SIGDA.">
     <meta name="theme-color" content="#0a0f1d">
     <meta http-equiv="Content-Security-Policy" content="form-action 'none'">
@@ -16,6 +17,10 @@
     <script src="./pwa.js" defer></script>
     <script src="./usage.js" defer></script>
     <script src="./demo-auth.js" defer></script>
+<script src="./password.js" defer></script><script src="./catalogue.js" defer></script><script src="./service.js" defer></script>
+<link rel="stylesheet" href="./service.css">
+<link rel="stylesheet" href="./typography.css"><link rel="stylesheet" href="./responsive.css">
+<link rel="stylesheet" href="./effects.css"><script src="./effects.js" defer></script>
 </head>
 <body class="login-page">
     <a class="skip-link" href="#main">Aller au formulaire de connexion</a>
@@ -40,7 +45,7 @@
     </section>
 
     <main id="main" class="login-main" tabindex="-1">
-        <div class="login-shell">
+        <aside class="service-banner" data-service-status aria-label="Validité annuelle"><div><strong>Validité annuelle</strong><span data-service-dates></span></div></aside><div class="login-shell">
             <section class="login-intro" aria-label="À propos de SIGDA">
                 <span class="status-pill"><span class="status-dot" aria-hidden="true"></span>Démonstration publique</span>
                 <div class="login-intro-copy">
@@ -54,21 +59,21 @@
             <section class="login-card" aria-labelledby="login-title">
                 <div class="login-card-heading">
                     <div class="login-emblem"><img src="./assets/EmblemRDC.jpg" alt="Emblème de la Présidence de la RDC" width="88" height="88"></div>
-                    <p class="login-institution">Secrétariat Général · Ressources humaines</p>
+                    <p class="login-institution">Cabinet du Président de la République</p>
                     <span class="metric-icon login-card-icon" aria-hidden="true">
                         <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg>
                     </span>
                     <h1 id="login-title">Connexion</h1>
                     <p id="login-description">Choisissez un profil pour découvrir ses responsabilités.</p>
                 </div>
-                <div class="profile-choices" aria-label="Profils de démonstration"><button type="button" data-demo-profile="ops">OPS<span>Saisie et préparation</span></button><button type="button" data-demo-profile="secad">SECAD<span>Contrôle administratif</span></button><button type="button" data-demo-profile="ap">AP<span>Visa hiérarchique</span></button><button type="button" data-demo-profile="dircab">DIRCAB<span>Validation finale et pilotage</span></button></div><form class="login-form" id="demo-login" method="post" aria-describedby="login-description" autocomplete="off">
+                <div class="profile-choices" aria-label="Profils de démonstration"><button type="button" data-demo-profile="ops" aria-pressed="false" aria-label="OPS · Saisie et préparation">OPS<span>Saisie et préparation</span></button><button type="button" data-demo-profile="secad" aria-pressed="false" aria-label="SECAD · Contrôle administratif">SECAD<span>Contrôle administratif</span></button><button type="button" data-demo-profile="ap" aria-pressed="false" aria-label="AP · Visa hiérarchique">AP<span>Visa hiérarchique</span></button><button type="button" data-demo-profile="dircab" aria-pressed="false" aria-label="DIRCAB · Validation finale et pilotage">DIRCAB<span>Validation finale et pilotage</span></button></div><form class="login-form" id="demo-login" method="post" aria-describedby="login-description" autocomplete="off">
                     <div class="login-field">
                         <label for="username">Identifiant</label>
                         <input id="username" type="text" autocapitalize="none" spellcheck="false" required>
                     </div>
                     <div class="login-field">
                         <label for="password">Mot de passe</label>
-                        <input id="password" type="password" autocomplete="off" required>
+                        <div class="password-control"><input id="password" type="password" autocomplete="off" required><button type="button" data-password-toggle aria-controls="password" aria-pressed="false" aria-label="Afficher le mot de passe" hidden>Afficher</button></div>
                     </div>
                     <p class="login-error" id="login-error" role="alert" hidden></p>
                     <button class="button button-primary login-submit" id="login-submit" type="submit" disabled>

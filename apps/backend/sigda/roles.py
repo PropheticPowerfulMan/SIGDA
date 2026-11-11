@@ -23,6 +23,12 @@ def require_ops(view):
     return wrapped
 
 
+def is_maintainer(user):
+    return bool(user.is_authenticated and user.is_active and user.is_staff and
+                user.groups.filter(name='SIGDA_MAINTENANCE').exists() and
+                not user.groups.filter(name__in=['SIGDA_' + role for role in ROLES]).exists())
+
+
 def workspace_role(request):
     role = role_for(request.user)
-    return {"workspace_role": role, "role_info": ROLES.get(role), "is_ops": role == "OPS", "workflow_roles": ROLES}
+    return {"workspace_role": role, "role_info": ROLES.get(role), "is_ops": role == "OPS", "workflow_roles": ROLES, "is_maintainer": is_maintainer(request.user)}

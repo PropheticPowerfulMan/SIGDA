@@ -101,3 +101,39 @@ class UsageEvent(models.Model):
     action = models.CharField(max_length=32)
     document = models.ForeignKey(DocumentRequest, null=True, blank=True, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
+
+
+class ServiceValidity(models.Model):
+    id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
+    starts_on = models.DateField()
+    expires_on = models.DateField()
+    updated_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    updated_at = models.DateTimeField(auto_now=True)
+
+
+class SupportTicket(models.Model):
+    CATEGORIES = [('agent_add', 'Ajout d’un agent'), ('agent_update', 'Correction d’un dossier agent'),
+                  ('app_update', 'Mise à jour de l’application'), ('renewal', 'Renouvellement annuel'), ('assistance', 'Assistance')]
+    STATES = [('open', 'À traiter'), ('processing', 'En cours'), ('resolved', 'Traitée')]
+    id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
+    owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    category = models.CharField(max_length=24, choices=CATEGORIES)
+    details = models.CharField(max_length=2000)
+    state = models.CharField(max_length=16, choices=STATES, default='open')
+    response = models.CharField(max_length=1000, blank=True)
+    handled_by = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, related_name='handled_support_tickets', on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+
+class MaintenanceEvent(models.Model):
+    actor = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)
+    action = models.CharField(max_length=32)
+    details = models.JSONField(default=dict)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at', '-pk']

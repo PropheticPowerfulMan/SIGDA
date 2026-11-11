@@ -1,6 +1,6 @@
 "use strict";
 window.SIGDADatabase = new Promise((resolve, reject) => {
-    const open = indexedDB.open('sigda-demo-agents-v1', 2);
+    const open = indexedDB.open('sigda-demo-agents-v1', 3);
     open.onupgradeneeded = () => {
         const db = open.result;
         if (!db.objectStoreNames.contains('agents')) {
@@ -8,6 +8,7 @@ window.SIGDADatabase = new Promise((resolve, reject) => {
             store.createIndex('registration_key', 'registration_key', { unique: true });
         }
         if (!db.objectStoreNames.contains('requests')) db.createObjectStore('requests', { keyPath: 'id' });
+        if (!db.objectStoreNames.contains('support')) db.createObjectStore('support', { keyPath: 'id' });
         if (!db.objectStoreNames.contains('usage')) db.createObjectStore('usage', { keyPath: 'id', autoIncrement: true });
     };
     open.onsuccess = () => resolve(open.result);

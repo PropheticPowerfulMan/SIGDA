@@ -13,6 +13,8 @@ def log_usage(user, action, document=None):
 @receiver(user_logged_in, dispatch_uid="sigda_login_usage")
 def login_event(sender, request, user, **kwargs):
     log_usage(user, "login")
+    if request is not None:
+        request.session["sigda-feedback"] = "Connexion établie. Votre espace de travail est prêt."
 
 
 @receiver(user_logged_out, dispatch_uid="sigda_logout_usage")

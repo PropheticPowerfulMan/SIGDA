@@ -19,6 +19,7 @@ from .roles import require_ops
 from .usage import log_usage
 from .pdf import render_pdf
 from .preview import render_preview
+from .service_policy import creation_allowed
 from .wording import STYLES
 
 
@@ -74,7 +75,7 @@ class CompositionForm(forms.Form):
         if schema["subject"] == "agent":
             record = AgentRecord.objects.filter(pk=data.get("agent_id"), owner=self.user).first()
             if record is None:
-                self.add_error("agent_id", "Choisissez ou enregistrez un dossier agent dans votre base.")
+                self.add_error("agent_id", "Choisissez un dossier enregistré. Pour un ajout ou une correction, contactez la maintenance.")
             else:
                 data.update({spec["key"]: getattr(record, spec["key"]) for spec in IDENTITY_FIELDS})
         for start, end in (("mission_start", "mission_end"), ("from_time", "to_time")):
@@ -109,33 +110,8 @@ def page(request):
 @never_cache
 @login_required
 @require_POST
-@require_ops
 def save_agent(request):
-    record_id = request.POST.get("id")
-    if record_id:
-        try:
-            UUID(record_id)
-        except (ValueError, TypeError):
-            return JsonResponse({"error": "Identifiant de dossier invalide."}, status=400)
-    instance = get_object_or_404(AgentRecord, owner=request.user, pk=record_id) if record_id else None
-    form = AgentForm(request.POST, instance=instance)
-    if form.is_valid():
-        duplicate = AgentRecord.objects.filter(owner=request.user, registration=form.cleaned_data["registration"])
-        if instance:
-            duplicate = duplicate.exclude(pk=instance.pk)
-        if duplicate.exists():
-            form.add_error("registration", "Ce matricule existe déjà dans votre base. Sélectionnez ce dossier pour le modifier.")
-        else:
-            record = form.save(commit=False)
-            record.owner = request.user
-            try:
-                with transaction.atomic():
-                    record.save()
-            except IntegrityError:
-                return JsonResponse({"error": "Ce matricule existe déjà. Actualisez la liste des dossiers."}, status=409)
-            log_usage(request.user, "agent_update" if instance else "agent_create")
-            return JsonResponse({"agent": agent_data(record)})
-    return JsonResponse({"errors": form.errors}, status=400)
+    return JsonResponse({'error': 'La base agents est administrée par l’équipe de maintenance. Ouvrez Maintenance et assistance pour demander un ajout ou une correction.'}, status=403)
 
 
 def render_composed(snapshot, preview_only=False):
@@ -148,6 +124,7 @@ def render_composed(snapshot, preview_only=False):
 @login_required
 @require_POST
 @require_ops
+@creation_allowed
 def preview(request):
     from base64 import b64encode
     form = CompositionForm(request.POST, user=request.user)
@@ -185,6 +162,7 @@ def preview(request):
 @login_required
 @require_POST
 @require_ops
+@creation_allowed
 def save(request):
     try:
         snapshot = signing.loads(request.POST.get("ticket", ""), salt="sigda-composition", max_age=3600)
@@ -212,6 +190,7 @@ def save(request):
             ValidationTask.objects.filter(request=record, stage="OPS", state=ValidationTask.State.PENDING).update(snapshot_hash=digest, revision=record.revision + 1)
             RequestEvent.objects.create(request=record, actor=request.user, actor_role="OPS", event_type="updated", status=DocumentRequest.Status.DRAFT, note="Nouvelle révision enregistrée par OPS.")
             log_usage(request.user, "draft_update", record)
+    request.session["sigda-feedback"] = "Le brouillon est enregistré. Vous pouvez poursuivre le circuit de validation."
     return JsonResponse({"url": reverse("request_detail", args=[record.pk])})
 
 

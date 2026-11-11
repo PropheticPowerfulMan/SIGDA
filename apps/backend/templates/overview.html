@@ -5,7 +5,7 @@
 <section class="role-banner"><div><p class="eyebrow">Votre espace de responsabilité</p><h2>{{ workspace_role|default:"Profil à attribuer" }} · {{ role_info.title }}</h2><p>{{ role_info.description|default:"Un responsable doit attribuer un profil OPS, SECAD, AP ou DIRCAB à votre compte." }}</p></div><a class="button button-primary" href="{% url 'request_queue' %}">Ouvrir mes tâches</a></section>
 <section class="page-heading overview-hero" id="overview" aria-labelledby="title" tabindex="-1">
     <div>
-        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Secrétariat général · Présidence de la République</p>
+        <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Cabinet du Président · Présidence de la République</p>
         <h1 id="title">Vue d’ensemble</h1>
         <p class="page-description">Du dossier agent au document imprimé. Retrouvez vos modèles, vos demandes et votre journal d’activité au même endroit.</p>
         <div class="hero-actions">{% if is_ops %}<a class="button button-primary" href="{% url 'compose' %}">Créer un document <span aria-hidden="true">↗</span></a>{% endif %}<a class="hero-link" href="{% url 'assistant' %}">Consulter l’assistant <span aria-hidden="true">→</span></a></div>

@@ -92,3 +92,5 @@
     body.composition-page:not([data-print-authorized="true"]) > * { display: none !important; }
     body.composition-page:not([data-print-authorized="true"])::after { content: "Impression indisponible : validation finale DIRCAB requise."; display:block!important; color:#111; font:14pt Arial,sans-serif; padding:30mm; }
 }
+
+.paper-body p { text-indent: 50%; }

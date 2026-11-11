@@ -1,0 +1,7 @@
+{% extends "workspace_base.html" %}
+{% block title %}Maintenance et assistance · SIGDA{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">Cabinet du Président de la République</p><h1>Maintenance et assistance</h1><p class="page-description">L’équipe habilitée prend en charge les agents, les mises à jour et le renouvellement annuel.</p></div></section>
+<div class="workbench"><section class="panel"><div class="panel-header"><div><h2>Demander une intervention</h2><p>Une demande ne modifie pas directement la base agents.</p></div></div><form method="post" class="support-form">{% csrf_token %}{{ ticket_form.as_div }}<button class="button button-primary" type="submit">Enregistrer la demande</button><p class="field-help">La demande apparaît dans la file de l’équipe de maintenance. Aucun courriel automatique n’est envoyé.</p></form></section>
+<section class="panel"><div class="panel-header"><h2>Vos demandes et réponses</h2></div><ul class="demo-list">{% for ticket in tickets %}<li class="support-ticket"><strong>{{ ticket.get_category_display }} · {{ ticket.get_state_display }}</strong><p>{{ ticket.details }}</p><small>{{ ticket.created_at|date:"d/m/Y H:i" }} · {{ ticket.pk }}</small>{% if ticket.response %}<p><strong>Réponse de la maintenance</strong> · {{ ticket.response }}</p>{% endif %}</li>{% empty %}<li>Aucune demande enregistrée.</li>{% endfor %}</ul></section></div>
+{% endblock %}

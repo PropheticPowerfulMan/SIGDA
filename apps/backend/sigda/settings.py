@@ -1,10 +1,12 @@
 """Configuration réservée à la démonstration sur la boucle locale."""
 
+import json
 from os import environ
 from pathlib import Path
 from secrets import token_urlsafe
 
 BASE_DIR = Path(__file__).resolve().parents[1]
+SIGDA_DEPLOYMENT = json.loads((BASE_DIR.parents[1] / "config/deployment.json").read_text(encoding="utf-8"))
 SECRET_KEY = environ.get("SIGDA_SECRET_KEY") or token_urlsafe(48)
 OPENAI_API_KEY = environ.get("OPENAI_API_KEY", "")
 SIGDA_OPENAI_MODEL = environ.get("SIGDA_OPENAI_MODEL", "gpt-5.4-mini")
@@ -54,7 +56,7 @@ TEMPLATES = [
         "BACKEND": "django.template.backends.django.DjangoTemplates",
         "DIRS": [BASE_DIR / "templates"],
         "OPTIONS": {
-            "context_processors": ["django.contrib.auth.context_processors.auth", "sigda.roles.workspace_role"],
+            "context_processors": ["django.contrib.auth.context_processors.auth", "sigda.roles.workspace_role", "sigda.service_policy.service_context"],
         },
     }
 ]

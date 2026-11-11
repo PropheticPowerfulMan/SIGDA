@@ -12,13 +12,15 @@ def manifest(request):
     return JsonResponse(
         {
             "id": "/sigda-gestion-documentaire",
-            "name": "SIGDA · Gestion documentaire des agents",
+            "name": "SIGDA Cabinet · Documents administratifs",
             "short_name": "SIGDA",
             "description": "Atelier de consultation des dossiers agents et de préparation de spécimens administratifs.",
             "lang": "fr",
             "start_url": "/",
             "scope": "/",
             "display": "standalone",
+            "display_override": ["standalone", "minimal-ui"],
+            "orientation": "any",
             "background_color": "#0a0f1d",
             "theme_color": "#0a0f1d",
             "icons": [
@@ -28,7 +30,7 @@ def manifest(request):
                     "type": "image/png",
                 }
                 for size in (192, 512)
-            ],
+            ] + [{"src": static("sigda/icons/maskable-512.png"), "sizes": "512x512", "type": "image/png", "purpose": "maskable"}],
         },
         content_type="application/manifest+json",
     )

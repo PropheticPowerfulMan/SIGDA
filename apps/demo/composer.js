@@ -18,11 +18,12 @@
     const state = root.querySelector("[data-composition-status]");
     let step = 0, editingId = "", ticket = "", pdfUrl = "", imageUrl = "", epoch = 0, busy = false, agentEditing = false;
     let readySnapshot = null, editingDocument = null, displayedDocument = null;
+    root.querySelector('[data-agent-support]').href = server ? '/assistance/' : '#support';
     root.querySelector('[data-tasks-back]').href = root.dataset.tasksUrl || '#requests';
     if (!server && window.SIGDASession?.role !== 'OPS') root.querySelector('[data-compose-another]').hidden = true;
     const initial = server ? read("composition-initial") : {};
     const today = root.dataset.today || new Intl.DateTimeFormat("sv-SE", { timeZone: "Africa/Kinshasa" }).format(new Date());
-    function message(text) { errors.textContent = text; errors.hidden = !text; }
+    function message(text) { errors.textContent = text; errors.hidden = !text; if (text) window.SIGDAEffects?.notify(text, 'error'); }
     function invalidated() {
         document.body.dataset.printAuthorized = "false"; readySnapshot = null; displayedDocument = null;
         epoch += 1; ticket = ""; print.disabled = true; download.hidden = true; save.hidden = true;
@@ -64,13 +65,14 @@
     }
     function profileDisplay() {
         const record = chosen(); editingId = record?.id || "";
-        agentEditing = !record;
+        agentEditing = false;
+        const supportLink = root.querySelector('[data-agent-support]');
+        supportLink.textContent = record ? 'Demander une correction' : 'Demander un ajout';
+        if (server) supportLink.href = '/assistance/?category=' + (record ? 'agent_update' : 'agent_add');
         for (const spec of schema.identity) {
-            const input = form.elements[spec.key]; input.value = record?.[spec.key] || ""; input.readOnly = Boolean(record);
+            const input = form.elements[spec.key]; input.value = record?.[spec.key] || ''; input.readOnly = true;
         }
-        root.querySelector("[data-agent-save]").hidden = Boolean(record);
-        root.querySelector("[data-agent-edit]").disabled = !record;
-        root.querySelector("[data-agent-status]").textContent = record ? "Données lues dans la base agents. Utilisez « Modifier ce dossier » pour les corriger." : "Renseignez les cinq champs, puis enregistrez le dossier avant de continuer.";
+        root.querySelector('[data-agent-status]').textContent = record ? 'Données lues dans la base agents. Leur correction relève de la maintenance.' : 'Sélectionnez un dossier. S’il manque dans la liste, demandez son ajout à la maintenance.';
         invalidated();
     }
     function modelChanged() {
@@ -95,7 +97,7 @@
     }
     function validStep() {
         if (step === 1 && schema.models[kind.value].subject === "agent" && (!chosen() || agentEditing)) {
-            message("Enregistrez le dossier ou ses modifications avant de continuer. Le document utilise les données enregistrées dans la base."); return false;
+            message("Sélectionnez un dossier enregistré. La maintenance prend en charge les ajouts et les corrections."); return false;
         }
         for (const input of steps[step].querySelectorAll("input, select, textarea")) {
             if (!input.closest("[hidden]") && !input.checkValidity()) { input.reportValidity(); return false; }
@@ -120,24 +122,6 @@
         } catch (error) { if (error.name === "AbortError") throw new Error("Le délai de réponse est dépassé. Réessayez."); throw error; }
         finally { clearTimeout(timeout); }
     }
-    root.querySelector("[data-agent-new]").addEventListener("click", () => { selection.value = ""; profileDisplay(); form.elements.name.focus(); });
-    root.querySelector("[data-agent-edit]").addEventListener("click", () => {
-        agentEditing = true;
-        for (const spec of schema.identity) form.elements[spec.key].readOnly = false;
-        root.querySelector("[data-agent-save]").hidden = false; invalidated(); form.elements.name.focus();
-    });
-    root.querySelector("[data-agent-save]").addEventListener("click", async () => {
-        for (const spec of schema.identity) if (!form.elements[spec.key].reportValidity()) return;
-        const payload = new FormData(); const data = {};
-        for (const spec of schema.identity) { data[spec.key] = form.elements[spec.key].value.trim(); payload.set(spec.key, data[spec.key]); }
-        if (editingId) { data.id = editingId; payload.set("id", editingId); }
-        const button = root.querySelector("[data-agent-save]"); button.disabled = true;
-        try {
-            const record = server ? (await post(root.dataset.agentEndpoint, payload)).agent : await SIGDAAgents.save(data);
-            records = records.filter(item => item.id !== record.id); records.push(record);
-            profileChoices(record.id); profileDisplay(); message("");
-        } catch (error) { message(error.message); } finally { button.disabled = false; }
-    });
     selection.addEventListener("change", profileDisplay);
     kind.addEventListener("change", modelChanged);
     form.addEventListener("input", invalidated);
@@ -172,7 +156,9 @@
         return URL.createObjectURL(new Blob([Uint8Array.from(atob(encoded), c => c.charCodeAt(0))], { type: header.slice(5, header.indexOf(";")) }));
     }
     form.addEventListener("submit", async event => {
-        event.preventDefault(); if (busy || step === 3 || !validStep()) return;
+        event.preventDefault(); if (busy || step === 3) return;
+        if (!server) { try { SIGDAService.assertCreation(); } catch(error) { message(error.message); return; } }
+        if (!validStep()) return;
         if (step < 2) { showStep(step + 1); return; }
         const data = collect();
         for (const [start, end] of [["mission_start", "mission_end"], ["from_time", "to_time"]]) {
@@ -215,6 +201,7 @@
             print.disabled = true; save.hidden = false;
             state.textContent = `${models[data.kind].title} · ${reference} · Aperçu non validé`;
             document.title = `${models[data.kind].title} · ${reference} · SIGDA`;
+            window.SIGDAEffects?.notify("L’aperçu du document est prêt. Relisez-le avant de l’enregistrer dans le circuit de validation.");
         } catch (error) { message(error.message || "Impossible de préparer le document."); state.textContent = "L’aperçu n’a pas été généré."; }
         finally { busy = false; next.disabled = false; }
     });
@@ -305,7 +292,7 @@
         part("paper-nation", "République Démocratique du Congo");
         if (!certificate) part("paper-presidency", "PRÉSIDENCE DE LA RÉPUBLIQUE");
         const logo = document.createElement("img"); logo.src = root.dataset.emblem; logo.alt = ""; logo.className = "paper-emblem"; paper.append(logo);
-        part("paper-institution", "SECRÉTARIAT GÉNÉRAL AUPRÈS DU PRÉSIDENT DE LA RÉPUBLIQUE");
+        part("paper-institution", "CABINET DU PRÉSIDENT DE LA RÉPUBLIQUE");
         part("paper-issuer", data.issuer_service);
         part("paper-date", `${data.place}, le ${formatDate(data.issue_date)}`);
         part("paper-reference", `N/Réf. : ${reference}`);

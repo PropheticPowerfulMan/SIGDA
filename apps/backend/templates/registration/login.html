@@ -3,7 +3,8 @@
 <html lang="fr" data-theme="light">
 <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-title" content="SIGDA"><meta name="mobile-web-app-capable" content="yes"><meta name="application-name" content="SIGDA Cabinet">
     <meta name="theme-color" content="#0a0f1d">
     <title>Connexion · SIGDA</title>
     <link rel="icon" href="{% static 'sigda/EmblemRDC.jpg' %}">
@@ -13,8 +14,12 @@
     <link rel="stylesheet" href="{% static 'login.css' %}">
     <script src="{% static 'theme.js' %}" defer></script>
     <script src="{% static 'pwa.js' %}" data-worker="{% url 'service_worker' %}" defer></script>
+<script src="{% static 'password.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'service.css' %}">
+<link rel="stylesheet" href="{% static 'typography.css' %}"><link rel="stylesheet" href="{% static 'responsive.css' %}">
+<link rel="stylesheet" href="{% static 'effects.css' %}"><script src="{% static 'effects.js' %}" defer></script>
 </head>
-<body class="login-page">
+<body class="login-page">{% if feedback_message %}<span hidden data-feedback-message>{{ feedback_message }}</span>{% endif %}
     <a class="skip-link" href="#main">Aller au formulaire de connexion</a>
     <header class="login-header">
         <div class="brand-mark">
@@ -37,7 +42,7 @@
     </section>
 
     <main id="main" class="login-main" tabindex="-1">
-        <div class="login-shell">
+        <aside class="service-banner"><div><strong>Cabinet du Président de la République</strong><span>Validité annuelle du {{ service_policy.start|date:"d/m/Y" }} au {{ service_policy.last_day|date:"d/m/Y" }} inclus.</span></div></aside><div class="login-shell">
             <section class="login-intro" aria-label="À propos de SIGDA">
                 <span class="status-pill"><span class="status-dot" aria-hidden="true"></span>Application locale</span>
                 <div class="login-intro-copy">
@@ -51,7 +56,7 @@
             <section class="login-card" aria-labelledby="login-title">
                 <div class="login-card-heading">
                     <div class="login-emblem"><img src="{% static 'sigda/EmblemRDC.jpg' %}" alt="Emblème de la Présidence de la RDC" width="88" height="88"></div>
-                    <p class="login-institution">Secrétariat Général · Ressources humaines</p>
+                    <p class="login-institution">Cabinet du Président de la République</p>
                     <span class="metric-icon login-card-icon" aria-hidden="true">
                         <svg class="icon" viewBox="0 0 24 24"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3m-4 4v3"/></svg>
                     </span>
@@ -68,7 +73,7 @@
                     </div>
                     <div class="login-field">
                         <label for="{{ form.password.id_for_label }}">Mot de passe</label>
-                        {{ form.password }}
+                        <div class="password-control">{{ form.password }}<button type="button" data-password-toggle aria-controls="{{ form.password.id_for_label }}" aria-pressed="false" aria-label="Afficher le mot de passe" hidden>Afficher</button></div>
                         {{ form.password.errors }}
                     </div>
                     {% if form.non_field_errors %}

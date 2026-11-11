@@ -2,6 +2,7 @@ from unicodedata import combining, normalize
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth import logout as auth_logout
 from django.contrib.auth.views import LoginView, LogoutView
 from django.http import Http404, HttpResponse, HttpResponseForbidden
 from django.shortcuts import redirect, render
@@ -19,7 +20,7 @@ from .catalog import AGENTS, DOCUMENT_TYPES, format_date
 from .pdf import render_pdf
 from .preview import render_preview
 from .pwa import manifest, offline, service_worker
-from . import composition
+from . import composition, maintenance
 from .models import AgentRecord
 from .roles import require_ops
 from django.core.exceptions import PermissionDenied
@@ -138,7 +139,17 @@ def specimen_preview(request, key, agent_key):
     return HttpResponse(render_preview(pdf), content_type="image/png")
 
 
+@never_cache
+@require_POST
+def exit_session(request):
+    auth_logout(request)
+    request.session['sigda-feedback'] = 'Déconnexion effectuée.'
+    return redirect('login')
+
+
 urlpatterns = [
+    path("assistance/", maintenance.support, name="support"),
+    path("maintenance/", maintenance.administration, name="maintenance"),
     path("composer/", composition.page, name="compose"),
     path("composer/apercu/", composition.preview, name="compose_preview"),
     path("composer/enregistrer/", composition.save, name="compose_save"),
@@ -154,7 +165,7 @@ urlpatterns = [
     path("assistant/question/", assistant_ask, name="assistant_ask"),
     path("atelier/reformulation/", draft, name="document_draft"),
     path("connexion/", LoginView.as_view(), name="login"),
-    path("deconnexion/", require_POST(LogoutView.as_view()), name="logout"),
+    path("deconnexion/", exit_session, name="logout"),
     path("manifest.webmanifest", manifest, name="manifest"),
     path("sw.js", service_worker, name="service_worker"),
     path("offline.html", offline, name="offline"),

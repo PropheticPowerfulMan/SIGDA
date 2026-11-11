@@ -56,3 +56,11 @@ Le service de vérification expose uniquement le statut, la référence, la date
 - L’approbation, la signature, la délivrance et la révocation sont des opérations distinctes. Les circuits soumis à la séparation des fonctions refusent l’auto-approbation.
 - L’émission lie la référence à la version exacte du modèle et à l’empreinte du fichier final. Une révocation modifie le statut de vérification et conserve la trace de la décision.
 - L’atelier de démonstration et le système institutionnel utilisent des déploiements et des jeux de données séparés.
+
+## Maintenance livrée et période de service
+
+`SupportTicket` contient les interventions demandées et leurs réponses. `ServiceValidity` conserve la période annuelle active côté serveur. `MaintenanceEvent` journalise le compte technique, le motif et les changements de validité, d’import ou de suivi. Les quatre profils opérationnels n’ont pas accès à l’administration technique ni à l’ancien endpoint d’écriture des agents, désormais fermé. Un import CSV entièrement validé et transactionnel réalise les ajouts et actualisations pour un compte OPS.
+
+La politique annuelle est explicite : préparation jusqu’au 1er janvier 2027, période initiale jusqu’au 31 décembre 2027 inclus, rappel 30 jours avant l’échéance. La date serveur bloque de nouvelles compositions et soumissions après expiration, sans bloquer la consultation ou l’impression des archives validées. Les validations déjà engagées restent possibles. Aucune commande distante ni porte d’accès cachée n’est introduite ; les mises à jour passent par le dépôt et les habilitations d’exploitation.
+
+Sur Pages, la demande d’intervention reste un fichier local à transmettre, et la validité une simulation JavaScript. La gestion réelle, le journal de maintenance et la file de traitement sont côté Django. L’identité PWA et ses caches demeurent propres à SIGDA. EB Garamond est embarquée pour l’interface scientifique, Times New Roman pour le corps documentaire, avec retrait de première ligne à 50 % de la largeur utile dans les deux moteurs.

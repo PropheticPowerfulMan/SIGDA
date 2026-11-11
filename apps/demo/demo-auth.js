@@ -41,10 +41,13 @@
         function showError(message) {
             error.textContent = message;
             error.hidden = false;
+            window.SIGDAEffects?.notify(message, "error");
         }
 
         for (const profile of document.querySelectorAll("[data-demo-profile]")) profile.addEventListener("click", () => {
-            username.value = profile.dataset.demoProfile; password.value = "SIGDA-demo-2026!"; submit.focus();
+            username.value = profile.dataset.demoProfile; password.value = "SIGDA-demo-2026!";
+            for (const choice of document.querySelectorAll('[data-demo-profile]')) choice.setAttribute('aria-pressed', String(choice === profile));
+            submit.focus();
         });
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
@@ -55,6 +58,7 @@
                 return;
             }
             try {
+                sessionStorage.setItem("sigda-result-message", "Connexion établie. Votre espace de travail est prêt.");
                 sessionStorage.setItem(key, "active");
                 sessionStorage.setItem(entryKey, "yes");
                 sessionStorage.setItem("sigda-demo-role", role);
@@ -70,6 +74,7 @@
     } else if (workspace) {
         async function logout() {
             await window.SIGDAUsage?.log("logout");
+            sessionStorage.setItem("sigda-result-message", "Déconnexion effectuée.");
             sessionStorage.removeItem(key);
             sessionStorage.removeItem(entryKey);
             sessionStorage.removeItem("sigda-demo-role"); sessionStorage.removeItem("sigda-demo-user");

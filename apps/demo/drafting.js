@@ -47,8 +47,10 @@
                 form.elements.wording.value = result.wording;
                 status.textContent = "Reformulation proposée. Relisez les faits et le sens, puis appliquez le texte à l’aperçu.";
             }
+            window.SIGDAEffects?.notify(status.textContent);
         } catch (error) {
             status.textContent = error.name === "AbortError" ? "Le délai est dépassé. Réessayez." : (error.message || "Service indisponible.");
+            window.SIGDAEffects?.notify(status.textContent, "error");
         } finally {
             clearTimeout(timeout);
             controls.forEach((button, index) => { button.disabled = availability[index]; });

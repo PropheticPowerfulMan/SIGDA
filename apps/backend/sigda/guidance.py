@@ -7,7 +7,7 @@ GUIDES = [
     {
         "title": "Créer un document avec un dossier agent",
         "terms": ["agent", "donnees", "matricule", "base", "creer", "personnaliser", "remplir"],
-        "text": "Ouvrez Créer un document. Choisissez le modèle, puis sélectionnez un dossier enregistré dans la base agents. Vous pouvez créer ou modifier ce dossier à l’étape Données. Complétez les détails du modèle, vérifiez l’aperçu et enregistrez le brouillon. OPS le soumet à SECAD, qui contrôle puis transmet à AP pour visa. DIRCAB valide enfin et autorise l’impression. Sur le serveur, le brouillon conserve les données et le texte utilisés.",
+        "text": "Ouvrez Créer un document. Choisissez le modèle, puis sélectionnez un dossier enregistré dans la base agents. La maintenance prend en charge l’ajout et la correction des agents via l’espace Maintenance et assistance. Complétez les détails du modèle, vérifiez l’aperçu et enregistrez le brouillon. OPS le soumet à SECAD, qui contrôle puis transmet à AP pour visa. DIRCAB valide enfin et autorise l’impression. Sur le serveur, le brouillon conserve les données et le texte utilisés.",
         "target": "compose",
     },
     {

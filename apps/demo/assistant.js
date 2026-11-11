@@ -129,8 +129,10 @@
             const row = appendMessage(result.text, result.mode);
             appendLinks(row, result.links);
             status.textContent = selectedMode === "gpt" ? "Réponse GPT reçue." : "Réponse du guidage local.";
+            window.SIGDAEffects?.notify("La réponse de l’assistant est prête à consulter.");
         } catch (error) {
             status.textContent = error.name === "AbortError" ? "Le délai de réponse est dépassé. Réessayez." : error.message;
+            window.SIGDAEffects?.notify(status.textContent, "error");
         } finally {
             clearTimeout(timer);
             submit.disabled = false;

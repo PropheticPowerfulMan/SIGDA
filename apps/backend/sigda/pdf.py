@@ -94,7 +94,8 @@ def render_body(page, text, top, bottom=220):
     lines = [line.strip() for line in text.split("\n\n") if line.strip()]
     for size, leading in ((12, 18), (11.5, 17), (11, 16)):
         style = ParagraphStyle("body", fontName=BODY_FONT, fontSize=size,
-                               leading=leading, alignment=TA_JUSTIFY)
+                               leading=leading, alignment=TA_JUSTIFY,
+                               firstLineIndent=(WIDTH - 2 * MARGIN) / 2)
         paragraphs = [Paragraph(escape(line).replace("\n", "<br/>"), style) for line in lines]
         heights = [paragraph.wrap(WIDTH - 2 * MARGIN, HEIGHT)[1] for paragraph in paragraphs]
         if sum(heights) + max(0, len(lines) - 1) * 14 <= top - bottom:
@@ -112,7 +113,7 @@ def certificate_header(page, document, reference, date_label, context=None):
     page.drawCentredString(WIDTH / 2, 808, "République Démocratique du Congo")
     page.drawImage(str(EMBLEM), WIDTH / 2 - 37, 722, width=74, height=74)
     page.setFont("Times-Roman", 11)
-    page.drawCentredString(WIDTH / 2, 700, "SECRÉTARIAT GÉNÉRAL AUPRÈS DU PRÉSIDENT DE LA RÉPUBLIQUE")
+    page.drawCentredString(WIDTH / 2, 700, "CABINET DU PRÉSIDENT DE LA RÉPUBLIQUE")
     page.setFont("Times-Italic", 10)
     place = context["place"] if context else "Kinshasa"
     if context:
@@ -136,7 +137,7 @@ def letter_header(page, key, document, agent, reference, date_label, context=Non
     page.drawCentredString(WIDTH / 2, 786, "PRÉSIDENCE DE LA RÉPUBLIQUE")
     page.line(195, 778, 400, 778)
     page.setFont("Helvetica", 8)
-    page.drawString(MARGIN, 750, "SECRÉTARIAT GÉNÉRAL AUPRÈS")
+    page.drawString(MARGIN, 750, "CABINET DU PRÉSIDENT")
     page.drawString(MARGIN, 739, "DU PRÉSIDENT DE LA RÉPUBLIQUE")
     place = context["place"] if context else "Kinshasa"
     if context:

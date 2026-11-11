@@ -1,4 +1,6 @@
 from hashlib import sha256
+from datetime import date
+from unittest.mock import patch
 
 from django.contrib.auth import get_user_model
 from django.contrib.auth.models import Group
@@ -126,3 +128,12 @@ class WorkflowTests(TestCase):
         self.record.issued_pdf = b'altered'
         self.record.save(update_fields=['issued_pdf'])
         self.assertEqual(self.client.get(reverse('saved_document', args=[self.record.pk, 'pdf'])).status_code, 409)
+
+    def test_expiration_preserves_final_pdf_and_blocks_new_submissions(self):
+        with patch('sigda.service_policy.timezone.localdate', return_value=date(2028, 1, 1)):
+            self.assertEqual(self.act('OPS', 'submit', 'SECAD').status_code, 403)
+        self.complete()
+        with patch('sigda.service_policy.timezone.localdate', return_value=date(2028, 1, 1)):
+            response = self.client.get(reverse('saved_document', args=[self.record.pk, 'pdf']))
+            self.assertEqual(response.status_code, 200)
+            self.assertEqual(response.content, bytes(self.record.issued_pdf))

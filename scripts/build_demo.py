@@ -5,7 +5,7 @@ import sys
 from datetime import date
 from hashlib import sha256
 from itertools import product
-from json import dumps
+from json import dumps, loads
 from pathlib import Path
 from shutil import copyfile
 from tempfile import TemporaryDirectory
@@ -21,12 +21,14 @@ STATIC_FILES = (
     "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
     "print.css", "print.js", "preview.js",
     "requests.js", "usage.js", "statistics.js", "statistics.css",
+    "service.js", "service.css", "support.js", "password.js", "effects.js", "effects.css",
+    "typography.css", "responsive.css", "eb-garamond.ttf", "eb-garamond-license.txt",
     "assistant.js", "drafting.js", "dm-sans.ttf", "font-license.txt",
     "fiche.html", "fiche.js", "fiche.css",
     "manrope.ttf", "manrope-license.txt",
     "composer.js", "composer.css", "agent-store.js", "qrcode.js", "qrcode-license.txt",
 )
-ICONS = ("icon-192.png", "icon-512.png", "apple-touch-icon.png")
+ICONS = ("icon-192.png", "icon-512.png", "maskable-512.png", "apple-touch-icon.png")
 SPECIMEN_DATE = date(2026, 1, 15)
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
@@ -86,7 +88,9 @@ def build_demo() -> None:
         key: {"title": kind.title, "description": kind.description, "category": kind.category}
         for key, kind in DOCUMENT_TYPES.items()
     }
-    catalogue = f"const agents = {dumps(public_agents)};\nconst documents = {dumps(public_documents)};\n"
+    deployment = loads((ROOT / "config/deployment.json").read_text(encoding="utf-8"))
+    catalogue = f"const deploymentConfig = {dumps(deployment)};\n"
+    catalogue += f"const agents = {dumps(public_agents)};\nconst documents = {dumps(public_documents)};\n"
     catalogue += f"const assistantGuides = {dumps(GUIDES)};\n"
     catalogue += f"const assistantAliases = {dumps(ALIASES)};\n"
     catalogue += f"const assistantStopwords = {dumps(sorted(STOPWORDS))};\n"

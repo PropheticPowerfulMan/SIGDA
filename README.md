@@ -1,6 +1,6 @@
 # SIGDA
 
-Système intégré de gestion documentaire des agents. Projet proposé pour le Secrétariat Général auprès du Président de la République démocratique du Congo.
+Système intégré de gestion documentaire des agents. Application destinée au Cabinet du Président de la République démocratique du Congo.
 
 **Fondateur, concepteur et propriétaire déclaré du projet SIGDA** — LOKALA LOMBOTO JONATHAN.
 
@@ -15,7 +15,7 @@ SIGDA et SSDC sont deux projets indépendants, avec leurs propres dépôts, appl
 L’ouverture du site affiche la connexion, y compris lorsqu’une session précédente existe. Après connexion, utilisez **Créer un document**.
 
 1. **Modèle** — choisissez le type de document et le style du texte.
-2. **Données** — sélectionnez un dossier dans la base agents. Pour un nouvel agent, renseignez le nom, le matricule, le service, la fonction et le grade, puis cliquez sur **Enregistrer le dossier agent**. Les données sélectionnées deviennent la source du document.
+2. **Données** — sélectionnez un dossier dans la base agents. Pour un ajout ou une correction, ouvrez **Maintenance et assistance**. Les profils opérationnels ne modifient pas directement la base. Les données sélectionnées deviennent la source du document.
 3. **Détails** — complétez les champs propres au modèle. Une convocation demande le rendez-vous et son motif ; une mission demande ses dates, son lieu et son objet ; un bordereau demande les pièces, leur nombre et le destinataire.
 4. **Vérification** — relisez les données et le document rempli, puis enregistrez le brouillon et ouvrez **Mes tâches**. Attribuez le contrôle à SECAD. Le document sera imprimable après SECAD → AP → DIRCAB. Le dialogue d’impression permet aussi de choisir « Enregistrer en PDF ».
 
@@ -31,7 +31,7 @@ La démonstration publique propose quatre comptes fictifs, tous avec le mot de p
 
 | Identifiant | Responsabilité |
 | --- | --- |
-| `ops` (ou `demo`) | Base agents, saisie, correction et attribution du contrôle à SECAD. |
+| `ops` (ou `demo`) | Consultation des agents, préparation et correction des documents, attribution du contrôle à SECAD. |
 | `secad` | Contrôle administratif ; transmission à AP ou retour motivé à OPS. |
 | `ap` | Visa hiérarchique ; transmission à DIRCAB ou retour motivé à OPS. |
 | `dircab` | Validation finale autorisant l’impression, retour ou refus final, pilotage global. |
@@ -40,7 +40,7 @@ Pour tester le circuit, restez dans le même navigateur et changez de compte à 
 
 **Mes tâches** présente les documents du périmètre du compte et leurs responsables nominatifs. **Activité et traçabilité** est réservé à DIRCAB. Le tableau affiche les courbes quotidiennes, la charge par étape et les retards, la distribution des délais (Q1, médiane, Q3, P90), le taux d’approbation et son intervalle de Wilson à 95 %, les utilisateurs distincts et le journal des actions. Les chiffres sont calculés à partir des événements enregistrés, sans activité historique inventée. Les périodes couvrent 7, 30 ou 90 jours calendaires à Kinshasa. Chaque graphique dispose d’un tableau de valeurs et d’une méthode explicite. Les autres profils conservent l’historique de leurs documents et tâches. Une ouverture de PDF ou du dialogue d’impression ne prouve pas une impression physique.
 
-**Assistant** propose un guidage local fondé sur le catalogue et les procédures. Il suggère des modèles et ouvre les écrans concernés. Ce mode fonctionne sans modèle génératif. L’interface reprend la direction visuelle de SSDC avec un menu bleu nuit et des accents dorés. La police Manrope est hébergée localement, avec des textes agrandis et une hiérarchie plus aérée. Le thème Soleil associe des surfaces ivoire atténuées, des contours sable et des accents dorés. Les barres de défilement reprennent les couleurs de chaque surface, y compris dans le catalogue, le menu sombre et l’aperçu. L’aperçu du papier est adouci à l’écran et l’impression utilise le rendu d’origine.
+**Assistant** propose un guidage local fondé sur le catalogue et les procédures. Il suggère des modèles et ouvre les écrans concernés. Ce mode fonctionne sans modèle génératif. L’interface reprend la direction visuelle de SSDC avec un menu bleu nuit et des accents dorés. Le mode typographique « Scientifique », identifié dans EduPay KCS, utilise EB Garamond. SIGDA embarque cette police variable sous licence OFL depuis le dépôt officiel Google Fonts (`ofl/ebgaramond`). Les contrôles mesurent environ 19–20 px et les zones tactiles au moins 44 px. Le corps documentaire reste en Times New Roman. La première ligne de chaque paragraphe commence à la moitié de la largeur utile, ce qui correspond au centre de la page A4 avec les marges symétriques. Le thème Soleil associe des surfaces ivoire atténuées, des contours sable et des accents dorés. Les barres de défilement reprennent les couleurs de chaque surface, y compris dans le catalogue, le menu sombre et l’aperçu. L’aperçu du papier est adouci à l’écran et l’impression utilise le rendu d’origine.
 
 ### Connexion de l’assistant à GPT
 
@@ -99,6 +99,7 @@ Ouvrir [l’atelier local](http://127.0.0.1:8000/) et utiliser `ops`, `secad`, `
 .venv/Scripts/python apps/backend/manage.py check
 .venv/Scripts/python apps/backend/manage.py test sigda
 node scripts/test_statistics.cjs
+node scripts/test_service_policy.cjs
 ```
 
 ## Périmètre
@@ -108,3 +109,31 @@ node scripts/test_statistics.cjs
 - L’atelier utilise des gabarits HTML Django. Le catalogue d’exemples est en mémoire ; les dossiers du parcours guidé sont conservés en base. Les références de spécimen sont reproductibles par agent, modèle et année.
 - Le projet cible prévoit une interface React, PostgreSQL, une API DRF, l’identité institutionnelle, les habilitations à l’échelle de l’administration, la signature électronique et l’archivage institutionnel, les exports DOCX et l’authenticité. Ces éléments restent à livrer, ainsi que les PDF de présentation et le manuel illustré.
 - Voir [l’architecture de SIGDA](docs/architecture.md) pour le périmètre livré, le modèle de données cible et les invariants de réception.
+
+## Maintenance, agents et validité annuelle
+
+La période initiale va du **1er janvier au 31 décembre 2027 inclus**. Le 1er janvier 2028 marque l’échéance. Un rappel s’affiche durant les 30 derniers jours. Avant janvier 2027, l’application indique la phase de préparation. Les dates publiques de démonstration sont définies dans `config/deployment.json` ; dans Django, une période enregistrée par la maintenance prend priorité. Le renouvellement couvre une année calendaire, avec ajustement du 29 février au 28 février l’année suivante.
+
+Après expiration, les nouvelles compositions, leurs enregistrements et les nouvelles soumissions OPS sont suspendus. Les demandes déjà soumises peuvent terminer leur circuit. La consultation et l’impression des documents déjà validés restent disponibles, ainsi que les demandes d’assistance. Django vérifie la date du serveur ; la démonstration statique illustre cette règle côté navigateur et ne constitue pas un mécanisme d’habilitation ou de licence inviolable.
+
+L’équipe technique dispose d’un groupe distinct `SIGDA_MAINTENANCE`, réservé à des comptes nominatifs actifs avec statut staff, séparés des quatre groupes opérationnels. Aucun compte ni mot de passe de maintenance n’est publié. Création locale :
+
+```powershell
+.venv/Scripts/python apps/backend/manage.py create_maintenance_user votre-identifiant-nominatif
+```
+
+Le mot de passe est demandé de façon masquée, ou peut provenir de `SIGDA_MAINTENANCE_PASSWORD`. La commande refuse de réhabiliter ou de modifier un compte existant. Après connexion, **Administration technique** permet le traitement des demandes, le renouvellement motivé et l’import CSV d’agents pour un compte OPS. En-tête : `name,registration,service,job,grade`. Le fichier UTF-8 est limité à 1 Mo et 1 000 lignes. Toutes les lignes sont validées avant la transaction ; les matricules existants sont actualisés, aucun agent n’est supprimé. Les imports, périodes et suivis sont journalisés avec l’auteur et l’heure.
+
+Dans Django, **Maintenance et assistance** conserve la demande dans la file de traitement de l’équipe habilitée. Sur GitHub Pages, le formulaire prépare un fichier texte à transmettre et conserve sa copie sur cet appareil ; il ne prétend pas envoyer la demande à un serveur. Les mises à jour du logiciel restent effectuées par les responsables du dépôt et du déploiement.
+
+## Mobile et identité PWA
+
+Le menu devient un panneau latéral sur téléphone et tablette étroite, avec fermeture tactile, touche Échap et confinement du focus. Les formulaires restent sur une colonne, les dossiers agents deviennent des cartes et les graphiques gardent leurs tableaux de valeurs. Les tableaux scientifiques défilent dans leur propre cadre. Le mot de passe peut être affiché ou masqué et redevient masqué à la soumission ou lorsque la page perd sa visibilité.
+
+La PWA possède une icône de document portant le monogramme **SIGDA**, distincte du simple emblème institutionnel, une variante maskable et une icône Apple. Les identifiants existants sont conservés pour mettre à jour les installations sans créer de doublons : `/sigda-gestion-documentaire-demo` sur Pages et `/sigda-gestion-documentaire` côté Django. Ces identifiants, le périmètre `/SIGDA/` sur Pages et les caches `sigda-offline` sont réservés à SIGDA et ne doivent pas être repris pour une autre application de la Présidence.
+
+Sur Windows, Linux et Android, l’installation est proposée par les navigateurs compatibles, notamment Chrome ou Edge. Sur iPhone/iPad, Safari utilise Partager → Sur l’écran d’accueil. Sur macOS, Safari propose Ajouter au Dock quand cette fonction est disponible. La présence d’un bouton d’installation dépend du système et du navigateur ; le site reste accessible dans le navigateur. Le service worker conserve une page de reprise hors connexion et ne met pas les documents privés en cache.
+
+## Retours d’action et animations
+
+Les confirmations et les échecs apparaissent dans une fenêtre centrée, avec résultat explicite, bouton de continuation, focus clavier et fermeture par Échap. Les demandes, transitions, aperçus, reformulations et opérations de maintenance s’appuient sur le résultat réellement enregistré. Les téléchargements sont annoncés comme préparés ou lancés ; aucune impression physique n’est affirmée. Les champs incomplets sont signalés avant envoi. Les effets de clic, transitions et indicateurs de traitement suivent `prefers-reduced-motion`. La barre de progression est indéterminée : elle accompagne un traitement réel sans inventer un pourcentage d’avancement.

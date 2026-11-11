@@ -18,6 +18,7 @@ from django.views.decorators.http import require_POST, require_safe
 from .catalog import AGENTS, DOCUMENT_TYPES
 from .models import DocumentRequest, RequestEvent, ValidationTask
 from .roles import ROLES, role_for
+from .service_policy import policy
 
 REVIEW_PERMISSION = 'sigda.review_documentrequest'
 Status = DocumentRequest.Status
@@ -146,6 +147,9 @@ def transition(request, pk):
         return render_detail(request, record, form=form, status=400)
     if not record.payload or payload_digest(record.payload) != record.payload_hash or task.snapshot_hash != record.payload_hash or task.revision != record.revision:
         return render_detail(request, record, conflict=True, status=409)
+    if action == 'submit' and policy()['expired']:
+        form.add_error(None, 'La validité est échue. Une nouvelle soumission requiert le renouvellement par la maintenance.')
+        return render_detail(request, record, form=form, status=403)
     before = record.status
     after = Status.DRAFT if action == 'return' else Status.REJECTED if action == 'reject' else NEXT[before][1] if before in NEXT else Status.APPROVED
     now = timezone.now()
@@ -179,6 +183,7 @@ def transition(request, pk):
     except Conflict:
         record.refresh_from_db()
         return render_detail(request, record, conflict=True, status=409)
+    request.session['sigda-feedback'] = 'Validation finale enregistrée : l’impression est autorisée.' if after == Status.APPROVED else 'Étape enregistrée et responsabilités actualisées.'
     return redirect('request_detail', pk=record.pk)
 
 

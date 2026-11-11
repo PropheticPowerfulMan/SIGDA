@@ -35,8 +35,8 @@ window.SIGDAStatistics = (() => {
     function chart(rows,a,b,labelA,labelB){
         const fragment=document.createDocumentFragment(),legend=el('div','','stats-legend');legend.append(el('span',labelA),el('span',labelB));fragment.append(legend);
         const svg=svgEl('svg',{viewBox:'0 0 600 235',role:'img','aria-label':labelA+' et '+labelB+' par jour ; valeurs disponibles dans le tableau suivant.'}),max=Math.max(1,...rows.flatMap(r=>[r[a],r[b]]));
-        const x=i=>45+i*540/Math.max(1,rows.length-1),y=n=>190-n*160/max;
-        for(let i=0;i<=4;i++){const v=max*i/4;svg.append(svgEl('line',{x1:45,y1:y(v),x2:585,y2:y(v),class:'grid-line'}),svgEl('text',{x:35,y:y(v)+4,'text-anchor':'end'},nf.format(v)));}
+        const x=i=>65+i*490/Math.max(1,rows.length-1),y=n=>190-n*160/max;
+        for(let i=0;i<=4;i++){const v=max*i/4;svg.append(svgEl('line',{x1:65,y1:y(v),x2:555,y2:y(v),class:'grid-line'}),svgEl('text',{x:50,y:y(v)+4,'text-anchor':'end'},nf.format(v)));}
         for(const [key,cls] of [[a,'stats-series-a'],[b,'stats-series-b']])svg.append(svgEl('polyline',{points:rows.map((r,i)=>x(i)+','+y(r[key])).join(' '),class:cls}));
         [...new Set([0,Math.floor((rows.length-1)/2),rows.length-1])].forEach(i=>svg.append(svgEl('text',{x:x(i),y:218,'text-anchor':'middle'},rows[i].date.slice(8)+'/'+rows[i].date.slice(5,7))));
         fragment.append(svg,table(['Jour',labelA,labelB],rows.map(r=>[r.date,r[a],r[b]])));return fragment;

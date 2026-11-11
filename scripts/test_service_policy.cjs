@@ -1,0 +1,17 @@
+const assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
+const config=JSON.parse(fs.readFileSync('config/deployment.json','utf8'));
+const context={window:{},deploymentConfig:config,document:{querySelectorAll:()=>[]},Intl,Date,setInterval:()=>{}};
+vm.runInNewContext(fs.readFileSync('apps/demo/service.js','utf8'),context);
+const service=context.window.SIGDAService;
+assert.equal(service.state('2026-12-31').name,'preparation');
+assert.equal(service.state('2027-01-01').name,'active');
+assert.equal(service.state('2027-12-02').name,'reminder');
+assert.equal(service.state('2027-12-31').days,1);
+assert.equal(service.state('2028-01-01').name,'expired');
+assert.equal(service.state('2028-01-01').days,0);
+const manifest=JSON.parse(fs.readFileSync('apps/demo/manifest.webmanifest','utf8'));
+assert.equal(manifest.id,'/sigda-gestion-documentaire-demo');
+assert(manifest.icons.some(i=>i.purpose==='maskable'&&i.sizes==='512x512'));
+assert.equal(manifest.scope,'./');
+assert(manifest.name.startsWith('SIGDA Cabinet'));
+console.log('Annual validity, reminder boundaries and stable independent PWA identity passed.');

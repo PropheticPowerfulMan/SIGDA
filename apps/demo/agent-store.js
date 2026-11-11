@@ -15,25 +15,12 @@ window.SIGDAAgents = (() => {
             request.onerror = () => reject(new Error("Impossible de lire la base agents."));
         });
     }
-    async function save(data) {
-        if (window.SIGDASession?.role !== "OPS") throw new Error("La tenue des dossiers appartient au profil OPS.");
-        const db = await opened;
-        const record = { ...data, id: data.id || crypto.randomUUID(), registration: data.registration.trim().toUpperCase() };
-        record.registration_key = record.registration;
-        const result = await new Promise((resolve, reject) => {
-            const transaction = db.transaction("agents", "readwrite");
-            transaction.objectStore("agents").put(record);
-            transaction.oncomplete = () => { window.dispatchEvent(new Event("sigda-agents-changed")); resolve(record); };
-            transaction.onerror = () => reject(new Error("Ce matricule existe déjà, ou la base ne peut pas enregistrer le dossier."));
-        });
-        await SIGDAUsage.log(data.id ? "agent_update" : "agent_create");
-        return result;
-    }
+    async function save() { throw new Error('La base agents est administrée par l’équipe de maintenance. Utilisez Maintenance et assistance.'); }
     return { list, save };
 })();
 
 (() => {
-    document.querySelector("[data-new-agent]")?.addEventListener("click", () => window.dispatchEvent(new CustomEvent("sigda-compose", { detail: { newAgent: true } })));
+    document.querySelector("[data-new-agent]")?.addEventListener("click", () => { location.hash = "support"; });
     document.querySelector("[data-use-model]")?.addEventListener("click", () => window.dispatchEvent(new CustomEvent("sigda-compose", { detail: { kind: document.getElementById("model").value } })));
     const body = document.querySelector("[data-database-list]");
     if (!body) return;
@@ -46,10 +33,10 @@ window.SIGDAAgents = (() => {
         const selected = records.filter(agent => `${agent.name} ${agent.registration} ${agent.service}`.normalize("NFD").replace(/\p{Diacritic}/gu, "").toLowerCase().includes(needle));
         for (const agent of selected) {
             const row = document.createElement("tr");
-            for (const value of [agent.name, agent.registration, agent.service]) {
-                const cell = document.createElement("td"); cell.textContent = value; row.append(cell);
+            for (const [index,value] of [agent.name, agent.registration, agent.service].entries()) {
+                const cell = document.createElement("td"); cell.dataset.label = ["Nom", "Matricule", "Service"][index]; cell.textContent = value; row.append(cell);
             }
-            const cell = document.createElement("td"); const link = document.createElement("button");
+            const cell = document.createElement("td"); cell.dataset.label = "Document"; const link = document.createElement("button");
             link.type = "button"; link.className = "button"; link.textContent = "Créer un document";
             link.addEventListener("click", () => window.dispatchEvent(new CustomEvent("sigda-compose", { detail: { agent: agent.id } })));
             cell.append(link); row.append(cell); body.append(row);
