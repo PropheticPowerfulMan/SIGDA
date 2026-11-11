@@ -137,3 +137,5 @@ Sur Windows, Linux et Android, l’installation est proposée par les navigateur
 ## Retours d’action et animations
 
 Les confirmations et les échecs apparaissent dans une fenêtre centrée, avec résultat explicite, bouton de continuation, focus clavier et fermeture par Échap. Les demandes, transitions, aperçus, reformulations et opérations de maintenance s’appuient sur le résultat réellement enregistré. Les téléchargements sont annoncés comme préparés ou lancés ; aucune impression physique n’est affirmée. Les champs incomplets sont signalés avant envoi. Les effets de clic, transitions et indicateurs de traitement suivent `prefers-reduced-motion`. La barre de progression est indéterminée : elle accompagne un traitement réel sans inventer un pourcentage d’avancement.
+
+Les nouvelles compositions portent également un emblème en filigrane dans la zone d’écriture, à une opacité de 4,5 %. Le texte reste opaque et l’emblème d’en-tête conserve son rendu normal. Les fichiers déjà validés restent archivés dans leur version originale.

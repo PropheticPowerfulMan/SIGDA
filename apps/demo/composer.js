@@ -300,6 +300,11 @@
         if (!approved) part("paper-watermark", "APERÇU — NON VALIDÉ");
         if (!certificate) part("paper-recipient", `${data.recipient || data.name}\nà ${data.place.toUpperCase()}`);
         part("paper-title", models[data.kind].title.toUpperCase());
+        const watermark = document.createElement("img"); watermark.src = root.dataset.emblem; watermark.alt = ""; watermark.setAttribute("aria-hidden", "true"); watermark.className = "paper-body-emblem";
+        const bodyTop = certificate ? 310 : 364, bodyLimit = data.kind === "bordereau-transmission" ? 532 : 622;
+        const watermarkSize = Math.min(250, bodyLimit - bodyTop);
+        watermark.style.width = `${watermarkSize}pt`; watermark.style.height = `${watermarkSize}pt`; watermark.style.top = `${(bodyTop + bodyLimit - watermarkSize) / 2}pt`;
+        paper.append(watermark);
         const body = part("paper-body", "");
         for (const paragraph of text.split("\n\n")) { const p = document.createElement("p"); p.textContent = paragraph; body.append(p); }
         let table;

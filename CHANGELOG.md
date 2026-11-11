@@ -55,3 +55,5 @@
 
 - Micro-interactions, indicateurs pendant les traitements réels et transitions respectant la réduction des animations.
 - Fenêtre centrée de confirmation ou d’échec, accessible au clavier, pour les opérations et validations de saisie.
+
+- Emblème de la RDC en filigrane très léger (4,5 %) derrière la zone d’écriture, dans l’aperçu et le PDF ; texte pleinement opaque et en-tête conservé.

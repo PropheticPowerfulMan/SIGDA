@@ -90,6 +90,16 @@ def centered_title(page, text, top):
     page.line((WIDTH - title_width) / 2, top - 4, (WIDTH + title_width) / 2, top - 4)
 
 
+def body_watermark(page, top, bottom):
+    """A faint emblem behind the writing area; restore full opacity for text."""
+    size = min(250, top - bottom)
+    page.saveState()
+    page.setFillAlpha(0.045)
+    page.drawImage(str(EMBLEM), (WIDTH - size) / 2, (top + bottom - size) / 2,
+                   width=size, height=size, preserveAspectRatio=True, mask='auto')
+    page.restoreState()
+
+
 def render_body(page, text, top, bottom=220):
     lines = [line.strip() for line in text.split("\n\n") if line.strip()]
     for size, leading in ((12, 18), (11.5, 17), (11, 16)):
@@ -195,7 +205,9 @@ def render_pdf(key: str, document: DocumentType, agent: Agent, reference: str, d
     page.drawCentredString(WIDTH / 2, specimen_y, "SPÉCIMEN — NON VALABLE")
     page.setFillColor(INK)
     text = document_text(key, agent, date_label, wording) if body_text is None else body_text
-    top = render_body(page, text, top, bottom=310 if key == "bordereau-transmission" else 220)
+    body_bottom = 310 if key == "bordereau-transmission" else 220
+    body_watermark(page, top, body_bottom)
+    top = render_body(page, text, top, bottom=body_bottom)
     if key == "bordereau-transmission":
         # A transmission slip also identifies the enclosed item independently of prose.
         top -= 5

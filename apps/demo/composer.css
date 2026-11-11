@@ -94,3 +94,5 @@
 }
 
 .paper-body p { text-indent: 50%; }
+.composed-page .paper-body-emblem { left:50%; transform:translateX(-50%); max-width:none; margin:0; opacity:.045; filter:none; background:transparent; box-shadow:none; pointer-events:none; z-index:0; object-fit:contain; }
+.composed-page .paper-body { z-index:1; }
