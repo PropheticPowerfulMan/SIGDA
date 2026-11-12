@@ -1,0 +1,20 @@
+{
+  "source": "https://presidence.cd/",
+  "checked_on": "2026-11-12",
+  "website": "https://presidence.cd/",
+  "website_label": "www.presidence.cd",
+  "phone": "+243 81 940 21 22",
+  "email": "sgpr@presidence.cd",
+  "address": "Avenue Roi Baudouin, Gombe - Kinshasa",
+  "postal": "B.P. 201 Kin 38",
+  "contact_source": "Coordonnées transcrites du document fourni ; à confirmer avant une mise en production.",
+  "social": [
+    {"key": "facebook", "label": "Facebook", "url": "https://www.facebook.com/CdPresidence"},
+    {"key": "x", "label": "X / Twitter", "url": "https://twitter.com/presidence_rdc/"},
+    {"key": "instagram", "label": "Instagram", "url": "https://www.instagram.com/rdcpresidence/"},
+    {"key": "youtube", "label": "YouTube", "url": "https://www.youtube.com/c/Pr%C3%A9sidenceRDC"},
+    {"key": "linkedin", "label": "LinkedIn", "url": "https://www.linkedin.com/in/pr%C3%A9sidence-rdc-b12a57241/"},
+    {"key": "tiktok", "label": "TikTok", "url": "https://www.tiktok.com/@presidencerdc"},
+    {"key": "flickr", "label": "Flickr", "url": "https://www.flickr.com/photos/presidence_rdc/"}
+  ]
+}

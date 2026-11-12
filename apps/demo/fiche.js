@@ -25,8 +25,10 @@
         const parsed = match ? new Date(Date.UTC(Number(match[3]), monthIndex, Number(match[1]))) : null;
         const dateValid = parsed && parsed.getUTCFullYear() === Number(match[3])
             && parsed.getUTCMonth() === monthIndex && parsed.getUTCDate() === Number(match[1]);
-        const valid = [...data.keys()].length === 5
-            && ["m", "r", "d", "s", "h"].every(key => data.getAll(key).length === 1)
+        const hasDNA=data.has('a'),keys=hasDNA?['m','r','d','s','h','a','u','v','e']:['m','r','d','s','h'];
+        const dnaValid=!hasDNA||(data.get('e')==='sigda-dna-v1'&&/^[a-f0-9]{64}$/.test(data.get('a')||'')&&/^[a-f0-9]{8}-(?:[a-f0-9]{4}-){3}[a-f0-9]{12}$/.test(data.get('u')||'')&&/^[1-9][0-9]{0,8}$/.test(data.get('v')||''));
+        const valid = [...data.keys()].length === keys.length
+            && keys.every(key => data.getAll(key).length === 1) && dnaValid
             && Object.hasOwn(documents, model) && Object.hasOwn(styles, style)
             && /^SPEC-[A-Z0-9-]{1,60}$/.test(reference) && dateValid && /^[a-f0-9]{64}$/.test(hash);
         error.hidden = Boolean(valid);
@@ -36,6 +38,8 @@
             "sheet-reference": reference, "sheet-model": documents[model].title,
             "sheet-date": date, "sheet-style": styles[style], "sheet-hash": hash,
         })) document.getElementById(id).textContent = value;
+        for(const node of document.querySelectorAll('[data-sheet-dna]'))node.hidden=!hasDNA;
+        if(hasDNA){document.getElementById('sheet-dna').textContent=data.get('a');document.getElementById('sheet-identity').textContent=data.get('u')+' · Révision '+data.get('v');}
         fields.hidden = false;
     }
     readSheet();

@@ -52,9 +52,11 @@ Le guidage local est disponible dans la démonstration GitHub Pages. Le mode GPT
 
 Après la décision finale DIRCAB, la version validée peut être imprimée seule sur une feuille A4. Dans Django, ouvrez le PDF final conservé ; dans la simulation publique, ouvrez le document validé puis **Imprimer la version validée**. Les exemples et les aperçus restent non validés. Tous les documents de démonstration conservent la mention SPÉCIMEN — NON VALABLE.
 
-Les onze modèles utilisent un pied de page inspiré de l’attestation de service fournie le 11 novembre 2026. Il reprend la bande bleue, dorée et rouge ainsi que la disposition des coordonnées sur deux lignes. Les coordonnées sont transcrites de cet exemple, sans vérification de leur actualité. Le QR à droite ouvre une fiche publique lisible sur mobile, sans connexion. Il fonctionne aussi comme lien cliquable dans le PDF.
+Les onze modèles partagent un pied de page sur la largeur utile de la feuille : bande bleue, dorée et rouge, coordonnées sur deux lignes, sept icônes sociales cliquables et QR propre à la version. Les liens Facebook, X/Twitter, Instagram, YouTube, LinkedIn, TikTok et Flickr sont ceux référencés par [le site officiel de la Présidence](https://presidence.cd/) le 12 novembre 2026. Ils sont définis dans `config/institutional_links.json`. Le site, le courriel et les icônes sont des annotations URI dans les PDF. Les coordonnées transcrites du document fourni restent à confirmer avant production.
 
-La fiche affiche les indications déclarées dans le QR, dont la référence, le modèle, la date, le style et l’empreinte SHA-256 du corps du texte. L’empreinte suit la rédaction effectivement appliquée, y compris un texte personnalisé. Les retours de ligne sont normalisés en LF dans l’éditeur. Le corps du texte et les noms ne figurent pas dans le QR ; ses champs sont dans le fragment de l’URL, lu localement par la page. Cette fiche n’est pas comparée à un registre d’émission et n’authentifie pas le document. L’URL de démonstration est définie dans `apps/backend/sigda/document_qr.py`.
+L’ADN `sigda-dna-v1` associe un UUID stable, une révision et un SHA-256 du contenu et des métadonnées canoniques. La forme courte est imprimée ; le QR encode l’empreinte complète ou renvoie au registre privé. Le SHA-256 des octets du PDF final est conservé séparément à l’archivage. Les corrections créent une nouvelle révision, sans réécrire un PDF déjà validé.
+
+Sur GitHub Pages, le QR ouvre une fiche de lecture des indications déclarées ; aucun registre institutionnel n’est interrogé. Les anciens QR à cinq champs restent lisibles. Sur Django, les QR des dossiers enregistrés renvoient à une vérification après connexion et contrôle du périmètre documentaire. Le serveur compare l’UUID, la révision, le contenu enregistré et le PDF archivé ; les consultations sont journalisées. Une empreinte ou un QR copié ne constitue pas une signature électronique officielle et ne dispense pas de comparer le fichier reçu à l’empreinte du fichier archivé.
 
 Le bouton **Installer SIGDA** ouvre l’installation du navigateur lorsqu’elle est disponible et propose les étapes manuelles sur les autres appareils. L’application installée affiche une icône qui associe l’emblème au sigle SIGDA. La démonstration et l’atelier local ont chacun leur propre identifiant d’installation. L’installation depuis l’application locale nécessite un contexte sécurisé comme `http://127.0.0.1`. Hors connexion, la PWA affiche une page de reprise. Le service worker ne met en cache ni les dossiers, ni les PDF, ni les réponses de connexion.
 
@@ -68,7 +70,7 @@ python scripts/build_demo.py
 python -m http.server 8080 --bind 127.0.0.1 --directory dist/demo
 ```
 
-Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni et les 66 PDF fictifs avec leurs aperçus.
+Ouvrir [la prévisualisation locale](http://127.0.0.1:8080/). Le dossier `dist/demo` est le seul contenu de l’artefact Pages. Il contient l’interface statique, l’emblème fourni, 66 aperçus PNG fictifs et le guide PDF de démonstration. Les PDF administratifs finaux restent soumis au workflow.
 
 Le workflow [Démonstration GitHub Pages](.github/workflows/pages.yml) construit et publie cet artefact depuis `main`. Dans le dépôt SIGDA, choisir **GitHub Actions** comme source dans **Settings → Pages** pour activer la publication. L’adresse cible est [propheticpowerfulman.github.io/SIGDA](https://propheticpowerfulman.github.io/SIGDA/).
 
@@ -140,11 +142,15 @@ Les confirmations et les échecs apparaissent dans une fenêtre centrée, avec r
 
 Un indicateur discret nomme l’opération en cours (connexion, ouverture de page, préparation d’aperçu ou enregistrement). Les boutons concernés signalent leur état occupé aux lecteurs d’écran. Les opérations très courtes n’imposent aucun délai artificiel ; le retour depuis le cache de navigation réinitialise les indicateurs.
 
+À l’étape de vérification, **Aperçu grand format** ouvre une liseuse consacrée au document rempli. Elle propose un zoom de 20 à 250 %, l’ajustement à la largeur, la page entière et la taille 100 %. Sur mobile, la liseuse occupe l’écran et le document peut défiler dans les deux directions. Échap ferme la liseuse et restitue le focus au bouton d’origine. L’aperçu des dossiers enregistrés côté serveur utilise la même liseuse. Ce mode de lecture ne donne aucun accès supplémentaire au PDF final, réservé aux documents validés.
+
+Sur ordinateur, le menu se réduit progressivement en rail d’icônes et le contenu gagne sa largeur pendant la transition. Sur mobile, les entrées apparaissent successivement dans le panneau coulissant. Le bouton de menu change de forme selon son état. Ces effets sont désactivés avec la préférence système de réduction des animations.
+
 Les nouvelles compositions portent également un emblème en filigrane dans la zone d’écriture, à une opacité de 4,5 %. Le texte reste opaque et l’emblème d’en-tête conserve son rendu normal. Les fichiers déjà validés restent archivés dans leur version originale.
 
 ## Tableaux de bord et services d’affectation
 
-OPS, SECAD, AP et DIRCAB ont chacun un tableau de bord avec leurs tâches nominatives et indicateurs adaptés. Le tableau OPS suit ses documents ; SECAD suit ses contrôles ; AP suit ses visas ; DIRCAB suit ses décisions et conserve l’accès au pilotage global. Les données côté serveur sont filtrées par utilisateur, les statistiques globales restant réservées à DIRCAB.
+OPS, SECAD, AP et DIRCAB ont chacun un tableau de bord avec leurs tâches nominatives et indicateurs adaptés. Le tableau OPS suit ses documents ; SECAD suit ses contrôles ; AP suit ses visas ; DIRCAB suit ses décisions et conserve l’accès au pilotage global. Les données côté serveur sont filtrées par utilisateur, les statistiques globales restant réservées à DIRCAB et à la maintenance habilitée.
 
 Les services sont définis dans `config/services.json`. La composition les présente comme une liste déroulante en lecture seule, alimentée par le dossier agent. Les ajouts et corrections restent réservés à la maintenance ; l’import refuse les services absents de cette liste de démonstration, qui doit être adaptée à l’organigramme validé du Cabinet.
 
@@ -161,3 +167,19 @@ La configuration locale demeure limitée à localhost. Pour un serveur réel, `s
 Ces contrôles ne rendent pas un système inviolable. GitHub Pages reste une démonstration publique à données fictives. Une mise en service institutionnelle exige notamment hébergement administré, MFA/SSO, protection périmétrique, sauvegardes testées, mises à jour, supervision et audit indépendant. Le serveur de développement Django et SQLite ne constituent pas à eux seuls un environnement institutionnel de production. Référence : [liste de déploiement Django](https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/).
 
 Le seuil global par adresse peut être adapté avec `SIGDA_LOGIN_IP_LIMIT` (30 par défaut). Un réseau partagé ou un proxy doit être pris en compte lors de la recette, sans faire confiance aux en-têtes d’adresse fournis directement par un client. La limitation applicative ne remplace pas celle du proxy et la supervision des attaques distribuées.
+
+## Supervision et réception des demandes
+
+La maintenance possède un tableau de bord distinct. Sur Django, les demandes des quatre profils arrivent dans une file centralisée, filtrable et paginée. Le suivi conserve l’état, la réponse, l’intervenant et un historique ; les formulaires signalent une modification concurrente. Le demandeur retrouve sa réponse dans son espace. Les compteurs sont interrogés toutes les 20 secondes sans effacer la saisie de l’intervenant. Les journaux d’utilisation et d’interventions sont paginés ; le pilotage statistique est accessible à DIRCAB et aux mainteneurs habilités.
+
+Les mainteneurs sont des comptes actifs staff appartenant au seul groupe technique SIGDA_MAINTENANCE. Ils peuvent superviser les métadonnées et les demandes, importer des agents et renouveler la période. Ce rôle ne leur donne pas automatiquement accès au contenu de tous les documents et ne leur permet pas de prendre les décisions du circuit.
+
+La démonstration dispose d’un profil fictif `maintenance`, avec le même mot de passe public `SIGDA-demo-2026!`. Les demandes et réponses y sont simulées dans la base locale du navigateur, avec notification entre onglets de la même origine. Aucun serveur distant ni courriel de réception n’est simulé comme réel. Le compte technique Django nominatif conserve un mot de passe privé distinct ; les identifiants de démonstration ne doivent jamais être réutilisés en production.
+
+Seule la fenêtre de confirmation de connexion réussie a été retirée. La connexion reste journalisée et les erreurs, les confirmations d’enregistrement, les validations, les téléchargements et la déconnexion conservent leurs retours dédiés.
+
+## Guide illustré de démonstration
+
+La page de connexion publique propose le guide, avec vérification SHA-256 avant le lancement du téléchargement. Il décrit OPS, SECAD, AP, DIRCAB et Maintenance, leurs tableaux de bord, les procédures, les erreurs, la traçabilité et les limites d’exploitation. Son sommaire et ses liens sont cliquables. Les captures sont réelles et issues de services locaux isolés utilisant uniquement des dossiers fictifs.
+
+Le PDF distribué est conservé dans `docs/manual/Guide_utilisateur_SIGDA_demo.pdf`, ses sources et captures dans `docs/manual/`, et sa copie livrable dans `output/pdf/`. La compilation Pages le copie sous `guide-utilisateur-sigda-demo.pdf`. Le guide est volontairement extérieur aux répertoires statiques Django : aucun lien ni fichier de ce guide n’est ajouté à la connexion institutionnelle. Voir [la procédure de régénération](docs/manual/README.md).

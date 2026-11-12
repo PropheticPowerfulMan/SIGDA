@@ -32,7 +32,7 @@
     }
     window.SIGDAEffects={notify,begin};
     const originalFetch=window.fetch;
-    window.fetch=async function(...args){const end=begin(document.activeElement);try{return await originalFetch.apply(this,args);}finally{end();}};
+    window.fetch=async function(...args){const quiet=args[1]?.sigdaQuiet;if(quiet){const {sigdaQuiet,...options}=args[1];args[1]=options;}const end=quiet?()=>{}:begin(document.activeElement);try{return await originalFetch.apply(this,args);}finally{end();}};
     document.addEventListener('pointerdown',event=>{
         const button=event.target.closest('button,.button,.nav-link,.catalogue-card');if(!button||button.disabled||reduced.matches)return;
         const rect=button.getBoundingClientRect(),size=Math.max(rect.width,rect.height)*2,ink=document.createElement('span');ink.className='fx-ink';ink.setAttribute('aria-hidden','true');ink.style.cssText=`width:${size}px;height:${size}px;left:${event.clientX-rect.left-size/2}px;top:${event.clientY-rect.top-size/2}px`;

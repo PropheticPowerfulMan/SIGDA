@@ -19,7 +19,7 @@
     <script src="./menu.js" defer></script>
     <script src="./pwa.js" defer></script>
     <script src="./catalogue.js" defer></script><script src="./service.js" defer></script><script src="./support.js" defer></script>
-    <script src="./agent-store.js" defer></script>
+    <script src="./document-branding.js" defer></script><script src="./agent-store.js" defer></script>
     <script src="./app.js" defer></script>
     <script src="./requests.js" defer></script><script src="./dashboards.js" defer></script><script src="./statistics.js" defer></script>
     <script src="./print.js" defer></script>
@@ -31,7 +31,8 @@
 <link rel="stylesheet" href="./service.css">
 <link rel="stylesheet" href="./typography.css"><link rel="stylesheet" href="./responsive.css">
 <link rel="stylesheet" href="./effects.css"><script src="./effects.js" defer></script>
-<script src="./shortcuts.js" defer></script>
+<script src="./shortcuts.js" defer></script><link rel="stylesheet" href="./maintenance-dashboard.css"><script src="./maintenance-dashboard.js" defer></script>
+<link rel="stylesheet" href="./document-viewer.css"><script src="./document-viewer.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -60,14 +61,14 @@
             <div class="institution-caption">Présidence de la République<span>Cabinet du Président</span></div>
             <nav id="side-nav" class="side-nav" aria-label="Navigation principale">
                 <a class="nav-link" data-roles="OPS" href="#compose" title="Créer un document"><span class="assistant-mark" aria-hidden="true">＋</span><span class="nav-label">Créer un document</span></a>
-                <p class="nav-group-label">Espace de travail</p>
-                <a class="nav-link" href="#overview" title="Vue d’ensemble" aria-current="location"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span class="nav-label">Vue d’ensemble</span></a>
+                <p class="nav-group-label">Espace de travail</p><a class="nav-link" data-roles="MAINTENANCE" href="#maintenance" title="Tableau Maintenance"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Tableau Maintenance</span></a>
+                <a class="nav-link" data-roles="OPS SECAD AP DIRCAB" href="#overview" title="Vue d’ensemble" aria-current="location"><svg class="icon" aria-hidden="true"><use href="#i-grid"/></svg><span class="nav-label">Vue d’ensemble</span></a>
                 <a class="nav-link" data-roles="OPS" href="#directory" title="Dossiers agents"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg><span class="nav-label">Dossiers agents</span></a>
-                <a class="nav-link" href="#documents" title="Atelier documentaire"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span class="nav-label">Atelier documentaire</span></a>
-                <a class="nav-link" href="#requests" title="Demandes"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span class="nav-label">Mes tâches</span></a>
-                <a class="nav-link" data-roles="DIRCAB" href="#activity" title="Activité"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activité</span></a>
+                <a class="nav-link" data-roles="OPS SECAD AP DIRCAB" href="#documents" title="Atelier documentaire"><svg class="icon" aria-hidden="true"><use href="#i-file"/></svg><span class="nav-label">Atelier documentaire</span></a>
+                <a class="nav-link" data-roles="OPS SECAD AP DIRCAB" href="#requests" title="Demandes"><svg class="icon" aria-hidden="true"><use href="#i-layers"/></svg><span class="nav-label">Mes tâches</span></a>
+                <a class="nav-link" data-roles="DIRCAB MAINTENANCE" href="#activity" title="Activité"><svg class="icon" aria-hidden="true"><use href="#i-activity"/></svg><span class="nav-label">Activité</span></a>
                 <a class="nav-link" href="#assistant" title="Assistant"><span class="assistant-mark" aria-hidden="true">IA</span><span class="nav-label">Assistant</span></a>
-                <a class="nav-link" href="#support" title="Maintenance et assistance"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Maintenance</span></a><button class="nav-link nav-exit" type="button" data-logout title="Exit · Déconnexion" aria-label="Exit, se déconnecter"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span class="nav-label">Exit</span></button>
+                <a class="nav-link" data-roles="OPS SECAD AP DIRCAB" href="#support" title="Maintenance et assistance"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Maintenance</span></a><button class="nav-link nav-exit" type="button" data-logout title="Exit · Déconnexion" aria-label="Exit, se déconnecter"><svg class="icon" aria-hidden="true"><use href="#i-logout"/></svg><span class="nav-label">Exit</span></button>
             </nav>
             <div class="sidebar-footer">
                 <div class="side-status"><span class="status-dot" aria-hidden="true"></span><div><strong>Mode démonstration</strong><p>Données fictives</p></div></div>
@@ -135,6 +136,7 @@
                         </div>
                     </div>
                 </section>
+                <!-- MAINTENANCE_PANEL -->
                 <section data-view="directory" hidden>
                     <div class="page-heading"><div><p class="eyebrow">Répertoire de démonstration</p><h1>Dossiers agents</h1><p class="page-description">Recherchez par nom, matricule ou service.</p></div></div>
                     <section class="panel database-panel"><header class="panel-header"><div><h2>Base agents de démonstration</h2><p>Choisissez un dossier enregistré pour remplir un document.</p></div><button class="button button-primary" type="button" data-new-agent>Demander un ajout</button></header><div class="directory-tools"><label for="database-search">Rechercher par nom, matricule ou service</label><input id="database-search" data-database-search type="search" placeholder="Rechercher dans la base agents"></div><div class="table-scroll"><table class="agent-table"><thead><tr><th>Nom</th><th>Matricule</th><th>Service</th><th>Document</th></tr></thead><tbody data-database-list></tbody></table></div><p class="directory-footer" data-database-status role="status"></p><p class="field-help">Base locale à cet appareil. Les dossiers restent disponibles après rechargement. Utilisez des données fictives dans cette démonstration.</p></section>
@@ -246,7 +248,7 @@
                     <ul class="demo-list" id="demo-request-list"></ul>
                 </section>
                 <section data-view="activity" hidden>
-                    <div class="page-heading"><div><p class="eyebrow">DIRCAB · Supervision institutionnelle</p><h1>Activité et traçabilité</h1><p class="page-description">Mesurer les flux, comprendre les délais et suivre les responsabilités.</p></div><span class="status-pill">Accès réservé à DIRCAB</span></div>
+                    <div class="page-heading"><div><p class="eyebrow">Supervision institutionnelle et technique</p><h1>Activité et traçabilité</h1><p class="page-description">Mesurer les flux, comprendre les délais et suivre les responsabilités.</p></div><span class="status-pill">DIRCAB et maintenance habilitée</span></div>
                     <!-- STATISTICS_PANEL -->
                 </section>
                 <section data-view="support" hidden><div class="page-heading"><div><p class="eyebrow">Cabinet du Président de la République</p><h1>Maintenance et assistance</h1><p class="page-description">L’ajout et la correction des agents, les mises à jour et le renouvellement annuel sont pris en charge par l’équipe habilitée.</p></div></div><div class="workbench"><section class="panel"><div class="panel-header"><div><h2>Préparer une demande</h2><p>Dans cette démonstration, le fichier est à transmettre à votre équipe de maintenance. Aucun envoi automatique n’est effectué.</p></div></div><form class="support-form" data-support-form><label>Nature de l’intervention<select name="category"><option value="agent_add">Ajout d’un agent</option><option value="agent_update">Correction d’un dossier agent</option><option value="app_update">Mise à jour de l’application</option><option value="renewal">Renouvellement annuel</option><option value="assistance">Assistance</option></select></label><label>Objet et référence du dossier concerné<textarea name="details" rows="5" maxlength="2000" required placeholder="Décrivez l’intervention souhaitée et la référence du dossier, si elle existe."></textarea></label><button class="button button-primary" type="submit">Télécharger la demande à transmettre</button><p role="status" data-support-status></p></form></section><section class="panel"><div class="panel-header"><h2>Demandes préparées sur cet appareil</h2></div><ul class="demo-list" data-support-list></ul></section></div></section><section data-view="assistant" hidden>

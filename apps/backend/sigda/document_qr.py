@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 SPECIMEN_SHEET_URL = "https://propheticpowerfulman.github.io/SIGDA/fiche.html"
 
 
-def specimen_link(key, reference, date_label, style, text):
+def specimen_link(key, reference, date_label, style, text, identity=None):
     """Describe the specimen without exposing its body or personal names in the QR."""
     fields = {
         "m": key,
@@ -14,5 +14,7 @@ def specimen_link(key, reference, date_label, style, text):
         "s": style,
         "h": sha256(text.encode("utf-8")).hexdigest(),
     }
+    if identity:
+        fields.update(a=identity['hash'],u=identity['id'],v=str(identity['revision']),e=identity['schema'])
     # The fragment is read locally by the sheet, rather than sent to the host.
     return SPECIMEN_SHEET_URL + "#" + urlencode(fields)

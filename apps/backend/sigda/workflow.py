@@ -94,6 +94,9 @@ def queue(request):
 
 
 def render_detail(request, record, form=None, conflict=False, status=200):
+    from .document_identity import composed_identity
+    from .document_integrity import link_for
+    dna=composed_identity(record.payload,str(record.pk),record.revision) if record.payload else None
     task = task_for(record)
     role = role_for(request.user)
     assigned = task and task.assignee_id == request.user.pk and task.stage == role
@@ -105,7 +108,9 @@ def render_detail(request, record, form=None, conflict=False, status=200):
         'can_edit': record.owner_id == request.user.pk and role == 'OPS' and record.status == Status.DRAFT,
         'can_reject': bool(assigned and role == 'DIRCAB'), 'can_print': bool(record.status == Status.APPROVED and record.issued_pdf),
         'decision_form': form if form is not None else DecisionForm(record=record, actor=request.user), 'conflict': conflict,
-        'accesses': record.accesses.select_related('actor').order_by('-created_at')[:20]}, status=status)
+        'dna':dna,'integrity_url':link_for(request,record,dna) if dna else '',
+        'accesses': record.accesses.filter(action='final_pdf_open').select_related('actor').order_by('-created_at')[:20],
+        'integrity_checks':record.accesses.filter(action='integrity_check').select_related('actor').order_by('-created_at')[:20]}, status=status)
 
 
 @never_cache
@@ -161,7 +166,8 @@ def transition(request, pk):
         if set(approvals.values_list('stage', flat=True)) != {'SECAD', 'AP'}:
             return render_detail(request, record, conflict=True, status=409)
         from .composition import render_composed
-        archived = render_composed(record.payload)
+        from .document_integrity import base_link
+        archived = render_composed(record.payload,document_id=str(record.pk),revision=record.revision,verification_url=base_link(request,record.pk))
         updates.update(issued_pdf=archived, issued_hash=sha256(archived).hexdigest(), issued_at=now)
     try:
         with transaction.atomic():

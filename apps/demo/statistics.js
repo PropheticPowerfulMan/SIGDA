@@ -24,7 +24,7 @@ window.SIGDAStatistics = (() => {
 (() => {
     const root=document.querySelector('[data-statistics]');if(!root)return;
     const source=document.getElementById('statistics-data');
-    if(!source&&window.SIGDASession?.role!=='DIRCAB')return;
+    if(!source&&!['DIRCAB','MAINTENANCE'].includes(window.SIGDASession?.role))return;
     let data=source?JSON.parse(source.textContent):{records:[],usage:[]};
     const nf=new Intl.NumberFormat('fr',{maximumFractionDigits:1});
     const fmt=new Intl.DateTimeFormat('fr',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Kinshasa'});

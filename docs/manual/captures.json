@@ -1,0 +1,420 @@
+{
+  "edition": "2026-11-12",
+  "environment": "Services locaux isolés, données fictives, Chrome sans profil personnel",
+  "captures": [
+    {
+      "file": "01-connexion.jpg",
+      "label": "Connexion et téléchargement du guide",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/login.html",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "0efd134a01936b5132c4bbe25721863934604a3cc0044b6794b908858af3801b"
+    },
+    {
+      "file": "02-connexion-mobile.jpg",
+      "label": "Connexion sur téléphone",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/login.html",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "757c78f9f538d321bdcbdaf5c8af5c8bd69de3107b241d83b43e354ea75c2bfb"
+    },
+    {
+      "file": "03-erreur-connexion.jpg",
+      "label": "Erreur réelle de connexion simulée",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/login.html",
+      "sha256": "28c4b8f5f2f6ad044f9d97666c71219d9a9c39a981db314eb1a7b9bd0f9891dc"
+    },
+    {
+      "file": "04-tableau-ops.jpg",
+      "label": "Tableau de bord OPS",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "574f262616185c2643b89f00c95947217aca57493f7c07054a806b35056a5da7"
+    },
+    {
+      "file": "05-menu-rail.jpg",
+      "label": "Menu réduit en rail d’icônes",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "a8a894811edaea30b13bb587bb2869f869fdfc1319aa3a23d5649a8dbd99e8a7"
+    },
+    {
+      "file": "06-menu-mobile.jpg",
+      "label": "Panneau latéral mobile",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "475b9bfbf5d20cc12d8b797e59eecbe12f1f2092450bf2c8f173a209e3ddd002"
+    },
+    {
+      "file": "07-dossiers-agents.jpg",
+      "label": "Dossiers fictifs gérés par la maintenance",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#directory",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "fcb376a1b45a46524cadab6fcb1e978332566288d21a5b4738475f7e24658487"
+    },
+    {
+      "file": "08-catalogue.jpg",
+      "label": "Catalogue des modèles administratifs",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#documents",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "9ba95579545a8b030b8c462a30767606733b26b3c355941fa529d507149aa2ea"
+    },
+    {
+      "file": "09-choix-modele.jpg",
+      "label": "Création guidée : choix du modèle",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "6d5e72ef0ad135d181bca5ec6c1673123772dee76c6f94b1c9ba5f63fd60cc0f"
+    },
+    {
+      "file": "10-donnees-agent.jpg",
+      "label": "Données du dossier et service d’affectation",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "b00b41a7b99792039a7c3fda493f62640598c8ac8f5cd6839c8cad29121919e0"
+    },
+    {
+      "file": "11-details.jpg",
+      "label": "Informations propres au document",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "c80b7adaf379be82a5927ceddffec25f00cd97bce1152d48662c27ce13e5aabf"
+    },
+    {
+      "file": "12-verification.jpg",
+      "label": "Vérification du document rempli",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "e4aa388add451a8838ebbc7b97fd9085416300c4326c00c13024356d4b18d7e7"
+    },
+    {
+      "file": "13-grand-format.jpg",
+      "label": "Liseuse grand format : lecture de la page entière",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "8b9e67d1be326acd560d2484d6aa206862b5babfff181b92501d7863715ff6ee"
+    },
+    {
+      "file": "14-pied-page.jpg",
+      "label": "Liens institutionnels et QR du document",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "9f50135fbc2e0520842bfd5436b6871a7dadf4febb0fe9f3056183969a8cbe7c"
+    },
+    {
+      "file": "15-adn-public.jpg",
+      "label": "Identifiant, révision et ADN du contenu",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "de421337d4fb6751fced6366eac5c957ae2ab7e415b71bc8a0499c05aebcc7b8"
+    },
+    {
+      "file": "16-soumission-ops.jpg",
+      "label": "OPS confie le document à SECAD",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#requests",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "917993c2c28f8d6753fa436d19b0090a3c34af022ff8d764bbe6d22bbee77322"
+    },
+    {
+      "file": "17-tableau-secad.jpg",
+      "label": "Tableau de bord SECAD",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "a63ff2f3a75f9044edaff23f9732ce5eb54901455916d134383030e1316d3193"
+    },
+    {
+      "file": "18-action-secad.jpg",
+      "label": "Action de SECAD dans le circuit",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#requests",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "b5c99ceaab471308c0f0eb6734e9c85507ef36b333956abbc5c54c8f8f910e75"
+    },
+    {
+      "file": "19-tableau-ap.jpg",
+      "label": "Tableau de bord AP",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "31675696e68d1d120c4fb98b5f47fbbc9435a80cee5b5cfbc4ea50d4ce0f5f96"
+    },
+    {
+      "file": "20-action-ap.jpg",
+      "label": "Action de AP dans le circuit",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#requests",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "2731fed33a70ff5b705a15c6c32a8ea616d257f30ad4f29c4f5779ab9c81719c"
+    },
+    {
+      "file": "21-tableau-dircab.jpg",
+      "label": "Tableau de bord DIRCAB",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "392f5e5bfa9ffeb9c1597a01014ed64a4a494b75abb75eec08bc97309d5d1094"
+    },
+    {
+      "file": "22-action-dircab.jpg",
+      "label": "Action de DIRCAB dans le circuit",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#requests",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "4e472e25e94524ee9e3dc14fcb14c0ba94338c42e020d89ec3adb1ee38dfd390"
+    },
+    {
+      "file": "23-document-valide.jpg",
+      "label": "Version validée et commande d’impression",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#compose",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "8eea03fb677a3d17cb0f45e35de13b7b866e9214c9bd88c707e59d4a29dfd1d9"
+    },
+    {
+      "file": "24-statistiques.jpg",
+      "label": "Pilotage global réservé à DIRCAB",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#activity",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "194b81a3175a236646a097f1f5fef4001259da9a82162641aaf8fdbc85cd3302"
+    },
+    {
+      "file": "25-statistiques-mobile.jpg",
+      "label": "Indicateurs et graphiques sur téléphone",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#activity",
+      "viewport": {
+        "width": 390,
+        "height": 844
+      },
+      "sha256": "ff1c79a2f3beb03cf0f4130369394f35778a7375d0fbda72a7585350907132b0"
+    },
+    {
+      "file": "26-assistant.jpg",
+      "label": "Guidage local et limites du mode GPT",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#assistant",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "a9d32430098c9a4f6c8964ca86516a3a37d298bb5531d62e0424f377c17e4007"
+    },
+    {
+      "file": "27-assistance.jpg",
+      "label": "Préparation d’une demande à transmettre",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#support",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "01e32cffbd4370e7ed3f2c2fb618de580c40f64960e49675e3e023311ecc89fc"
+    },
+    {
+      "file": "32-maintenance-public.jpg",
+      "label": "Supervision Maintenance de la démonstration",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#maintenance",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "765f8bd0f30e3a8e2ee52a027750dd1c0feddfa2301de44c063a5df01392c95f"
+    },
+    {
+      "file": "33-demande-simulee.jpg",
+      "label": "Prise en charge simulée d’une demande",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#maintenance",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "7a8485967ad621a14efcfa80540a38a037d4871209f30606430acdd7c512015c"
+    },
+    {
+      "file": "34-reponse-simulee.jpg",
+      "label": "Réponse visible par le demandeur dans la simulation",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#support",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "50e53b3bda4320986182b80d88782823a7c234d33861ec5d1f442fe305d3c5b2"
+    },
+    {
+      "file": "28-mode-sombre.jpg",
+      "label": "Thème sombre",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/?v=dbaf95e7121c#overview",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "932568f0d94a7928929ddd23d4d205b1f8c75d933a68ecf1bab7f68e9492a757"
+    },
+    {
+      "file": "29-installation.jpg",
+      "label": "Consignes réelles d’installation PWA",
+      "surface": "Démonstration publique",
+      "url": "http://127.0.0.1:8858/login.html",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "1a788fc81ff039a2932c3e61a2cab44cf1de9dacb80f332114c970e0dc623667"
+    },
+    {
+      "file": "30-registre-prive.jpg",
+      "label": "Comparaison effective au registre et au PDF archivé",
+      "surface": "Serveur Django isolé - données fictives",
+      "url": "http://127.0.0.1:8859/verification/eab54328-23ed-4d62-8e8c-f4faad2ffd4a/?revision=1&dna=dc6a66b94fe0175c2bce6e572f94702f4ce0dd69a2b51b1d261a1a43fd6d76c5",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "c9a648724e0086467d0ac5e25dc86e58b686618dc8220484d19e9a94a91c187a"
+    },
+    {
+      "file": "31-maintenance.jpg",
+      "label": "Tableau de bord de supervision Maintenance",
+      "surface": "Serveur Django isolé - données fictives",
+      "url": "http://127.0.0.1:8859/maintenance/",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "8bf0a0d9581f66350ad784ec36909cd0410ea266ed7f43154fc39737becc9d30"
+    },
+    {
+      "file": "35-file-serveur.jpg",
+      "label": "Réception centralisée des demandes du Cabinet",
+      "surface": "Serveur Django isolé - données fictives",
+      "url": "http://127.0.0.1:8859/maintenance/",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "343cb78e18e5175d7115deab3a992ec839a863daf9b8d0fa5e4673ab6b791fdd"
+    },
+    {
+      "file": "37-outils-techniques.jpg",
+      "label": "Import des agents et période annuelle",
+      "surface": "Serveur Django isolé - données fictives",
+      "url": "http://127.0.0.1:8859/maintenance/",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "fc73afbe725cafa51f9ee7de296fcfc83f566b6efd9a241c26f80e30b8ca287e"
+    },
+    {
+      "file": "38-journal-maintenance.jpg",
+      "label": "Historique des interventions techniques",
+      "surface": "Serveur Django isolé - données fictives",
+      "url": "http://127.0.0.1:8859/maintenance/",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "3dc9fce7a313ebf50d68915a38c9ec366515d6a158fd23b787a983f99894e486"
+    },
+    {
+      "file": "36-reponse-serveur.jpg",
+      "label": "Réponse de maintenance reçue dans l’espace du demandeur",
+      "surface": "Serveur Django isolé - données fictives",
+      "url": "http://127.0.0.1:8859/assistance/",
+      "viewport": {
+        "width": 1180,
+        "height": 850
+      },
+      "sha256": "e9f28565b1211ce7652bbcd07d1becadacc1ede1a22df7ffa4bf2cda265a1a49"
+    }
+  ]
+}

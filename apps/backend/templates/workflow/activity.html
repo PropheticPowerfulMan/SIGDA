@@ -1,8 +1,8 @@
 {% extends "workspace_base.html" %}
 {% load static %}
-{% block title %}Pilotage DIRCAB · SIGDA{% endblock %}
+{% block title %}Activité et traçabilité · SIGDA{% endblock %}
 {% block extra_head %}<link rel="stylesheet" href="{% static 'statistics.css' %}">{{ statistics_data|json_script:"statistics-data" }}<script src="{% static 'statistics.js' %}" defer></script>{% endblock %}
 {% block content %}
-<section class="page-heading"><div><p class="eyebrow">DIRCAB · Supervision institutionnelle</p><h1>Activité et traçabilité</h1><p class="page-description">Mesurer les flux, comprendre les délais et suivre les responsabilités.</p></div><span class="status-pill">Accès réservé à DIRCAB</span></section>
+<section class="page-heading"><div><p class="eyebrow">{% if is_maintainer %}Maintenance · Supervision technique{% else %}DIRCAB · Supervision institutionnelle{% endif %}</p><h1>Activité et traçabilité</h1><p class="page-description">Mesurer les flux, comprendre les délais et suivre les responsabilités.</p></div><span class="status-pill">DIRCAB et maintenance habilitée</span></section>
 {% include "statistics_panel.html" %}
 {% endblock %}

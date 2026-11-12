@@ -6,18 +6,35 @@ from django import forms
 from django.contrib.auth import get_user_model
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
+from django.core.paginator import Paginator
 from django.db import transaction
+from django.db.models import Count, Q, Case, When, IntegerField
 from django.shortcuts import get_object_or_404, redirect, render
-from django.http import Http404
+from django.http import Http404, JsonResponse
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
+from django.utils import timezone
+from django.utils.dateparse import parse_datetime
 
 from .composition import AgentForm
 from .composition_schema import SERVICES
-from .models import AgentRecord, MaintenanceEvent, ServiceValidity, SupportTicket
+from .models import AgentRecord, MaintenanceEvent, ServiceValidity, SupportTicket, DocumentRequest, ValidationTask, UsageEvent
 from .roles import is_maintainer, role_for
 from .service_policy import annual_end, policy
 from .usage import log_usage
+
+
+def dashboard_counts():
+    return SupportTicket.objects.aggregate(open=Count('id',filter=Q(state='open')),processing=Count('id',filter=Q(state='processing')),resolved=Count('id',filter=Q(state='resolved')),total=Count('id'))
+
+
+@never_cache
+@login_required
+@require_http_methods(['GET'])
+def status(request):
+    if not is_maintainer(request.user):raise PermissionDenied
+    latest=SupportTicket.objects.order_by('-updated_at').values_list('updated_at',flat=True).first()
+    return JsonResponse({'counts':dashboard_counts(),'latest':latest.isoformat() if latest else '', 'checked_at':timezone.now().isoformat()})
 
 
 class TicketForm(forms.ModelForm):
@@ -100,6 +117,7 @@ def administration(request):
     validity_form = ValidityForm(initial={'starts_on': policy()['start']})
     import_form = ImportForm()
     problem = ''
+    conflict=False
     if request.method == 'POST':
         action = request.POST.get('action')
         if action == 'validity':
@@ -135,19 +153,31 @@ def administration(request):
                 raise Http404
             ticket = get_object_or_404(SupportTicket, pk=ticket_id)
             state = request.POST.get('state'); response = request.POST.get('response', '').strip()
+            try:expected=parse_datetime(request.POST.get('expected_update',''))
+            except (ValueError,TypeError):expected=None
             if state not in dict(SupportTicket.STATES) or not response or len(response) > 1000:
                 problem = 'Indiquez un état valide et une réponse de 1 à 1 000 caractères.'
+            elif request.POST.get('expected_update') and expected!=ticket.updated_at:
+                problem='Cette demande a été actualisée par un autre intervenant. Relisez la réponse courante avant de reprendre le suivi.'
+                conflict=True
             else:
                 with transaction.atomic():
-                    ticket.state = state; ticket.response = response; ticket.handled_by = request.user; ticket.save()
-                    MaintenanceEvent.objects.create(actor=request.user, action='ticket_update', details={'ticket': str(ticket.pk), 'state': state})
-                request.session['sigda-feedback'] = 'L’opération de maintenance a été enregistrée et journalisée.'
-                return redirect('maintenance')
+                    previous=ticket.state
+                    if not SupportTicket.objects.filter(pk=ticket.pk,updated_at=ticket.updated_at).update(state=state,response=response,handled_by=request.user,updated_at=timezone.now()):
+                        problem='La demande a changé pendant votre saisie. Actualisez avant de reprendre.'
+                        conflict=True
+                    else:
+                        MaintenanceEvent.objects.create(actor=request.user, action='ticket_update', details={'ticket': str(ticket.pk), 'from_state':previous,'state': state,'response':response})
+                        log_usage(request.user,'support_update')
+                if not problem:
+                    request.session['sigda-feedback'] = 'L’opération de maintenance a été enregistrée et journalisée.'
+                    return redirect('maintenance')
         else:
             problem = 'Action de maintenance inconnue.'
     labels = {'agents_import': 'Import des agents', 'validity_update': 'Période annuelle actualisée', 'ticket_update': 'Suivi d’une intervention'}
     journal = []
-    for event in MaintenanceEvent.objects.select_related('actor')[:30]:
+    journal_page=Paginator(MaintenanceEvent.objects.select_related('actor').all(),20).get_page(request.GET.get('journal_page'))
+    for event in journal_page:
         details = event.details
         summary = details.get('reason', '')
         if event.action == 'agents_import':
@@ -155,9 +185,25 @@ def administration(request):
         elif event.action == 'validity_update':
             summary = f"Début : {details.get('start', '')} ; échéance exclusive : {details.get('end', '')}. {summary}"
         elif event.action == 'ticket_update':
-            summary = f"Demande {details.get('ticket', '')} : {dict(SupportTicket.STATES).get(details.get('state'), '')}."
+            summary = f"Demande {details.get('ticket', '')} : {dict(SupportTicket.STATES).get(details.get('from_state'), '')} → {dict(SupportTicket.STATES).get(details.get('state'), '')}. {details.get('response','')}"
         journal.append((event, labels.get(event.action, 'Intervention technique'), summary))
-    return render(request, 'maintenance.html', {'current_view': 'maintenance', 'current_label': 'Administration technique',
+    selected=request.GET.get('state','all')
+    tickets=SupportTicket.objects.select_related('owner','handled_by')
+    if selected in dict(SupportTicket.STATES):tickets=tickets.filter(state=selected)
+    else:selected='all'
+    tickets=tickets.annotate(priority=Case(When(state='open',then=0),When(state='processing',then=1),default=2,output_field=IntegerField())).order_by('priority','-created_at')
+    page=Paginator(tickets,15).get_page(request.GET.get('page'))
+    counts=dashboard_counts();latest=SupportTicket.objects.order_by('-updated_at').values_list('updated_at',flat=True).first()
+    load={row['stage']:row['total'] for row in ValidationTask.objects.filter(state='pending').values('stage').annotate(total=Count('id'))}
+    usage_page=Paginator(UsageEvent.objects.select_related('actor').order_by('-created_at','-pk'),20).get_page(request.GET.get('usage_page'))
+    usage_labels={'login':'Connexion','logout':'Déconnexion','preview':'Préparation d’un aperçu','draft_create':'Création d’un brouillon','draft_update':'Correction d’un brouillon','submit':'Soumission','approve':'Validation / visa','return':'Retour pour correction','reject':'Refus','support_request':'Demande de maintenance','support_update':'Suivi d’une demande','agents_import':'Import des agents','final_pdf_open':'Ouverture du PDF final','verify_integrity':'Vérification de l’ADN'}
+    for event in usage_page:event.operation_label=usage_labels.get(event.action,event.action)
+    return render(request, 'maintenance.html', {'current_view': 'maintenance', 'current_label': 'Tableau de bord Maintenance',
         'validity_form': validity_form, 'import_form': import_form, 'service_choices': SERVICES, 'problem': problem,
-        'all_tickets': SupportTicket.objects.select_related('owner')[:50],
-        'maintenance_events': journal})
+        'counts':counts,'selected_state':selected,'ticket_page':page,'all_tickets':page,
+        'latest_update':latest.isoformat() if latest else '',
+        'technical_metrics':[('Agents enregistrés',AgentRecord.objects.count()),('Comptes actifs',get_user_model().objects.filter(is_active=True).count()),('PDF archivés',DocumentRequest.objects.exclude(issued_pdf__isnull=True).exclude(issued_pdf=b'').count()),('Tâches en attente',ValidationTask.objects.filter(state='pending').count())],
+        'workflow_load':[{'stage':stage,'total':load.get(stage,0)} for stage in ['OPS','SECAD','AP','DIRCAB']],
+        'recent_usage':usage_page,'usage_page':usage_page,'journal_page':journal_page,
+        'https_active':request.is_secure(),
+        'maintenance_events': journal},status=409 if conflict else 200)

@@ -2,7 +2,7 @@
 {% load static %}
 {% block title %}Créer un document · SIGDA{% endblock %}
 {% block body_class %}specimen-page composition-page{% endblock %}
-{% block extra_head %}<link rel="stylesheet" href="{% static 'print.css' %}"><link rel="stylesheet" href="{% static 'composer.css' %}"><script src="{% static 'qrcode.js' %}" defer></script><script src="{% static 'composer.js' %}" defer></script>{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'print.css' %}"><link rel="stylesheet" href="{% static 'composer.css' %}"><script src="{% static 'qrcode.js' %}" defer></script><script src="{% static 'document-branding.js' %}" defer></script><script src="{% static 'composer.js' %}" defer></script>{% endblock %}
 {% block content %}
 <section class="page-heading"><div><p class="eyebrow">Création guidée</p><h1>Créer un document</h1><p class="page-description">Les données de la base agents deviennent le contenu de votre document.</p></div></section>
 {{ composition_schema|json_script:"composition-schema" }}{{ composition_models|json_script:"composition-models" }}{{ composition_styles|json_script:"composition-styles" }}{{ composition_agents|json_script:"composition-agents" }}

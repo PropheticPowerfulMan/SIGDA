@@ -66,3 +66,11 @@
 - Services d’affectation contrôlés et tableaux de bord propres aux quatre profils.
 - Icônes PWA basées sur l’emblème de la RDC, avec nouvelles URL et identifiant SIGDA conservé.
 - Limitation des connexions, en-têtes et sessions renforcés, configuration HTTPS explicite.
+- Liseuse grand format du document créé ou enregistré : zoom, largeur, page entière et fermeture au clavier, avec impression toujours soumise au circuit de validation.
+- Réduction progressive du menu sur ordinateur, rail d’icônes conservé, apparition séquencée du menu mobile et bouton animé.
+
+- Pied de page commun aux onze modèles : deux lignes de coordonnées, sept icônes et liens sociaux officiels référencés, liens PDF actifs et marge d’impression préservée.
+- ADN documentaire versionnée : UUID, révision, SHA-256 du contenu, QR et vérification privée journalisée ; empreinte du PDF final distincte.
+- Guide illustré couvrant les cinq espaces et toutes les captures, distribué uniquement sur la connexion de démonstration avec contrôle SHA-256.
+- Tableau de bord Maintenance, file centrale des demandes et réponses, détection des mises à jour, filtres et journaux paginés ; simulation locale explicite sur Pages.
+- Suppression de la seule confirmation de connexion réussie ; conservation de la journalisation et des autres fenêtres de résultat.

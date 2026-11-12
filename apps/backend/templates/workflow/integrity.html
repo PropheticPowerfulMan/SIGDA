@@ -1,0 +1,10 @@
+{% extends "workspace_base.html" %}{% load static %}
+{% block title %}ADN numérique du document · SIGDA{% endblock %}
+{% block extra_head %}<link rel="stylesheet" href="{% static 'sigda/workflow.css' %}">{% endblock %}
+{% block content %}
+<section class="page-heading"><div><p class="eyebrow">Registre documentaire privé</p><h1>Vérifier l’ADN du document</h1><p class="page-description">La lecture du QR est comparée au dossier conservé sur le serveur, dans votre périmètre d’accès.</p></div></section>
+<section class="panel identity-card"><span class="status-pill">{% if valid %}Empreinte conforme au registre{% else %}Correspondance non établie{% endif %}</span><h2>{{ record.payload.reference }}</h2>
+<p>{% if valid and approved %}La révision correspond au registre et le fichier PDF archivé est intact.{% elif valid %}La révision correspond au registre. Le document est encore dans le circuit : l’impression finale n’est pas autorisée.{% else %}Le lien ne correspond pas à la révision courante, ou une empreinte n’est plus conforme. Consultez le dossier et signalez l’écart avant toute utilisation.{% endif %}</p>
+<dl class="composition-review"><div><dt>Identifiant unique</dt><dd>{{ dna.id }}</dd></div><div><dt>Révision / état</dt><dd>{{ dna.revision }} · {{ record.get_status_display }}</dd></div><div><dt>ADN numérique SHA-256 · {{ dna.schema }}</dt><dd><code class="file-hash">{{ dna.hash }}</code></dd></div>{% if record.issued_hash %}<div><dt>SHA-256 du fichier PDF final</dt><dd><code class="file-hash">{{ record.issued_hash }}</code></dd></div>{% endif %}</dl>
+<a class="button button-primary" href="{{ detail_url }}">Consulter le dossier et son historique</a><p class="field-help">Cette vérification porte sur le registre et les fichiers conservés. Une copie visuelle du QR ne prouve pas, à elle seule, l’intégrité d’une feuille ou d’un fichier reçu. L’ADN n’est pas une signature électronique officielle.</p></section>
+{% endblock %}

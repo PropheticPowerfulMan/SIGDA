@@ -16,10 +16,10 @@ DEMO = ROOT / "apps" / "demo"
 DIST = ROOT / "dist"
 OUTPUT = DIST / "demo"
 STATIC_FILES = (
-    "index.html", "login.html", "app.css", "login.css",
+    "index.html", "login.html", "app.css", "login.css", "guide-download.js", "maintenance-dashboard.js", "maintenance-dashboard.css",
     "app.js", "theme.js", "demo-auth.js", "menu.js",
     "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
-    "print.css", "print.js", "preview.js",
+    "print.css", "print.js", "preview.js", "document-viewer.js", "document-viewer.css", "document-branding.js",
     "requests.js", "dashboards.js", "shortcuts.js", "usage.js", "statistics.js", "statistics.css",
     "service.js", "service.css", "support.js", "password.js", "effects.js", "effects.css",
     "typography.css", "responsive.css", "eb-garamond.ttf", "eb-garamond-license.txt",
@@ -40,6 +40,8 @@ from sigda.preview import render_preview
 from sigda.guidance import ALIASES, GUIDES, STOPWORDS
 from sigda.wording import STYLES, document_text
 from sigda.document_fonts import BODY_FONT_PATH
+from sigda.pdf import FOOTER
+from sigda.social_icons import ICONS as SOCIAL_ICONS
 from sigda.composition_schema import COMMON_FIELDS, IDENTITY_FIELDS, MODELS, OPENINGS, CLOSINGS
 
 
@@ -73,6 +75,8 @@ def build_demo() -> None:
         raise ValueError("Deux spécimens partagent le même nom de fichier.")
 
     sources = {Path(name): DEMO / name for name in STATIC_FILES}
+    sources[Path('guide-utilisateur-sigda-demo.pdf')]=ROOT/'docs/manual/Guide_utilisateur_SIGDA_demo.pdf'
+    guide_hash=sha256(sources[Path('guide-utilisateur-sigda-demo.pdf')].read_bytes()).hexdigest()
     sources[Path("assets/EmblemRDC.jpg")] = EMBLEM
     for name in ICONS:
         sources[Path("assets/icons") / name] = EMBLEM.parent / "icons" / name
@@ -90,6 +94,7 @@ def build_demo() -> None:
     }
     deployment = loads((ROOT / "config/deployment.json").read_text(encoding="utf-8"))
     catalogue = f"const deploymentConfig = {dumps(deployment)};\n"
+    catalogue += f"const institutionalFooter = {dumps(FOOTER)};\nconst institutionalIcons = {dumps(SOCIAL_ICONS)};\n"
     catalogue += f"const agents = {dumps(public_agents)};\nconst documents = {dumps(public_documents)};\n"
     catalogue += f"const assistantGuides = {dumps(GUIDES)};\n"
     catalogue += f"const assistantAliases = {dumps(ALIASES)};\n"
@@ -101,8 +106,10 @@ def build_demo() -> None:
     catalogue += f"const compositionSchema = {dumps({'models': MODELS, 'identity': IDENTITY_FIELDS, 'common': COMMON_FIELDS, 'openings': OPENINGS, 'closings': CLOSINGS})};\n"
     fragment = ROOT / 'apps/backend/templates/composer_form.html'
     digest_fragment = fragment.read_text(encoding='utf-8')
+    maintenance_fragment = (DEMO / 'maintenance-panel.html').read_text(encoding='utf-8')
     digest = sha256(catalogue.encode("utf-8"))
     digest.update(digest_fragment.encode('utf-8'))
+    digest.update(maintenance_fragment.encode('utf-8'))
     digest.update((ROOT / 'apps/backend/templates/statistics_panel.html').read_bytes())
     for relative, source in sorted(sources.items()):
         digest.update(relative.as_posix().encode("utf-8"))
@@ -110,7 +117,7 @@ def build_demo() -> None:
             digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
         else:
             digest.update(source.read_bytes())
-    for source in (Path(__file__), ROOT / 'apps/backend/sigda/pdf.py', ROOT / 'apps/backend/sigda/wording.py', ROOT / 'apps/backend/sigda/document_qr.py', ROOT / 'apps/backend/sigda/document_fonts.py'):
+    for source in (Path(__file__), ROOT / 'apps/backend/sigda/pdf.py', ROOT / 'apps/backend/sigda/wording.py', ROOT / 'apps/backend/sigda/document_qr.py', ROOT / 'apps/backend/sigda/document_fonts.py', ROOT / 'apps/backend/sigda/document_identity.py', ROOT / 'apps/backend/sigda/social_icons.py'):
         digest.update(source.read_text(encoding="utf-8").encode("utf-8"))
     digest.update(BODY_FONT_PATH.read_bytes())
     revision = digest.hexdigest()[:12]
@@ -130,7 +137,8 @@ def build_demo() -> None:
             target.parent.mkdir(parents=True, exist_ok=True)
             if relative.suffix == ".html":
                 html = source.read_text(encoding="utf-8")
-                html = html.replace('<!-- COMPOSER_FORM -->', digest_fragment)
+                html = html.replace('__GUIDE_SHA256__',guide_hash).replace('./guide-utilisateur-sigda-demo.pdf','./guide-utilisateur-sigda-demo.pdf?v='+guide_hash[:12])
+                html = html.replace('<!-- COMPOSER_FORM -->', digest_fragment).replace('<!-- MAINTENANCE_PANEL -->',maintenance_fragment)
                 html = html.replace('<!-- STATISTICS_PANEL -->', (ROOT / 'apps/backend/templates/statistics_panel.html').read_text(encoding='utf-8'))
                 html = re.sub(r'((?:src|href)="\./[a-z-]+\.(?:css|js|webmanifest))"', rf'\1?v={revision}"', html)
                 target.write_text(html, encoding="utf-8")

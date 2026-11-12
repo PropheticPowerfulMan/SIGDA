@@ -34,12 +34,39 @@
 
 /* Closed before first paint; both directions animate without display:none. */
 @media screen and (max-width:900px){
- .app-shell .sidebar,.app-shell[data-menu-collapsed=true] .sidebar{display:flex;transform:translateX(-105%);visibility:hidden;pointer-events:none;transition:transform 260ms cubic-bezier(.22,.8,.2,1),visibility 0s 260ms;animation:none!important;will-change:transform}
- .app-shell[data-menu-collapsed=false] .sidebar{transform:translateX(0);visibility:visible;pointer-events:auto;transition:transform 280ms cubic-bezier(.22,.8,.2,1),visibility 0s;animation:none!important}
- .menu-backdrop{display:block;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 240ms ease,visibility 0s 240ms}
- .menu-backdrop[data-open=true]{opacity:1;visibility:visible;pointer-events:auto;transition:opacity 240ms ease,visibility 0s}
+ .app-shell .sidebar,.app-shell[data-menu-collapsed=true] .sidebar{display:flex;transform:translateX(-105%);visibility:hidden;pointer-events:none;transition:transform 360ms cubic-bezier(.22,.8,.2,1),visibility 0s 360ms;animation:none!important;will-change:transform}
+ .app-shell[data-menu-collapsed=false] .sidebar{transform:translateX(0);visibility:visible;pointer-events:auto;transition:transform 380ms cubic-bezier(.22,.8,.2,1),visibility 0s;animation:none!important}
+ .menu-backdrop{display:block;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 320ms ease,visibility 0s 320ms}
+ .menu-backdrop[data-open=true]{opacity:1;visibility:visible;pointer-events:auto;transition:opacity 320ms ease,visibility 0s}
  .menu-close{position:sticky;top:0;width:44px;height:44px;padding:0;font:400 32px/1 Arial,sans-serif;z-index:2}
 }
+
+/* Animate the layout itself on desktop, keeping the icon rail usable. */
+@media screen and (min-width:901px){
+ .app-shell[data-menu-ready]{transition:grid-template-columns 380ms cubic-bezier(.22,.8,.2,1)}
+ .sidebar{min-width:0;overflow-x:hidden;transition:padding 380ms cubic-bezier(.22,.8,.2,1)}
+ .sidebar .nav-link,.app-shell[data-menu-collapsed=true] .nav-link{justify-content:flex-start;white-space:nowrap;overflow:hidden}
+ .sidebar .nav-link>:first-child{flex:none}
+ .sidebar .brand,.app-shell[data-menu-collapsed=true] .sidebar .brand{justify-content:flex-start;overflow:hidden;margin-inline:0}
+ .sidebar .brand-mark{flex:none}
+ .sidebar .brand-copy,.sidebar .nav-label,.app-shell[data-menu-collapsed=true] .sidebar :is(.brand-copy,.nav-label){position:relative;clip-path:none;width:auto;height:auto;white-space:nowrap;overflow:hidden;max-width:190px;opacity:1;transform:translateX(0);transition:max-width 380ms cubic-bezier(.22,.8,.2,1),opacity 180ms ease,transform 240ms ease}
+ .app-shell[data-menu-collapsed=true] .sidebar :is(.brand-copy,.nav-label){max-width:0;opacity:0;transform:translateX(-8px)}
+ .sidebar .institution-caption,.app-shell[data-menu-collapsed=true] .institution-caption{display:block;max-height:100px;overflow:hidden;margin-block:0 20px;opacity:1;transition:max-height 380ms ease,margin 380ms ease,opacity 160ms ease}
+ .app-shell[data-menu-collapsed=true] .institution-caption{max-height:0;margin-block:0;opacity:0}
+ .sidebar .nav-group-label,.app-shell[data-menu-collapsed=true] .nav-group-label{display:block;max-height:24px;overflow:hidden;opacity:1;white-space:nowrap;transition:max-height 380ms ease,margin 380ms ease,opacity 160ms ease}
+ .app-shell[data-menu-collapsed=true] .nav-group-label{max-height:0;margin-block:0;opacity:0}
+ .sidebar .sidebar-footer,.app-shell[data-menu-collapsed=true] .sidebar-footer{display:grid;max-height:220px;overflow:hidden;opacity:1;transition:max-height 380ms ease,padding 380ms ease,opacity 160ms ease,border-color 160ms ease}
+ .app-shell[data-menu-collapsed=true] .sidebar-footer{max-height:0;padding-block:0;opacity:0;border-color:transparent}
+}
+@media screen and (max-width:900px) and (prefers-reduced-motion:no-preference){
+ .sidebar .nav-link{opacity:0;transform:translateX(-12px);transition:opacity 130ms ease,transform 180ms ease}
+ .app-shell[data-menu-collapsed=false] .sidebar .nav-link{opacity:1;transform:translateX(0);transition:opacity 240ms ease,transform 320ms cubic-bezier(.22,.8,.2,1);transition-delay:calc(var(--menu-order,0)*18ms + 35ms)}
+}
+.menu-toggle-glyph{position:relative;display:block;width:20px;height:20px;margin:auto;color:var(--accent)}
+.menu-toggle-glyph>span{position:absolute;left:1px;top:9px;width:18px;height:2px;border-radius:2px;background:currentColor;transform-origin:left center;transition:transform 320ms cubic-bezier(.22,.8,.2,1),width 320ms ease,opacity 180ms ease}
+.menu-toggle-glyph>span:first-child{transform:translateY(-6px)}.menu-toggle-glyph>span:last-child{transform:translateY(6px)}
+.menu-toggle[aria-expanded=true] .menu-toggle-glyph>span:first-child{width:10px;transform:rotate(-40deg)}.menu-toggle[aria-expanded=true] .menu-toggle-glyph>span:last-child{width:10px;transform:rotate(40deg)}
+@media(prefers-reduced-motion:reduce){.app-shell,.sidebar,.sidebar :is(.nav-link,.brand-copy,.nav-label,.institution-caption,.nav-group-label,.sidebar-footer),.menu-toggle-glyph>span{transition:none!important}}
 .password-control button{width:44px;min-width:44px;height:44px;padding:10px;display:grid;place-items:center}.password-eye{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 @media(prefers-reduced-motion:reduce){.sidebar,.menu-backdrop{transition:none!important}}
 

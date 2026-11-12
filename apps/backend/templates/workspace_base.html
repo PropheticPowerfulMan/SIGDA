@@ -16,9 +16,10 @@
     <script src="{% static 'menu.js' %}" defer></script>
     <script src="{% static 'pwa.js' %}" data-worker="{% url 'service_worker' %}" defer></script>
     {% block extra_head %}{% endblock %}
-<link rel="stylesheet" href="{% static 'typography.css' %}"><link rel="stylesheet" href="{% static 'responsive.css' %}">
+<link rel="stylesheet" href="{% static 'maintenance-dashboard.css' %}"><link rel="stylesheet" href="{% static 'typography.css' %}"><link rel="stylesheet" href="{% static 'responsive.css' %}">
 <link rel="stylesheet" href="{% static 'effects.css' %}"><script src="{% static 'effects.js' %}" defer></script>
 <script src="{% static 'shortcuts.js' %}" defer></script>
+<link rel="stylesheet" href="{% static 'document-viewer.css' %}"><script src="{% static 'document-viewer.js' %}" defer></script>
 </head>
 <body data-profile="{{ workspace_role }}" class="{% block body_class %}{% endblock %}">{% if feedback_message %}<span hidden data-feedback-message>{{ feedback_message }}</span>{% endif %}
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -49,7 +50,7 @@
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5zm3 5h8m-8 4h8m-8 4h5"></path></svg>
                     <span class="nav-label">Mes tâches</span>
                 </a>
-                {% if workspace_role == 'DIRCAB' %}<a class="nav-link" href="{% url 'activity' %}" title="Activité"{% if current_view == "activity" %} aria-current="page"{% endif %}>
+                {% if workspace_role == 'DIRCAB' or is_maintainer %}<a class="nav-link" href="{% url 'activity' %}" title="Activité"{% if current_view == "activity" %} aria-current="page"{% endif %}>
                     <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 4v16h16M8 15v-3m5 3V7m5 8V9"></path></svg>
                     <span class="nav-label">Activité</span>
                 </a>
@@ -57,7 +58,7 @@
                 <a class="nav-link" href="{% url 'assistant' %}" title="Assistant"{% if current_view == "assistant" %} aria-current="page"{% endif %}>
                     <span class="assistant-mark" aria-hidden="true">IA</span><span class="nav-label">Assistant</span>
                 </a>
-                <a class="nav-link" href="{% url 'support' %}" title="Maintenance et assistance"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Maintenance</span></a>{% if is_maintainer %}<a class="nav-link" href="{% url 'maintenance' %}" title="Administration technique"><span class="nav-label">Administration technique</span></a>{% endif %}<form class="nav-exit-form" method="post" action="{% url 'logout' %}">
+                <a class="nav-link" href="{% url 'support' %}" title="Maintenance et assistance"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Maintenance</span></a>{% if is_maintainer %}<a class="nav-link" href="{% url 'maintenance' %}" title="Administration technique"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Tableau Maintenance</span></a>{% endif %}<form class="nav-exit-form" method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit" class="nav-link nav-exit" title="Exit · Déconnexion" aria-label="Exit, se déconnecter">
                         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H5v16h4m4-8h8m-4-4 4 4-4 4"></path></svg>

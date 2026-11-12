@@ -27,7 +27,7 @@ window.SIGDAWorkflow = (() => {
         let record;
         if(id){record=await mutate(id,record=>{if(!record||record.owner!==who.username||record.status!=='draft'||record.revision!==expectedRevision)throw new Error('Ce brouillon a changé ou est déjà en validation.');if(record.snapshotHash===snapshotHash)return record;record.snapshot=snapshot;record.snapshotHash=snapshotHash;record.revision+=1;record.tasks.filter(t=>t.state==='pending').forEach(t=>{t.revision=record.revision;t.snapshotHash=snapshotHash;});record.events.push({type:'updated',status:'draft',actor:who.username,role:who.role,at:Date.now(),note:'Nouvelle révision enregistrée.',revision:record.revision,cycle:record.cycle});return record;});}
         else {
-            record={id:crypto.randomUUID(),owner:who.username,status:'draft',revision:1,cycle:0,snapshot,snapshotHash,createdAt:Date.now(),tasks:[],events:[]};
+            record={id:snapshot.documentId||crypto.randomUUID(),owner:who.username,status:'draft',revision:1,cycle:0,snapshot,snapshotHash,createdAt:Date.now(),tasks:[],events:[]};
             record.tasks.push(task(record,'OPS',who.username,who.username));record.events.push({type:'created',status:'draft',actor:who.username,role:who.role,at:Date.now(),note:'Document préparé depuis la base agents.',revision:1,cycle:0});
             const db=await SIGDADatabase;await new Promise((resolve,reject)=>{const tx=db.transaction('requests','readwrite');tx.objectStore('requests').add(record);tx.oncomplete=resolve;tx.onerror=reject;});window.dispatchEvent(new Event('sigda-workflow-changed'));
         }
@@ -111,11 +111,14 @@ window.SIGDAWorkflow = (() => {
         for(const event of record.events)details.append(element('p',`${fmt.format(event.at)} · ${event.actor} (${event.role}) · ${event.note} · Révision ${event.revision}`));
         for(const task of record.tasks)details.append(element('p',`Tâche ${task.stage} → ${task.assignee} · ${task.state} · Cycle ${task.cycle} / révision ${task.revision}`));
         for(const access of record.accesses || [])details.append(element('p',`${fmt.format(access.at)} · ${access.actor} (${access.role}) · Ouverture du dialogue d’impression`));
-        card.append(details);return card;
+        card.append(details);
+        if(record.identity){const identity=element('details','','document-identity');identity.append(element('summary','ADN numérique et révision'),element('p',record.identity.id+' · Révision '+record.identity.revision),element('code',record.identity.hash));card.append(identity);}return card;
     }
     async function render(){try{
         const all=await SIGDAWorkflow.all(),records=all.filter(SIGDAWorkflow.canSee).sort((a,b)=>b.createdAt-a.createdAt);
-        list.replaceChildren(...records.map(renderRecord));if(!records.length)list.append(element('li','Aucun document dans votre périmètre. OPS peut en préparer un depuis la base agents.'));
+        const dateLabel=new Intl.DateTimeFormat('fr-FR',{dateStyle:'long',timeZone:'UTC'});
+        const cards=await Promise.all(records.map(async record=>{record.identity=await SIGDADNA.make(record.snapshot,record.id,record.revision,dateLabel.format(new Date(record.snapshot.data.issue_date+'T12:00:00Z')));return renderRecord(record);}));
+        list.replaceChildren(...cards);if(!records.length)list.append(element('li','Aucun document dans votre périmètre. OPS peut en préparer un depuis la base agents.'));
         const assigned=records.filter(r=>r.tasks.some(t=>t.state==='pending'&&t.assignee===who.username)).length;
         for(const node of document.querySelectorAll('[data-my-task-count]'))node.textContent=assigned;
         window.dispatchEvent(new CustomEvent('sigda-workflow-data',{detail:{records:all}}));

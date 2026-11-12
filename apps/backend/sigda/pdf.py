@@ -1,4 +1,5 @@
 from io import BytesIO
+import json
 from pathlib import Path
 from xml.sax.saxutils import escape
 
@@ -16,6 +17,10 @@ from reportlab.platypus import Paragraph
 from .catalog import Agent, DocumentType
 from .document_qr import specimen_link
 from .document_fonts import BODY_FONT
+from .document_identity import identity as make_identity
+from .social_icons import draw_icon
+
+FOOTER = json.loads((Path(__file__).resolve().parents[3] / "config/institutional_links.json").read_text(encoding="utf-8"))
 from .wording import document_text
 
 
@@ -35,48 +40,31 @@ def right_date(page, text, top):
     raise ValueError("Le lieu d’établissement est trop long. Indiquez seulement la ville.")
 
 
-def institutional_footer(page, key, reference, date_label, style, text):
-    """Two contact rows, a tricolour rule and a printable QR with a quiet zone."""
+def institutional_footer(page, key, reference, date_label, style, text, dna, verification_url=None):
+    """Full-width two-row contact strip, social URI annotations and document DNA."""
     page.saveState()
-    width = WIDTH - 2 * MARGIN
-    start = MARGIN
-    for ratio, colour in ((0.40, "#174e85"), (0.30, "#c6993e"), (0.30, "#ac2535")):
-        page.setFillColor(HexColor(colour))
-        page.rect(start, 96, width * ratio, 3, stroke=0, fill=1)
-        start += width * ratio
-
-    page.setFillColor(HexColor("#40464d"))
-    page.setFont("Helvetica", 7)
-    for x, first, second in (
-        (MARGIN, "+243 81 940 21 22", "Palais de la Nation"),
-        (178, "sgpr@presidence.cd", "Avenue Roi Baudouin, Gombe"),
-        (333, "www.presidence.cd", "Kinshasa · B.P. 201 Kin 38"),
-    ):
-        page.drawString(x, 80, first)
-        page.drawString(x, 66, second)
-
-    page.setFont("Helvetica", 6.5)
-    page.drawString(MARGIN, 44, reference + " · Empreinte du texte dans le QR")
-    page.setFillColor(HexColor("#963238"))
-    page.setFont("Helvetica-Bold", 6.5)
-    page.drawString(MARGIN, 29, "SPÉCIMEN — NON VALABLE · Données fictives")
-
-    size = 68
-    qr_x = WIDTH - MARGIN - size
-    # Explicit black/white and four-module quiet zone remain readable in both themes.
-    code = QrCodeWidget(specimen_link(key, reference, date_label, style, text),
-                        barLevel="M", barBorder=4, barFillColor=colors.black)
-    x0, y0, x1, y1 = code.getBounds()
-    drawing = Drawing(size, size, transform=[size / (x1 - x0), 0, 0, size / (y1 - y0), 0, 0])
-    drawing.add(code)
-    page.setFillColor(colors.white)
-    page.rect(qr_x, 24, size, size, fill=1, stroke=0)
-    renderPDF.draw(drawing, page, qr_x, 24)
-    page.linkURL(specimen_link(key, reference, date_label, style, text),
-                 (qr_x, 24, qr_x + size, 24 + size), relative=0, thickness=0)
-    page.setFont("Helvetica", 6)
-    page.setFillColor(HexColor("#40464d"))
-    page.drawCentredString(qr_x + size / 2, 18, "Fiche du spécimen")
+    page.translate(0,10)
+    left=24; right=WIDTH-24; qr_size=72; qr_x=right-qr_size; text_right=qr_x-12
+    start=left
+    for ratio,colour in ((.4,'#174e85'),(.3,'#c6993e'),(.3,'#ac2535')):
+        page.setFillColor(HexColor(colour));page.rect(start,89,(right-left)*ratio,3,stroke=0,fill=1);start+=(right-left)*ratio
+    page.setFillColor(HexColor('#40464d'));page.setFont('Helvetica',7)
+    for x,label,url in ((left,FOOTER['phone'],'tel:+243819402122'),(140,FOOTER['email'],'mailto:'+FOOTER['email']),(265,FOOTER['website_label'],FOOTER['website'])):
+        page.drawString(x,73,label);page.linkURL(url,(x,71,x+page.stringWidth(label,'Helvetica',7),81),relative=1,thickness=0)
+    icon_size=10;gap=4;start=text_right-(len(FOOTER['social'])*icon_size+(len(FOOTER['social'])-1)*gap)
+    for item in FOOTER['social']:
+        draw_icon(page,item['key'],start,71,icon_size);page.linkURL(item['url'],(start-1,69,start+icon_size+1,83),relative=1,thickness=0);start+=icon_size+gap
+    page.setFont('Helvetica',6.8);page.drawString(left,58,'Palais de la Nation,');page.drawString(140,58,FOOTER['address']);page.drawRightString(text_right,58,FOOTER['postal'])
+    page.setFont('Helvetica',6.2)
+    reference_label=reference+' · Révision '+str(dna['revision'])
+    if page.stringWidth(reference_label,'Helvetica',6.2)>text_right-left:raise ValueError('La référence dépasse la largeur du pied de page.')
+    page.drawString(left,42,reference_label);page.setFont('Helvetica-Bold',6.2);page.drawString(left,28,'ADN numérique · '+dna['label'])
+    page.setFillColor(HexColor('#963238'));page.setFont('Helvetica-Bold',6);page.drawString(left,14,'SPÉCIMEN - NON VALABLE · Données fictives')
+    url=verification_url or specimen_link(key,reference,date_label,style,text,identity=dna)
+    code=QrCodeWidget(url,barLevel='M',barBorder=4,barFillColor=colors.black);x0,y0,x1,y1=code.getBounds()
+    drawing=Drawing(qr_size,qr_size,transform=[qr_size/(x1-x0),0,0,qr_size/(y1-y0),0,0]);drawing.add(code)
+    page.setFillColor(colors.white);page.rect(qr_x,14,qr_size,qr_size,fill=1,stroke=0);renderPDF.draw(drawing,page,qr_x,14)
+    page.linkURL(url,(qr_x,14,qr_x+qr_size,14+qr_size),relative=1,thickness=0);page.setFont('Helvetica',5.8);page.setFillColor(HexColor('#40464d'));page.drawCentredString(qr_x+qr_size/2,7,'Vérifier le document')
     page.restoreState()
 
 
@@ -187,7 +175,7 @@ def letter_header(page, key, document, agent, reference, date_label, context=Non
 
 
 def render_pdf(key: str, document: DocumentType, agent: Agent, reference: str, date_label: str,
-               *, wording="classique", body_text=None, context=None, preview_only=False) -> bytes:
+               *, wording="classique", body_text=None, context=None, preview_only=False, identity=None, verification_url=None) -> bytes:
     output = BytesIO()
     page = Canvas(output, pagesize=A4)
     page.setTitle(f"{document.title} — Spécimen SIGDA")
@@ -242,8 +230,11 @@ def render_pdf(key: str, document: DocumentType, agent: Agent, reference: str, d
     block.drawOn(page, 325, signature_y - 22 - height)
     page.setFont("Helvetica", 9)
     page.drawString(325, signature_y - 54, "Signature et cachet")
+    dna = identity or make_identity(key, reference, date_label, wording if body_text is None else 'personnalise', text, context)
+    page.setSubject('Identité '+dna['id']+' · Révision '+str(dna['revision']))
+    page.setKeywords('SIGDA, '+dna['schema']+', '+dna['hash'])
     institutional_footer(page, key, reference, date_label,
-                         wording if body_text is None else "personnalise", text)
+                         wording if body_text is None else "personnalise", text, dna, verification_url)
     if preview_only:
         page.saveState()
         page.setFillColor(HexColor("#ac5a5a"))

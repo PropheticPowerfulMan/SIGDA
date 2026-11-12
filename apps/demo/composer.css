@@ -96,3 +96,15 @@
 .paper-body p { text-indent: 50%; }
 .composed-page .paper-body-emblem { left:50%; transform:translateX(-50%); max-width:none; margin:0; opacity:.045; filter:none; background:transparent; box-shadow:none; pointer-events:none; z-index:0; object-fit:contain; }
 .composed-page .paper-body { z-index:1; }
+
+/* Footer uses the sheet width, including its dedicated QR column. */
+.composed-page .paper-footer{top:739.89pt;left:24pt;right:24pt;height:82pt;padding:0;border-top-width:3pt;font:7pt Helvetica,Arial,sans-serif;text-align:left}
+.paper-footer a{color:#40464d;text-decoration:none}.paper-footer a:hover{text-decoration:underline}.paper-footer :is(p,div){margin:0}
+.paper-footer-contacts{position:absolute;top:10pt;left:0;right:84pt;display:grid;grid-template-columns:116pt 125pt minmax(0,1fr);line-height:9pt;white-space:nowrap}
+.paper-footer-socials{position:absolute;top:8pt;right:84pt;display:flex;gap:4pt}.paper-footer-socials a,.paper-footer-socials svg{display:block;width:10pt;height:10pt;flex:none}
+.paper-footer-address{position:absolute;top:25pt;left:0;right:84pt;display:grid;grid-template-columns:116pt minmax(0,1fr) auto;gap:0;font-size:6.8pt;line-height:9pt;white-space:nowrap}
+.paper-footer .paper-footer-reference{position:absolute;top:41pt;left:0;right:84pt;max-width:none;font-size:6.2pt;line-height:8pt;color:#40464d;font-weight:400}
+.paper-footer .paper-footer-dna{position:absolute;top:55pt;left:0;right:84pt;max-width:none;font-size:6.2pt;line-height:8pt;color:#40464d;font-weight:700}
+.paper-footer .paper-footer-specimen{position:absolute;top:69pt;left:0;right:84pt;max-width:none;font-size:6pt;line-height:8pt;color:#963238;font-weight:700}
+.composed-page .paper-qr{position:absolute;left:auto;right:24pt;top:745.89pt;width:72pt;height:72pt;display:block;background:#fff}.paper-qr>svg{width:100%;height:100%;display:block}.paper-qr-label{top:818.89pt;right:24pt;width:72pt;text-align:center;font:5.8pt Helvetica,Arial,sans-serif;color:#40464d}
+.document-identity{margin-block:18px;padding:16px;border:1px solid var(--border);border-radius:10px;background:var(--inset)}.document-identity summary{cursor:pointer;font-weight:600;color:var(--accent)}.document-identity :is(code,dd),.identity-card code{overflow-wrap:anywhere;white-space:normal}.identity-card{padding:24px;margin-block:20px}.identity-card>h2{margin-block:16px}.identity-card>p{margin-block:12px}.identity-card .button{margin-top:16px}

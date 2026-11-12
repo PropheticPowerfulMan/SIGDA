@@ -16,6 +16,8 @@
     const print = root.querySelector("[data-compose-print]"), download = root.querySelector("[data-compose-download]");
     const save = root.querySelector("[data-compose-save]"), preview = root.querySelector("[data-compose-preview]");
     const state = root.querySelector("[data-composition-status]");
+    const viewerButtons = [...root.querySelectorAll('[data-document-viewer]')];
+    function enableViewer(enabled) { for (const button of viewerButtons) button.disabled = !enabled; }
     let step = 0, editingId = "", ticket = "", pdfUrl = "", imageUrl = "", epoch = 0, busy = false, agentEditing = false;
     let readySnapshot = null, editingDocument = null, displayedDocument = null;
     root.querySelector('[data-agent-support]').href = server ? '/assistance/' : '#support';
@@ -26,7 +28,9 @@
     function message(text) { errors.textContent = text; errors.hidden = !text; if (text) window.SIGDAEffects?.notify(text, 'error'); }
     function invalidated() {
         document.body.dataset.printAuthorized = "false"; readySnapshot = null; displayedDocument = null;
+        root.querySelector('[data-document-identity]').hidden = true;
         epoch += 1; ticket = ""; print.disabled = true; download.hidden = true; save.hidden = true;
+        enableViewer(false);
         root.querySelector("[data-compose-surface]").hidden = true;
         root.querySelector("[data-compose-empty]").hidden = false;
         state.textContent = "Les données ont changé. Générez l’aperçu à l’étape 4.";
@@ -168,7 +172,7 @@
         const version = epoch; busy = true; next.disabled = true; message(""); state.textContent = "Création du document avec vos données…";
         const finishPreparation = window.SIGDAEffects?.begin(next, 'Préparation de l’aperçu…');
         try {
-            let text, reference;
+            let text, reference, dna, localSnapshot;
             if (!server && schema.models[data.kind].subject === "agent") {
                 records = await SIGDAAgents.list();
                 const current = records.find(record => record.id === data.agent_id);
@@ -181,6 +185,7 @@
                 const result = await post(root.dataset.endpoint, payload);
                 if (version !== epoch) return;
                 Object.assign(data, result.data);
+                dna = result.identity;
                 text = result.text; reference = result.reference; ticket = result.ticket;
                 const nextImage = objectUrl(result.preview);
                 if (imageUrl) URL.revokeObjectURL(imageUrl);
@@ -190,8 +195,12 @@
                 download.hidden = true; save.hidden = false;
             } else {
                 text = localText(data);
-                reference = editingDocument?.snapshot.reference || `SPEC-${data.kind.split("-").map(word => word[0]).join("").toUpperCase()}-${crypto.randomUUID().replaceAll("-", "").slice(0, 12).toUpperCase()}-${data.issue_date.slice(0, 4)}`;
-                const paper = await buildPaper(data, text, reference);
+                const documentId = editingDocument?.id || crypto.randomUUID();
+                reference = editingDocument?.snapshot.reference || `SPEC-${data.kind.split("-").map(word => word[0]).join("").toUpperCase()}-${documentId.replaceAll("-", "").slice(0, 12).toUpperCase()}-${data.issue_date.slice(0, 4)}`;
+                localSnapshot = {data,text,reference,documentId};
+                const revision = editingDocument ? editingDocument.revision + Number(JSON.stringify(localSnapshot)!==JSON.stringify(editingDocument.snapshot)) : 1;
+                dna = await SIGDADNA.make(localSnapshot,documentId,revision,formatDate(data.issue_date));
+                const paper = await buildPaper(data, text, reference, false, dna);
                 if (version !== epoch) return;
                 preview.replaceChildren(paper);
                 await SIGDAUsage.log("preview", reference);
@@ -199,7 +208,9 @@
             if (version !== epoch) return;
             review(data, text); showStep(3); root.querySelector("[data-compose-surface]").hidden = false;
             root.querySelector("[data-compose-empty]").hidden = true; fitPaper();
-            readySnapshot = { data, text, reference };
+            readySnapshot = localSnapshot || { data, text, reference };
+            SIGDADNA.fill(root,dna);
+            enableViewer(true);
             print.disabled = true; save.hidden = false;
             state.textContent = `${models[data.kind].title} · ${reference} · Aperçu non validé`;
             document.title = `${models[data.kind].title} · ${reference} · SIGDA`;
@@ -227,7 +238,6 @@
             window.print();
         } catch (error) { message(error.message); }
     });
-    root.querySelector("[data-compose-view]").addEventListener("click", () => root.querySelector(".composer-preview").scrollIntoView({ block: "start" }));
     root.querySelector("[data-compose-another]").addEventListener("click", () => { editingDocument = null; root.classList.remove("review-mode"); window.SIGDAReviewMode = false; modelChanged(); root.querySelector('[data-compose-step="3"] h2').textContent = "Vérifiez avant de soumettre"; showStep(0); root.scrollIntoView({ block: "start" }); });
     root.querySelector("[data-storage-help]").textContent = "Enregistrez le brouillon, puis confiez la tâche à SECAD. Le document passera ensuite par AP et DIRCAB. La version finale deviendra imprimable après toutes les validations.";
     root.querySelector("[data-database-help]").textContent = server ? "Base agents privée de votre compte · documents et brouillons conservés sur le serveur." : "Base de démonstration locale à cet appareil · utilisez des données fictives. Aucun dossier saisi n’est envoyé à un serveur.";
@@ -239,7 +249,7 @@
         }
         catch (error) { message(error.message); }
     }
-    for (const link of document.querySelectorAll('a[data-roles="OPS"][href="#compose"]')) link.addEventListener('click', () => { editingDocument = null; root.classList.remove('review-mode'); window.SIGDAReviewMode = false; modelChanged(); showStep(0); });
+    document.addEventListener('click',event=>{if(event.target.closest('a[data-roles="OPS"][href="#compose"],a[data-compose-start]')){editingDocument=null;root.classList.remove('review-mode');window.SIGDAReviewMode=false;modelChanged();showStep(0);}});
     modelChanged(); showStep(0); initialize();
     window.addEventListener("sigda-view-changed", event => {
         document.body.dataset.printAuthorized = event.detail.view === "compose" && displayedDocument?.status === "approved" ? "true" : "false";
@@ -253,10 +263,13 @@
             kind.value = data.kind; wording.value = data.wording;
             review(data, record.snapshot.text); showStep(3); back.hidden = true;
             root.querySelector("[data-compose-another]").hidden = window.SIGDASession.role !== "OPS";
-            const paper = await buildPaper(data, record.snapshot.text, record.snapshot.reference, record.status === "approved");
+            const dna = await SIGDADNA.make(record.snapshot,record.id,record.revision,formatDate(data.issue_date));
+            const paper = await buildPaper(data, record.snapshot.text, record.snapshot.reference, record.status === "approved", dna);
+            SIGDADNA.fill(root,dna);
             preview.replaceChildren(paper); root.querySelector("[data-compose-surface]").hidden = false; root.querySelector("[data-compose-empty]").hidden = true;
             save.hidden = true; print.disabled = record.status !== "approved";
             displayedDocument = record; fitPaper();
+            enableViewer(true);
             state.textContent = `${record.snapshot.reference} · Révision ${record.revision} · ${record.status === "approved" ? "Validation finale obtenue" : "Aperçu non validé"}`;
             await new Promise(resolve => requestAnimationFrame(resolve));
             document.body.dataset.printAuthorized = record.status === "approved" && location.hash === "#compose" ? "true" : "false";
@@ -287,7 +300,7 @@
         holder.firstElementChild.style.transform = `scale(${scale})`;
     }
     new ResizeObserver(fitPaper).observe(preview);
-    async function buildPaper(data, text, reference, approved = false) {
+    async function buildPaper(data, text, reference, approved = false, dna) {
         const holder = document.createElement("div"); holder.className = "paper-holder";
         const paper = document.createElement("article"); paper.className = "composed-page"; holder.append(paper);
         const certificate = models[data.kind].category === "Attestations";
@@ -321,18 +334,18 @@
         }
         const signature = part("paper-signature", `Fait à ${data.place}, le ${formatDate(data.issue_date)}\n\n${data.signatory || data.signatory_role}\n\nSignature et cachet`);
         const footer = part("paper-footer", "");
-        for (const line of ["+243 81 940 21 22       sgpr@presidence.cd       www.presidence.cd", "Palais de la Nation · Avenue Roi Baudouin, Gombe · Kinshasa", reference, "SPÉCIMEN — NON VALABLE · Données de démonstration"]) {
-            const p = document.createElement("p"); p.textContent = line; footer.append(p);
-        }
+        SIGDADNA.footer(footer,reference,dna);
         const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
         const hash = [...new Uint8Array(digest)].map(byte => byte.toString(16).padStart(2, "0")).join("");
-        const link = "https://propheticpowerfulman.github.io/SIGDA/fiche.html#" + new URLSearchParams({ m: data.kind, r: reference, d: formatDate(data.issue_date), s: "personnalise", h: hash });
+        const link = "https://propheticpowerfulman.github.io/SIGDA/fiche.html#" + new URLSearchParams({ m: data.kind, r: reference, d: formatDate(data.issue_date), s: "personnalise", h: hash, a:dna.hash, u:dna.id, v:String(dna.revision), e:dna.schema });
         const code = qrcode(0, "M"); code.addData(link); code.make(); const count = code.getModuleCount();
-        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("viewBox", `-4 -4 ${count + 8} ${count + 8}`); svg.classList.add("paper-qr");
+        const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("viewBox", `-4 -4 ${count + 8} ${count + 8}`); svg.setAttribute('aria-hidden','true');
         const white = document.createElementNS(svg.namespaceURI, "rect"); for (const [key, value] of Object.entries({ x: -4, y: -4, width: count + 8, height: count + 8, fill: "white" })) white.setAttribute(key, value); svg.append(white);
         const path = document.createElementNS(svg.namespaceURI, "path"); let drawing = "";
         for (let row = 0; row < count; row++) for (let col = 0; col < count; col++) if (code.isDark(row, col)) drawing += `M${col},${row}h1v1h-1z`;
-        path.setAttribute("d", drawing); path.setAttribute("fill", "black"); svg.append(path); paper.append(svg);
+        path.setAttribute("d", drawing); path.setAttribute("fill", "black"); svg.append(path);
+        const qrLink = document.createElement('a');qrLink.className='paper-qr';qrLink.href=link;qrLink.target='_blank';qrLink.rel='noopener noreferrer';qrLink.setAttribute('aria-label','Lire le QR et l’ADN numérique du document');qrLink.append(svg);paper.append(qrLink);
+        part('paper-qr-label','Vérifier le document');
         // Measure at physical A4 size before scaling it for the screen.
         holder.style.position = "fixed"; holder.style.left = "-10000px"; document.body.append(holder);
         await document.fonts.ready;

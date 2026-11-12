@@ -19,10 +19,11 @@ from .wording import STYLES, document_text
 from .catalog import AGENTS, DOCUMENT_TYPES, format_date
 from .pdf import render_pdf
 from .preview import render_preview
+from . import document_integrity
 from .pwa import manifest, offline, service_worker
 from . import composition, maintenance
 from .models import AgentRecord
-from .roles import require_ops
+from .roles import require_ops, is_maintainer
 from .dashboards import dashboard_data
 from .security import ProtectedLoginView
 from django.core.exceptions import PermissionDenied
@@ -32,6 +33,7 @@ from django.core.exceptions import PermissionDenied
 @login_required
 @require_safe
 def overview(request):
+    if is_maintainer(request.user):return redirect('maintenance')
     return render(request, "overview.html", {
         "current_view": "overview",
         "dashboard": dashboard_data(request.user),
@@ -151,6 +153,8 @@ def exit_session(request):
 
 
 urlpatterns = [
+    path('verification/<uuid:pk>/',document_integrity.verify,name='verify_document'),
+    path('maintenance/etat/',maintenance.status,name='maintenance_status'),
     path("assistance/", maintenance.support, name="support"),
     path("maintenance/", maintenance.administration, name="maintenance"),
     path("composer/", composition.page, name="compose"),

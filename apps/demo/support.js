@@ -3,6 +3,8 @@
     const form = document.querySelector('[data-support-form]'); if (!form) return;
     const status = document.querySelector('[data-support-status]'), list = document.querySelector('[data-support-list]');
     const categories = {agent_add:'Ajout d’un agent',agent_update:'Correction d’un dossier agent',app_update:'Mise à jour de l’application',renewal:'Renouvellement annuel',assistance:'Assistance'};
+    const channel=typeof BroadcastChannel==='function'?new BroadcastChannel('sigda-maintenance-demo-v1'):null;
+    const states={open:'À traiter dans la simulation',processing:'Prise en charge simulée',resolved:'Traitée dans la simulation'};
     const el = (tag,text) => { const node=document.createElement(tag);node.textContent=text;return node; };
     function download(ticket) {
         const text = ['SIGDA · Cabinet du Président de la République','DEMANDE DE MAINTENANCE · DÉMONSTRATION',ticket.id,
@@ -17,7 +19,7 @@
         list.replaceChildren();
         for(const ticket of tickets.filter(t=>t.owner===SIGDASession.username).sort((a,b)=>b.at-a.at)) {
             const row=el('li','');row.className='support-ticket';const button=el('button','Télécharger la demande');button.type='button';button.className='button';button.addEventListener('click',()=>download(ticket));
-            row.append(el('strong',categories[ticket.category]+' · À transmettre'),el('p',ticket.details),el('small',ticket.id),button);list.append(row);
+            row.append(el('strong',categories[ticket.category]+' · '+states[ticket.state||'open']),el('p',ticket.details),el('small',ticket.id),button);if(ticket.response)row.append(el('p','Réponse de la maintenance (simulation) : '+ticket.response));list.append(row);
         }
         if(!list.children.length)list.append(el('li','Aucune demande préparée sur cet appareil.'));
     }
@@ -25,13 +27,15 @@
         event.preventDefault();if(!form.reportValidity())return;
         const button=form.querySelector('button[type="submit"]');button.disabled=true;
         try {
-            const ticket={id:crypto.randomUUID(),owner:SIGDASession.username,at:Date.now(),category:form.elements.category.value,details:form.elements.details.value.trim()};
+            const ticket={id:crypto.randomUUID(),owner:SIGDASession.username,at:Date.now(),category:form.elements.category.value,details:form.elements.details.value.trim(),state:'open',revision:0,history:[]};
             if(!ticket.details||!categories[ticket.category])throw new Error('Précisez la demande.');
             const db=await SIGDADatabase;await new Promise((resolve,reject)=>{const tx=db.transaction('support','readwrite');tx.objectStore('support').add(ticket);tx.oncomplete=resolve;tx.onerror=reject;});
-            await SIGDAUsage.log('support_request');await refresh();download(ticket);
+            await SIGDAUsage.log('support_request');await refresh();channel?.postMessage({type:'support_created'});window.dispatchEvent(new Event('sigda-support-changed'));download(ticket);
             status.textContent='Demande préparée et enregistrée sur cet appareil. Transmettez le fichier téléchargé à votre équipe de maintenance. Aucun envoi automatique n’a été effectué.';form.reset();
-        } catch(error) {status.textContent=error.message||'Impossible de préparer la demande.';}
+        } catch(error) {status.textContent=error.message||'Impossible de préparer la demande.';window.SIGDAEffects?.notify(status.textContent,'error');}
         finally {button.disabled=false;}
     });
     refresh().catch(error=>{status.textContent=error.message;});
+    if(channel)channel.onmessage=()=>refresh().catch(()=>{});
+    window.addEventListener('sigda-support-changed',()=>refresh().catch(()=>{}));
 })();

@@ -1,4 +1,5 @@
 "use strict";
+const specimenRevision = new URL(document.currentScript.src).searchParams.get('v') || '';
 
 const form = document.getElementById("specimen-form");
 const workshopAgent = document.getElementById("workshop-agent");
@@ -101,7 +102,7 @@ function updatePreview() {
     document.getElementById("agent-service").textContent = agent.service;
     document.getElementById("document-title").textContent = model.title;
     document.getElementById("document-description").textContent = model.description;
-    const preview = `${specimen}.png`;
+    const preview = `${specimen}.png${specimenRevision ? '?v='+encodeURIComponent(specimenRevision) : ''}`;
     previewImage.alt = `Aperçu · ${model.title} · ${agent.name}`;
     if (previewImage.getAttribute("src") !== preview) {
         previewImage.src = preview;
@@ -165,7 +166,8 @@ const breadcrumb = document.getElementById("view-breadcrumb");
 function updateNavigation(focusHeading = false) {
     let route = window.location.hash.slice(1);
     const role = window.SIGDASession?.role;
-    if ((route === "activity" && role !== "DIRCAB") || ((route === "directory" || route === "compose") && role !== "OPS" && !window.SIGDAReviewMode)) route = "overview";
+    if ((route === "activity" && !['DIRCAB','MAINTENANCE'].includes(role)) || (route==='maintenance'&&role!=='MAINTENANCE') || ((route === "directory" || route === "compose") && role !== "OPS" && !window.SIGDAReviewMode)) route = "overview";
+    if(role==='MAINTENANCE'&&!['maintenance','activity','assistant'].includes(route))route='maintenance';
     document.body.dataset.printAuthorized = "false";
     const active = views.find((view) => view.dataset.view === route) || views[0];
     for (const view of views) view.hidden = view !== active;

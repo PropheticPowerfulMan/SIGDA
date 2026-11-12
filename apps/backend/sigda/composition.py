@@ -115,10 +115,15 @@ def save_agent(request):
     return JsonResponse({'error': 'La base agents est administrée par l’équipe de maintenance. Ouvrez Maintenance et assistance pour demander un ajout ou une correction.'}, status=403)
 
 
-def render_composed(snapshot, preview_only=False):
+def render_composed(snapshot, preview_only=False, document_id=None, revision=None, verification_url=None):
+    from .document_identity import composed_identity
+    from urllib.parse import urlencode
     data = snapshot["data"]
+    dna = composed_identity(snapshot, document_id, revision)
+    if verification_url:
+        verification_url += '?' + urlencode({'revision':dna['revision'],'dna':dna['hash']})
     return render_pdf(data["kind"], DOCUMENT_TYPES[data["kind"]], compose_agent(data), snapshot["reference"],
-        format_date(date.fromisoformat(data["issue_date"])), body_text=snapshot["text"], context=data, preview_only=preview_only)
+        format_date(date.fromisoformat(data["issue_date"])), body_text=snapshot["text"], context=data, preview_only=preview_only, identity=dna, verification_url=verification_url)
 
 
 @never_cache
@@ -153,7 +158,9 @@ def preview(request):
     except ValueError as error:
         return JsonResponse({"error": str(error)}, status=400)
     log_usage(request.user, "preview")
+    from .document_identity import composed_identity
     return JsonResponse({"preview": "data:image/png;base64," + b64encode(render_preview(pdf)).decode(),
+        "identity":composed_identity(snapshot),
         "text": snapshot["text"], "reference": snapshot["reference"],
         "data": data,
         "ticket": signing.dumps(snapshot, salt="sigda-composition", compress=True)})
@@ -205,7 +212,8 @@ def saved_document(request, pk, extension):
     record = get_object_or_404(visible_requests(request.user).exclude(payload={}), pk=pk)
     if extension == "pdf" and (record.status != DocumentRequest.Status.APPROVED or not record.issued_pdf):
         return HttpResponseForbidden("Le PDF imprimable est disponible uniquement après validation finale DIRCAB.")
-    pdf = bytes(record.issued_pdf) if record.status == DocumentRequest.Status.APPROVED and record.issued_pdf else render_composed(record.payload, preview_only=True)
+    from .document_integrity import base_link
+    pdf = bytes(record.issued_pdf) if record.status == DocumentRequest.Status.APPROVED and record.issued_pdf else render_composed(record.payload, preview_only=True,document_id=str(record.pk),revision=record.revision,verification_url=base_link(request,record.pk))
     if extension == "png":
         return HttpResponse(render_preview(pdf), content_type="image/png")
     from hashlib import sha256

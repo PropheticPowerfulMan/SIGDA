@@ -39,8 +39,10 @@
                 <div><dt>Date du spécimen</dt><dd id="sheet-date"></dd></div>
                 <div><dt>Rédaction</dt><dd id="sheet-style"></dd></div>
                 <div class="sheet-hash"><dt>Empreinte SHA-256 du texte</dt><dd><code id="sheet-hash"></code></dd></div>
+                <div data-sheet-dna hidden><dt>Identifiant unique / révision</dt><dd id="sheet-identity"></dd></div>
+                <div class="sheet-hash" data-sheet-dna hidden><dt>ADN numérique déclaré · SHA-256</dt><dd><code id="sheet-dna"></code></dd></div>
             </dl>
-            <aside class="sheet-note"><strong>Une fiche de lecture</strong><p>Ces indications proviennent du QR. Elles ne sont pas comparées à un registre d’émission et ne certifient pas l’authenticité du document. L’empreinte concerne le corps du texte, pas le fichier PDF complet.</p></aside>
+            <aside class="sheet-note"><strong>Une fiche de lecture de démonstration</strong><p>Ces indications proviennent du QR et ne certifient pas l’authenticité du document. Le SHA-256 du texte concerne le corps ; l’ADN couvre aussi l’identifiant, la révision et les métadonnées. Aucun ne remplace l’empreinte du PDF final ni une signature électronique officielle. Le serveur privé SIGDA compare, lui, le QR à son registre après connexion autorisée.</p></aside>
             <a class="button button-primary" href="./#documents">Ouvrir l’atelier SIGDA</a>
         </section>
         <p class="sheet-caption">Démonstration documentaire · SIGDA et SSDC sont deux projets indépendants.</p>

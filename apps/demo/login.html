@@ -20,7 +20,7 @@
 <script src="./password.js" defer></script><script src="./catalogue.js" defer></script><script src="./service.js" defer></script>
 <link rel="stylesheet" href="./service.css">
 <link rel="stylesheet" href="./typography.css"><link rel="stylesheet" href="./responsive.css">
-<link rel="stylesheet" href="./effects.css"><script src="./effects.js" defer></script>
+<link rel="stylesheet" href="./maintenance-dashboard.css"><link rel="stylesheet" href="./effects.css"><script src="./effects.js" defer></script><script src="./guide-download.js" defer></script>
 </head>
 <body class="login-page">
     <a class="skip-link" href="#main">Aller au formulaire de connexion</a>
@@ -66,7 +66,7 @@
                     <h1 id="login-title">Connexion</h1>
                     <p id="login-description">Choisissez un profil pour découvrir ses responsabilités.</p>
                 </div>
-                <div class="profile-choices" aria-label="Profils de démonstration"><button type="button" data-demo-profile="ops" aria-pressed="false" aria-label="OPS · Saisie et préparation">OPS<span>Saisie et préparation</span></button><button type="button" data-demo-profile="secad" aria-pressed="false" aria-label="SECAD · Contrôle administratif">SECAD<span>Contrôle administratif</span></button><button type="button" data-demo-profile="ap" aria-pressed="false" aria-label="AP · Visa hiérarchique">AP<span>Visa hiérarchique</span></button><button type="button" data-demo-profile="dircab" aria-pressed="false" aria-label="DIRCAB · Validation finale et pilotage">DIRCAB<span>Validation finale et pilotage</span></button></div><form class="login-form" id="demo-login" method="post" aria-describedby="login-description" autocomplete="off">
+                <div class="profile-choices" aria-label="Profils de démonstration"><button type="button" data-demo-profile="ops" aria-pressed="false" aria-label="OPS · Saisie et préparation">OPS<span>Saisie et préparation</span></button><button type="button" data-demo-profile="secad" aria-pressed="false" aria-label="SECAD · Contrôle administratif">SECAD<span>Contrôle administratif</span></button><button type="button" data-demo-profile="ap" aria-pressed="false" aria-label="AP · Visa hiérarchique">AP<span>Visa hiérarchique</span></button><button type="button" data-demo-profile="dircab" aria-pressed="false" aria-label="DIRCAB · Validation finale et pilotage">DIRCAB<span>Validation finale et pilotage</span></button><button type="button" data-demo-profile="maintenance" aria-pressed="false" aria-label="Maintenance · Supervision technique">Maintenance<span>Supervision technique</span></button></div><form class="login-form" id="demo-login" method="post" aria-describedby="login-description" autocomplete="off">
                     <div class="login-field">
                         <label for="username">Identifiant</label>
                         <input id="username" type="text" autocapitalize="none" spellcheck="false" required>
@@ -82,10 +82,11 @@
                     </button>
                 </form>
                 <noscript><p class="login-error">Activez JavaScript pour accéder à la démonstration.</p></noscript>
+                <a class="button login-guide-download" href="./guide-utilisateur-sigda-demo.pdf" download="Guide_utilisateur_SIGDA_demo.pdf" data-demo-guide data-guide-sha256="__GUIDE_SHA256__"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 3h12l4 4v14H4zM15 3v5h5M8 12h8m-8 4h6"/></svg><span>Guide illustré de la démonstration <small>PDF · Parcours, rôles et captures d’écran</small></span><span aria-hidden="true">↓</span></a>
                 <aside class="login-credentials" aria-labelledby="demo-credentials-title">
                     <h2 id="demo-credentials-title">Compte de démonstration</h2>
                     <dl>
-                        <div><dt>Identifiant</dt><dd><code>ops / secad / ap / dircab</code></dd></div>
+                        <div><dt>Identifiant</dt><dd><code>ops / secad / ap / dircab / maintenance</code></dd></div>
                         <div><dt>Mot de passe</dt><dd><code>SIGDA-demo-2026!</code></dd></div>
                     </dl>
                     <p>La connexion est simulée et l’atelier utilise des données fictives.</p>

@@ -1,0 +1,397 @@
+[
+  {
+    "title": "Identifier votre environnement",
+    "lead": "SIGDA accompagne la préparation, le contrôle et la validation des documents administratifs destinés au Cabinet du Président de la République. Ce guide décrit la démonstration du 12 novembre 2026.",
+    "kind": "environment",
+    "steps": [
+      "Sur GitHub Pages, utiliser uniquement les dossiers fictifs : les comptes et le circuit sont simulés dans le navigateur.",
+      "Sur le serveur Django isolé présenté dans certaines captures, les accès et les validations sont contrôlés côté serveur. Ces captures utilisent aussi une base fictive.",
+      "Ne pas confondre ce prototype avec un service institutionnel homologué. Une mise en production devra être préparée, autorisée et auditée.",
+      "SIGDA et SSDC sont deux projets indépendants. Leurs identifiants d’installation et leurs fonctions sont distincts."
+    ],
+    "note": "Les captures montrent l’application réellement exécutée. Aucun écran de validation ou de connexion institutionnelle non disponible n’a été inventé."
+  },
+  {
+    "title": "Se connecter et retrouver le guide",
+    "lead": "La page de connexion est le point d’entrée. Les quatre profils du workflow et un profil technique fictif Maintenance permettent d’explorer chaque espace de la démonstration.",
+    "screen": "02-connexion-mobile.jpg",
+    "layout": "portrait",
+    "steps": [
+      "Ouvrir l’adresse de la démonstration dans un navigateur à jour. Le guide illustré peut être téléchargé depuis cette page, sans connexion.",
+      "Choisir OPS, SECAD, AP, DIRCAB ou Maintenance, ou saisir l’identifiant correspondant : ops, secad, ap, dircab ou maintenance. Le mot de passe commun est SIGDA-demo-2026!.",
+      "Utiliser l’icône en forme d’œil pour afficher ou masquer le mot de passe. Il est de nouveau masqué à l’envoi et lorsque la page perd sa visibilité.",
+      "Cliquer sur Se connecter. Le tableau de bord de votre profil s’ouvre directement, sans fenêtre de confirmation de connexion."
+    ],
+    "note": "Ces identifiants sont publics et fictifs. Ils ne doivent jamais être réutilisés pour un environnement institutionnel."
+  },
+  {
+    "title": "Naviguer sur ordinateur et sur mobile",
+    "lead": "Le menu présente les rubriques accessibles à votre profil. Le bouton de navigation adapte l’espace de travail à la taille de l’écran.",
+    "screen": "06-menu-mobile.jpg",
+    "layout": "portrait",
+    "steps": [
+      "Sur ordinateur, réduire le menu pour conserver un rail d’icônes et agrandir la zone de travail. Le mouvement de la page accompagne la réduction.",
+      "Sur téléphone, toucher Menu dans la barre inférieure ou le bouton de l’en-tête. Le panneau s’ouvre depuis le bord gauche.",
+      "Choisir une rubrique, toucher X ou appuyer sur Échap pour fermer le panneau. Le menu reste fermé après la connexion mobile.",
+      "Utiliser Accueil, Créer ou Tâches dans les raccourcis inférieurs. Le soleil et la lune changent l’apparence ; ils ne modifient pas vos droits."
+    ],
+    "note": "Les animations suivent la préférence système de réduction des mouvements. Les zones de toucher conservent une taille adaptée au mobile."
+  },
+  {
+    "title": "Comprendre les responsabilités",
+    "lead": "Un dossier avance par une chaîne de responsabilités nominatives. Chaque intervenant reçoit une tâche portant sur une révision déterminée.",
+    "kind": "roles",
+    "steps": [
+      "OPS prépare le document, corrige les retours et désigne le responsable SECAD lors de la soumission.",
+      "SECAD vérifie les données administratives et transmet à AP, ou motive un retour à OPS.",
+      "AP examine le contrôle effectué et donne son visa avant transmission à DIRCAB, ou retourne le dossier.",
+      "DIRCAB prend la décision finale. Il accède au pilotage institutionnel et la maintenance à la supervision technique ; sa validation autorise la sortie finale du document."
+    ],
+    "note": "Le compte de maintenance est séparé de ces quatre profils. La possession d’un rôle ne remplace pas l’attribution nominative d’une tâche."
+  },
+  {
+    "title": "Utiliser la base des agents",
+    "lead": "Le document doit reprendre les informations d’un dossier agent, plutôt que des données ressaisies librement à chaque création.",
+    "screen": "07-dossiers-agents.jpg",
+    "steps": [
+      "Avec OPS, ouvrir Dossiers agents et repérer le nom et le matricule correspondant au dossier concerné.",
+      "Contrôler le service, la fonction et le grade avant de préparer un document. La démonstration contient uniquement des exemples fictifs.",
+      "À la création, sélectionner ce dossier : les champs d’identité sont automatiquement remplis et présentés en lecture seule.",
+      "Si un agent manque ou si une donnée est incorrecte, utiliser Demander un ajout ou Maintenance et assistance. L’ajout et la correction appartiennent à l’équipe habilitée."
+    ],
+    "note": "Sur mobile, les lignes du répertoire deviennent des cartes. Ne pas remplacer un dossier manquant par celui d’une autre personne."
+  },
+  {
+    "title": "Choisir le bon modèle administratif",
+    "lead": "Le catalogue présente onze modèles. Le type choisi détermine les champs à compléter et la forme du document produit.",
+    "screen": "08-catalogue.jpg",
+    "kind": "catalogue",
+    "steps": [
+      "Utiliser l’atelier pour comprendre la finalité de chaque modèle et consulter ses exemples non valables.",
+      "Pour produire un dossier traçable, passer par Créer un document. Un exemple du catalogue ne constitue pas une émission validée."
+    ],
+    "note": "Les formes s’inspirent des documents fournis. Le fondement juridique, le signataire et les formulations doivent être confirmés par l’autorité compétente."
+  },
+  {
+    "title": "Étape 1 : modèle et rédaction",
+    "lead": "Le parcours guidé comprend quatre étapes : Modèle, Données, Détails et Vérification. Commencer avec le profil OPS.",
+    "screen": "09-choix-modele.jpg",
+    "steps": [
+      "Cliquer sur Créer un document depuis le tableau de bord ou le menu.",
+      "Choisir le modèle correspondant au besoin : par exemple une attestation de service pour présenter une affectation et une fonction.",
+      "Choisir le style de rédaction disponible. Les variantes adaptent la formulation, sans dispenser de vérifier les faits.",
+      "Lire l’indication associée au modèle, puis cliquer sur Continuer vers les données."
+    ],
+    "note": "Le choix du modèle peut changer les informations demandées ensuite. Vérifier ce choix avant de renseigner les détails."
+  },
+  {
+    "title": "Étape 2 : agent et autorité émettrice",
+    "lead": "Cette étape relie le document à sa source administrative : le dossier agent et le service qui établit la pièce.",
+    "screen": "10-donnees-agent.jpg",
+    "steps": [
+      "Dans Dossier dans la base agents, choisir l’agent concerné par son nom et son matricule.",
+      "Relire les données remplies automatiquement. Le service d’affectation est une liste déroulante contrôlée et non modifiable dans ce parcours.",
+      "Compléter le service émetteur, le lieu, la date d’établissement et les informations du signataire demandées par le formulaire.",
+      "Pour un modèle portant sur une pièce ou un service plutôt que sur un agent, suivre l’intitulé spécifique affiché. Passer ensuite aux détails."
+    ],
+    "note": "Le service d’affectation de l’agent et le service qui établit le document sont deux informations distinctes. Les services de démonstration devront être alignés sur l’organigramme validé."
+  },
+  {
+    "title": "Étape 3 : informations propres à la pièce",
+    "lead": "Les champs de cette étape dépendent du modèle. Ils alimentent directement les phrases et, pour un bordereau, le tableau des pièces.",
+    "screen": "11-details.jpg",
+    "steps": [
+      "Pour une attestation de service, préciser notamment la date de début et l’objet de la demande.",
+      "Pour une mission, une autorisation ou une convocation, contrôler les dates, les heures, les lieux et le destinataire demandés.",
+      "Pour une transmission, préciser la désignation et le nombre de pièces. Les exemples grisés sont des indications, pas des données enregistrées.",
+      "Cliquer pour préparer l’aperçu. Si le texte dépasse la zone A4 ou si une date est incohérente, corriger le champ indiqué puis recommencer."
+    ],
+    "note": "Rester précis et concis. Des informations très longues peuvent empêcher une mise en page correcte sur une seule feuille."
+  },
+  {
+    "title": "Étape 4 : relire avant d’enregistrer",
+    "lead": "La vérification rapproche les données du formulaire du document effectivement composé. Aucun PDF final n’est encore autorisé à cette étape.",
+    "screen": "12-verification.jpg",
+    "steps": [
+      "Comparer le nom, le matricule, le service et les dates au dossier concerné.",
+      "Relire le texte, le destinataire, l’objet et la qualité du signataire. Contrôler aussi la présence du pied de page et du QR.",
+      "Utiliser Aperçu grand format pour une lecture plus confortable. Le volet ADN numérique indique l’identifiant, la révision et l’empreinte de cette version.",
+      "Revenir aux étapes précédentes pour corriger, ou cliquer sur Enregistrer et ouvrir le circuit de validation."
+    ],
+    "note": "Une modification invalide l’aperçu précédent. Générer une nouvelle version avant de l’enregistrer. Les filigranes de démonstration restent visibles."
+  },
+  {
+    "title": "Lire le document en grand format",
+    "lead": "La liseuse sépare la lecture du formulaire. Elle agrandit le document réellement composé, sans modifier sa mise en page ni ses données.",
+    "screen": "13-grand-format.jpg",
+    "steps": [
+      "Cliquer sur Aperçu grand format à l’étape de vérification, dans la zone du document ou sur un dossier enregistré côté serveur.",
+      "Choisir Largeur pour utiliser l’espace disponible, Page entière pour voir la feuille A4 complète ou 100 % pour revenir à la taille de référence.",
+      "Utiliser + et - pour régler le zoom entre 20 et 250 %. Faire défiler la feuille dans les deux directions si nécessaire, notamment sur téléphone.",
+      "Fermer avec X ou Échap. Le focus revient au bouton d’origine et la saisie demeure inchangée."
+    ],
+    "note": "La liseuse est un mode de lecture. Elle ne contourne pas les validations et n’ajoute aucune autorisation d’impression."
+  },
+  {
+    "title": "Lire le pied de page institutionnel",
+    "lead": "Les onze modèles partagent un pied de page sur la largeur de la feuille : coordonnées sur deux lignes, liens des réseaux sociaux, référence, ADN et QR distinct du document.",
+    "kind": "footer",
+    "steps": [
+      "Repérer la bande bleue, dorée et rouge et les coordonnées du site, du service et de l’adresse.",
+      "Dans un PDF final ouvert par un lecteur compatible, cliquer sur le site ou sur une icône pour ouvrir le lien associé. Une connexion Internet peut être nécessaire.",
+      "Les sept réseaux repris du site officiel sont Facebook, X/Twitter, Instagram, YouTube, LinkedIn, TikTok et Flickr.",
+      "Scanner ou cliquer sur le QR pour lire les informations de la version. Sur le serveur privé, la consultation du registre exige une connexion et les droits correspondants."
+    ],
+    "note": "Les liens sociaux ont été relevés sur presidence.cd le 12 novembre 2026. Le téléphone, le courriel et l’adresse sont transcrits de l’exemple fourni et doivent être confirmés avant production."
+  },
+  {
+    "title": "OPS : comprendre son tableau de bord",
+    "profile": "OPS",
+    "lead": "Le tableau de bord OPS est le poste de préparation des documents. Il met en avant les brouillons et les corrections à reprendre, sans donner accès au pilotage global de la hiérarchie.",
+    "screen": "04-tableau-ops.jpg",
+    "steps": [
+      "Brouillons à préparer compte les tâches OPS en attente : nouveaux brouillons et documents retournés pour correction.",
+      "Échéances dépassées signale les tâches dont la date limite est passée. Mes documents en validation suit vos pièces transmises ; Mes documents validés suit les pièces approuvées.",
+      "Dans Mes prochaines tâches, utiliser Traiter cette tâche puis ouvrir le dossier concerné. Mes tâches permet de retrouver la liste complète de votre périmètre.",
+      "Utiliser Créer un document pour démarrer une pièce, Dossiers agents pour retrouver la source et Maintenance pour demander une correction du répertoire."
+    ],
+    "note": "Une situation initiale à zéro est normale. Les indicateurs évoluent avec les opérations réellement enregistrées dans cet environnement."
+  },
+  {
+    "title": "OPS : soumettre et suivre le dossier",
+    "lead": "Enregistrer un document crée un brouillon et sa tâche OPS. La soumission confie la responsabilité du contrôle à un utilisateur SECAD.",
+    "screen": "16-soumission-ops.jpg",
+    "steps": [
+      "Dans Mes tâches, retrouver la référence et la révision du brouillon. Consulter l’aperçu ou corriger le document si nécessaire.",
+      "Choisir le compte SECAD responsable de la prochaine étape. Dans la démonstration publique, un seul compte est proposé par profil.",
+      "Ajouter un commentaire utile et, si nécessaire, une échéance. Vérifier l’heure indiquée par l’interface.",
+      "Cliquer sur Soumettre à SECAD, lire la confirmation puis consulter le responsable actuel et l’historique. Attendre un retour ou la suite du circuit."
+    ],
+    "note": "Après transmission, OPS ne peut pas modifier librement la version examinée. Un retour motivé lui rend une tâche de correction.",
+    "profile": "OPS"
+  },
+  {
+    "title": "SECAD : comprendre son tableau de bord",
+    "profile": "SECAD",
+    "lead": "L’espace SECAD concentre les contrôles administratifs nominatifs. Les compteurs concernent vos tâches, pas l’ensemble des dossiers institutionnels.",
+    "screen": "17-tableau-secad.jpg",
+    "steps": [
+      "Documents à contrôler indique vos tâches de contrôle encore en attente. Échéances dépassées vous aide à repérer les tâches à reprendre en priorité.",
+      "Tâches terminées compte les tâches clôturées, y compris celles ayant donné lieu à un retour. Retours effectués distingue les renvois motivés à OPS.",
+      "Dans Mes prochaines tâches, ouvrir le contrôle à effectuer. Le dossier précise la révision, la personne qui vous l’a confié et l’échéance éventuelle.",
+      "Après relecture, transmettre à AP ou motiver un retour à OPS. Consulter le chapitre suivant pour le détail des décisions. L’assistant peut guider la navigation."
+    ],
+    "note": "Un contrôle ne doit pas être décidé à partir des seuls compteurs. Ouvrir la pièce et vérifier son contenu ainsi que la version attribuée."
+  },
+  {
+    "title": "SECAD : contrôler et responsabiliser",
+    "lead": "SECAD intervient sur les documents dont la tâche de contrôle lui est attribuée. Son tableau de bord présente ses contrôles et échéances.",
+    "screen": "18-action-secad.jpg",
+    "steps": [
+      "Ouvrir Mes tâches et vérifier que vous êtes le responsable actuel de la révision concernée.",
+      "Consulter l’aperçu : identité, affectation, dates, objet, cohérence administrative et pièces attendues.",
+      "Si le dossier est conforme, choisir le responsable AP et utiliser Contrôler et transmettre à AP.",
+      "Si une correction est nécessaire, saisir un motif explicite puis Retourner à OPS pour correction. La raison et votre identité sont conservées dans l’historique."
+    ],
+    "note": "Un retour ouvre une correction versionnée. Les validations antérieures ne suffisent pas à autoriser l’impression d’une nouvelle révision.",
+    "profile": "SECAD"
+  },
+  {
+    "title": "AP : comprendre son tableau de bord",
+    "profile": "AP",
+    "lead": "Le tableau de bord AP suit les visas hiérarchiques attendus après contrôle SECAD. Il aide à retrouver rapidement les tâches qui vous sont confiées.",
+    "screen": "19-tableau-ap.jpg",
+    "steps": [
+      "Visas à donner indique vos tâches en attente. Échéances dépassées signale celles dont la date limite est passée.",
+      "Tâches terminées regroupe vos tâches clôturées ; Retours effectués identifie vos renvois pour correction. Ce compteur ne signifie donc pas uniquement visas favorables.",
+      "Ouvrir Mes prochaines tâches ou Mes tâches pour retrouver le dossier, son responsable actuel et le contrôle précédent.",
+      "Consulter l’aperçu, puis confier à DIRCAB si le visa est favorable. En cas de correction nécessaire, justifier le retour à OPS conformément au chapitre suivant."
+    ],
+    "note": "Le profil AP n’administre pas les données agents et ne donne pas accès aux statistiques globales réservées à DIRCAB et à la maintenance habilitée."
+  },
+  {
+    "title": "AP : donner le visa hiérarchique",
+    "lead": "AP examine le dossier après le contrôle SECAD. Le visa porte sur une version identifiée et prépare la décision de DIRCAB.",
+    "screen": "20-action-ap.jpg",
+    "steps": [
+      "Retrouver les visas à donner dans votre tableau de bord puis ouvrir la tâche attribuée.",
+      "Relire le document, son état et l’historique des responsabilités. Vérifier que le contrôle SECAD concerne la même révision.",
+      "Si le visa est favorable, choisir le compte DIRCAB responsable et utiliser Donner le visa et transmettre à DIRCAB.",
+      "En cas d’écart, motiver un retour à OPS. Ne pas essayer de modifier les données de l’agent depuis votre espace de validation."
+    ],
+    "note": "Une action sur un dossier devenu obsolète est refusée. Actualiser le dossier avant de reprendre une décision.",
+    "profile": "AP"
+  },
+  {
+    "title": "DIRCAB : comprendre son tableau de bord",
+    "profile": "DIRCAB",
+    "lead": "L’espace DIRCAB réunit les décisions finales à prendre et l’accès au pilotage global. Il sépare la charge personnelle de décision des statistiques institutionnelles.",
+    "screen": "21-tableau-dircab.jpg",
+    "steps": [
+      "Décisions finales attendues compte les tâches nominatives encore ouvertes. Échéances dépassées signale les décisions en retard.",
+      "Tâches terminées compte les tâches clôturées ; Retours effectués distingue les dossiers renvoyés à OPS. Les refus et approbations sont détaillés dans le suivi et l’activité.",
+      "Ouvrir Mes prochaines tâches pour examiner une pièce. Relire les visas de SECAD et AP sur la révision courante avant de décider.",
+      "Utiliser Activité, ou Pilotage sur mobile, pour accéder aux courbes et indicateurs globaux. Le chapitre Pilotage scientifique explique leurs méthodes et limites."
+    ],
+    "note": "L’accès au pilotage global ne remplace pas la responsabilité de relire chaque document avant sa validation finale."
+  },
+  {
+    "title": "DIRCAB : décision finale et impression",
+    "lead": "La validation finale confirme l’aboutissement du circuit OPS, SECAD et AP. Elle débloque la version destinée à la sortie documentaire.",
+    "screen": "23-document-valide.jpg",
+    "steps": [
+      "Depuis la tâche DIRCAB, examiner le document et les visas de la révision courante. Valider, retourner à OPS ou refuser selon le cas.",
+      "Après validation, sur le serveur Django, utiliser Ouvrir et imprimer la version validée : le PDF archivé est ouvert dans le lecteur.",
+      "Sur la démonstration publique, ouvrir la version validée puis Imprimer la version validée. Le dialogue du navigateur permet l’impression ou l’enregistrement PDF.",
+      "Choisir A4, taille réelle ou 100 %, vérifier les marges et désactiver les en-têtes et pieds de page ajoutés par le navigateur. Relire l’aperçu avant de lancer l’impression."
+    ],
+    "note": "L’application journalise les ouvertures instrumentées. Elle ne peut pas affirmer qu’une imprimante a physiquement produit une feuille. Les documents de démonstration restent non valables.",
+    "profile": "DIRCAB"
+  },
+  {
+    "title": "Comprendre l’ADN numérique",
+    "lead": "L’ADN associe l’identité du dossier à une version précise de son contenu. Il rend les révisions comparables et complète l’historique des responsabilités.",
+    "kind": "dna",
+    "steps": [
+      "L’identifiant UUID suit le dossier. Une autre création reçoit un autre identifiant, même si son texte ressemble à celui d’une pièce existante.",
+      "La révision augmente lorsqu’une correction est enregistrée. Le schéma sigda-dna-v1 définit les données prises en compte dans l’empreinte.",
+      "Le SHA-256 de l’ADN couvre l’identifiant, la révision, le modèle, la référence, la date, le texte et les champs du document. La forme courte est imprimée dans le pied de page.",
+      "Le SHA-256 du fichier PDF final est distinct : il identifie les octets du fichier archivé. Le QR et la fiche réunissent ces repères avec l’état du dossier."
+    ],
+    "note": "Une empreinte n’est pas une signature électronique officielle. Une copie du QR peut être reproduite ; la comparaison au registre et, pour un fichier reçu, à l’empreinte du PDF final demeure essentielle."
+  },
+  {
+    "title": "Vérifier une version dans le registre",
+    "lead": "La démonstration publique et le serveur privé ne fournissent pas le même niveau de vérification. La capture présente le contrôle réellement exécuté sur la base Django fictive.",
+    "screen": "30-registre-prive.jpg",
+    "steps": [
+      "Sur GitHub Pages, le QR ouvre une fiche de lecture des données déclarées. Elle ne compare pas ces indications à un registre institutionnel.",
+      "Sur le serveur privé, ouvrir le QR ou Vérifier dans le registre, puis se connecter avec un compte autorisé à consulter ce dossier.",
+      "Comparer la référence, l’UUID et la révision. Le serveur recalcule l’ADN, contrôle le contenu enregistré et, s’il existe, l’intégrité du PDF archivé.",
+      "Si une correspondance échoue ou si le lien vise une ancienne révision, revenir au dossier et signaler l’écart. La consultation du contrôle est journalisée."
+    ],
+    "note": "Une empreinte conforme sur un brouillon ne signifie pas une validation finale. L’état du circuit et l’intégrité sont deux informations complémentaires."
+  },
+  {
+    "title": "DIRCAB : lire le pilotage scientifique",
+    "lead": "Le pilotage global est accessible à DIRCAB et à la maintenance habilitée. Il mesure les événements enregistrés, les étapes du circuit et les délais observés.",
+    "screen": "24-statistiques.jpg",
+    "steps": [
+      "Ouvrir Activité puis choisir la période de 7, 30 ou 90 jours. Les journées sont regroupées à l’heure de Kinshasa.",
+      "Lire les courbes d’usage, les volumes, les tâches en attente et les retards par étape. Consulter les tableaux de valeurs associés aux graphiques.",
+      "La médiane partage les délais observés en deux ; le P90 indique le délai sous lequel se situent environ 90 % des observations. La boîte présente notamment Q1, la médiane et Q3.",
+      "Lire le taux d’approbation avec son intervalle de Wilson à 95 % et la méthode affichée. Un échantillon de démonstration réduit ne permet pas de conclure à la performance future."
+    ],
+    "note": "Une ouverture de PDF n’est pas une preuve d’impression physique. Les valeurs mesurent les opérations instrumentées, sans enregistrer le corps des documents ni les mots de passe."
+  },
+  {
+    "title": "Utiliser l’assistant et les variantes",
+    "lead": "L’assistant oriente l’utilisateur vers les modèles et les fonctions disponibles. Il complète le parcours guidé et ne remplace ni le dossier agent ni la hiérarchie de validation.",
+    "screen": "26-assistant.jpg",
+    "steps": [
+      "Ouvrir Assistant SIGDA et poser une question précise, par exemple : « Comment imprimer en A4 ? ».",
+      "Utiliser les liens proposés pour retrouver une fonction ou un type de pièce. Le mode local s’appuie sur des règles et des contenus préparés.",
+      "Choisir les variantes de rédaction disponibles puis relire le sens, les noms, les dates et les obligations mentionnées.",
+      "Le mode GPT requiert un serveur configuré et une politique d’usage autorisée. Aucune clé d’API n’est publiée dans la démonstration et aucun service GPT n’est connecté par défaut."
+    ],
+    "note": "Une rédaction fluide n’est pas une preuve d’exactitude administrative ou juridique. L’IA ne peut pas valider un document à la place de SECAD, AP ou DIRCAB."
+  },
+  {
+    "title": "Demander une intervention de maintenance",
+    "lead": "L’utilisateur opérationnel demande une intervention lorsque la base agents, l’application ou sa période de validité doit être actualisée.",
+    "screen": "27-assistance.jpg",
+    "steps": [
+      "Ouvrir Maintenance et assistance depuis le menu ou depuis le répertoire des agents.",
+      "Choisir la nature de l’intervention : ajout d’agent, correction, mise à jour, renouvellement ou assistance.",
+      "Décrire la demande et donner la référence du dossier concerné. Utiliser exclusivement des données fictives dans la démonstration publique.",
+      "Sur GitHub Pages, télécharger le fichier texte puis le transmettre à l’équipe habilitée : aucun envoi automatique n’est effectué. Sur Django, la demande est conservée dans la file privée de maintenance."
+    ],
+    "note": "Dans le même navigateur, la demande apparaît aussi dans le profil Maintenance fictif. La réception entre appareils nécessite le serveur privé. Aucune demande GitHub Pages n’est automatiquement envoyée par courriel."
+  },
+  {
+    "title": "Maintenance : comprendre son tableau de bord",
+    "profile": "MAINTENANCE",
+    "lead": "La maintenance dispose de son propre espace, distinct du circuit de validation. Il réunit la réception des demandes, l’activité globale et les fonctions techniques nécessaires au suivi du Cabinet.",
+    "screen": "31-maintenance.jpg",
+    "steps": [
+      "Demandes à traiter, Interventions en cours et Demandes traitées permettent d’identifier la charge et le suivi. Demandes reçues compte l’ensemble de la file.",
+      "Consulter la charge OPS, SECAD, AP et DIRCAB, les comptes actifs, les agents et les PDF archivés. Ces compteurs décrivent la base concernée, sans réécrire les décisions.",
+      "Ouvrir Activité et statistiques pour les courbes et indicateurs. Les journaux d’utilisation et de maintenance sont paginés pour retrouver les opérations plus anciennes.",
+      "Sur Django, les compteurs sont vérifiés toutes les 20 secondes et un avis signale une file actualisée. Rafraîchir les demandes pour consulter les nouveaux éléments."
+    ],
+    "note": "Le profil technique ne valide pas un document à la place de la hiérarchie et n’obtient pas automatiquement le droit de lire tous les contenus documentaires. Le compte Maintenance de GitHub Pages reste fictif."
+  },
+  {
+    "title": "Maintenance : recevoir, traiter et répondre",
+    "profile": "MAINTENANCE",
+    "lead": "Sur le serveur privé, chaque demande enregistrée par un compte du Cabinet rejoint la file centralisée. La réponse et l’auteur de la prise en charge sont conservés.",
+    "screen": "35-file-serveur.jpg",
+    "steps": [
+      "Ouvrir Demandes du Cabinet et filtrer les états À traiter, En cours ou Traitées. Utiliser les pages pour parcourir toute la file.",
+      "Lire la catégorie, le compte demandeur, la référence et le détail. Choisir En cours et rédiger une réponse indiquant la prise en charge effective.",
+      "Enregistrer le suivi. La confirmation valide l’enregistrement ; le demandeur retrouve la réponse dans Maintenance et assistance. Clôturer en Traitée lorsque l’intervention est terminée.",
+      "Si un autre intervenant a modifié la demande, relire son état et sa réponse avant de reprendre. Consulter le journal pour retrouver les changements et leur auteur."
+    ],
+    "note": "Sur GitHub Pages, ce parcours est simulé entre profils du même navigateur. Les imports, les renouvellements et les mises à jour réelles restent des opérations de l’équipe habilitée."
+  },
+  {
+    "title": "Administration technique et validité annuelle",
+    "lead": "Cet espace est réservé à un compte nominatif de maintenance, distinct des quatre profils opérationnels. La capture provient d’un serveur isolé et ne révèle aucun mot de passe technique.",
+    "screen": "37-outils-techniques.jpg",
+    "steps": [
+      "L’équipe habilitée traite les demandes et importe les dossiers agents à partir d’un CSV contrôlé pour un compte OPS donné.",
+      "L’import vérifie toutes les lignes et la liste des services avant de les enregistrer. Les matricules existants sont actualisés ; aucune suppression n’est effectuée par cet import.",
+      "La période initiale est fixée du 1er janvier au 31 décembre 2027 inclus, avec rappel avant l’échéance. Le renouvellement est une opération technique motivée et journalisée.",
+      "Après expiration, les nouvelles créations et soumissions sont suspendues. La consultation et la sortie des documents déjà validés restent possibles."
+    ],
+    "note": "Les imports et renouvellements réels appartiennent au serveur privé et à l’équipe habilitée. Le tableau de bord Maintenance public est une simulation ; aucun identifiant technique réel n’est livré avec ce guide."
+  },
+  {
+    "title": "Installer SIGDA et adapter la lecture",
+    "lead": "La PWA conserve une identité propre à SIGDA : emblème de la RDC, nom SIGDA Cabinet et identifiant d’installation distinct de ceux des autres projets.",
+    "screen": "29-installation.jpg",
+    "steps": [
+      "Depuis la page de connexion ou la zone d’installation, consulter Installer SIGDA et suivre les indications de votre système et de votre navigateur.",
+      "Sur un navigateur compatible, utiliser son bouton d’installation. Sur iPhone ou iPad, suivre les indications de partage et d’ajout à l’écran d’accueil affichées par l’aide.",
+      "Si un ancien raccourci conserve l’ancienne icône, le recréer. L’application ne peut pas imposer la mise à jour du cache du bureau du système.",
+      "Changer le thème selon la lumière ambiante et utiliser le zoom du navigateur si nécessaire. L’interface suit aussi la préférence de réduction des animations."
+    ],
+    "note": "L’installation dépend du navigateur et du système. Le mode hors connexion affiche une page de reprise ; il ne transforme pas la PWA en archive autonome des dossiers privés."
+  },
+  {
+    "title": "Réagir aux erreurs et aux conflits",
+    "lead": "Une fenêtre centrée explique la confirmation ou l’échec d’une opération. Elle doit être lue avant de poursuivre, surtout lors d’une validation.",
+    "screen": "03-erreur-connexion.jpg",
+    "steps": [
+      "Si la connexion échoue, vérifier l’identifiant, le mot de passe et la disposition du clavier. Le serveur applique une limitation des tentatives ; attendre le délai indiqué en cas de suspension.",
+      "Si un champ est incomplet ou si le document dépasse l’A4, revenir au champ signalé, corriger puis régénérer l’aperçu.",
+      "Si le dossier ou sa révision a changé, actualiser avant de reprendre l’action. Ne pas répéter une décision sur un écran ancien.",
+      "Si l’impression est bloquée, vérifier la présence des validations SECAD, AP et DIRCAB pour cette révision. En cas d’écart d’empreinte, interrompre la sortie et contacter la maintenance."
+    ],
+    "note": "Sur GitHub Pages, effacer les données du navigateur peut supprimer les dossiers fictifs et l’historique local. Un autre appareil ou profil de navigateur n’a pas automatiquement les mêmes données."
+  },
+  {
+    "title": "Recette rapide : du dossier à la feuille",
+    "lead": "Ce scénario permet à une équipe de démonstration de vérifier ensemble le parcours essentiel, en changeant de compte à chaque responsabilité.",
+    "kind": "checklist",
+    "steps": [
+      "OPS : sélectionner un agent fictif, composer l’attestation, relire l’aperçu grand format, enregistrer et confier la tâche à SECAD.",
+      "SECAD puis AP : relire la même révision, transmettre chacun à la personne suivante ou tester un retour motivé vers OPS.",
+      "DIRCAB : examiner les visas, valider définitivement puis ouvrir la version imprimable. Vérifier le pied de page, les liens et le QR.",
+      "Contrôler l’UUID, la révision, l’ADN et l’historique. Sur Django, vérifier également le fichier archivé dans le registre et la journalisation de son ouverture."
+    ],
+    "note": "Tester aussi un refus, une correction, un écran mobile et une session expirée. Utiliser la déconnexion pour terminer la démonstration."
+  },
+  {
+    "title": "Sources, édition et limites d’exploitation",
+    "lead": "Ce guide accompagne exclusivement la démonstration. Il pourra être adapté à un environnement institutionnel après décision du porteur du projet.",
+    "kind": "sources",
+    "steps": [
+      "L’identité graphique et les formes documentaires reprennent les exemples et l’emblème fournis. Les signatures et cachets réels n’ont pas été reproduits.",
+      "Les liens sociaux sont ceux référencés par le site officiel de la Présidence au 12 novembre 2026. Leur disponibilité peut dépendre des plateformes et de la connexion.",
+      "L’approche du manuel SSDC a inspiré le parcours pas à pas, les captures réelles et l’explication des limites. SIGDA conserve son propre périmètre, son workflow et son identité PWA.",
+      "Une mise en production institutionnelle exige notamment une configuration serveur HTTPS, une identité forte, une administration contrôlée, des sauvegardes testées, de la supervision et un audit indépendant."
+    ],
+    "note": "L’ADN documentaire et les contrôles mis en œuvre ne constituent pas une garantie d’inviolabilité ni une homologation officielle."
+  }
+]

@@ -3,6 +3,7 @@ from datetime import timedelta
 from django.conf import settings
 from django.contrib.auth.views import LoginView
 from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.sessions.middleware import SessionMiddleware
 from django.core.validators import MaxLengthValidator
 from django.db import transaction
 from django.db.models import F
@@ -10,8 +11,20 @@ from django.http import HttpResponse
 from django.utils import timezone
 from django.utils.crypto import salted_hmac
 from django.utils.cache import patch_cache_control
+from django.utils.cache import patch_vary_headers
 
 from .models import LoginAttemptBucket
+
+
+class UserActivitySessionMiddleware(SessionMiddleware):
+    """Background counters must not keep an unattended technical session alive."""
+    def process_response(self,request,response):
+        if getattr(getattr(request,'resolver_match',None),'url_name',None)=='maintenance_status':
+            session=getattr(request,'session',None)
+            if session is not None and not session.modified and not session.is_empty():
+                if session.accessed:patch_vary_headers(response,('Cookie',))
+                return response
+        return super().process_response(request,response)
 
 
 def attempt_keys(request):

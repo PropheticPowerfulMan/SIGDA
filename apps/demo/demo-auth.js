@@ -6,7 +6,7 @@
     const revision = new URL(document.currentScript.src).searchParams.get("v");
     const form = document.getElementById("demo-login");
     const workspace = document.getElementById("demo-workspace");
-    const usernames = { demo: "OPS", ops: "OPS", secad: "SECAD", ap: "AP", dircab: "DIRCAB" };
+    const usernames = { demo: "OPS", ops: "OPS", secad: "SECAD", ap: "AP", dircab: "DIRCAB", maintenance: "MAINTENANCE" };
     try { window.SIGDASession = { role: sessionStorage.getItem("sigda-demo-role"), username: sessionStorage.getItem("sigda-demo-user") }; } catch { window.SIGDASession = {}; }
 
     function signedIn() {
@@ -58,7 +58,7 @@
                 return;
             }
             try {
-                sessionStorage.setItem("sigda-result-message", "Connexion établie. Votre espace de travail est prêt.");
+                sessionStorage.removeItem("sigda-result-message");
                 sessionStorage.setItem(key, "active");
                 sessionStorage.setItem(entryKey, "yes");
                 sessionStorage.setItem("sigda-demo-role", role);
@@ -68,7 +68,7 @@
                 return;
             }
             await window.SIGDAUsage?.log("login");
-            navigate("./", window.location.hash);
+            navigate("./", role==='MAINTENANCE'?'#maintenance':window.location.hash);
         });
         submit.disabled = false;
     } else if (workspace) {

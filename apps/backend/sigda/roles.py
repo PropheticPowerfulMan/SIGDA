@@ -31,4 +31,5 @@ def is_maintainer(user):
 
 def workspace_role(request):
     role = role_for(request.user)
-    return {"workspace_role": role, "role_info": ROLES.get(role), "is_ops": role == "OPS", "workflow_roles": ROLES, "is_maintainer": is_maintainer(request.user)}
+    maintainer=is_maintainer(request.user)
+    return {"workspace_role": 'MAINTENANCE' if maintainer else role, "role_info": ROLES.get(role), "is_ops": role == "OPS", "workflow_roles": ROLES, "is_maintainer": maintainer}
