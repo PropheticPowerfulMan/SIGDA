@@ -37,6 +37,7 @@
         const password = document.getElementById("password");
         const error = document.getElementById("login-error");
         const submit = document.getElementById("login-submit");
+        let connecting = false;
 
         function showError(message) {
             error.textContent = message;
@@ -51,30 +52,47 @@
         });
         form.addEventListener("submit", async (event) => {
             event.preventDefault();
+            if (connecting) return;
             const role = usernames[username.value.trim().toLowerCase()];
             if (!role || password.value !== "SIGDA-demo-2026!") {
                 showError("Identifiant ou mot de passe de démonstration incorrect.");
                 password.select();
                 return;
             }
+            connecting = true;
+            submit.disabled = true;
+            form.setAttribute('aria-busy', 'true');
+            error.hidden = true;
+            const finish = window.SIGDAEffects?.begin(submit, 'Connexion à votre espace…', {immediate:true});
             try {
+                // Paint the shared progress indicator before opening the workspace.
+                await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
                 sessionStorage.removeItem("sigda-result-message");
                 sessionStorage.setItem(key, "active");
                 sessionStorage.setItem(entryKey, "yes");
                 sessionStorage.setItem("sigda-demo-role", role);
                 sessionStorage.setItem("sigda-demo-user", role.toLowerCase());
+                await window.SIGDAUsage?.log("login");
+                navigate("./", role==='MAINTENANCE'?'#maintenance':window.location.hash);
             } catch {
+                for (const item of [key, entryKey, 'sigda-demo-role', 'sigda-demo-user']) {
+                    try { sessionStorage.removeItem(item); } catch {}
+                }
+                finish?.();
+                connecting = false;
+                submit.disabled = false;
+                form.removeAttribute('aria-busy');
                 showError("Autorisez le stockage de session du navigateur pour ouvrir la démonstration.");
-                return;
             }
-            await window.SIGDAUsage?.log("login");
-            navigate("./", role==='MAINTENANCE'?'#maintenance':window.location.hash);
+        });
+        window.addEventListener('pageshow', event => {
+            if (event.persisted) { connecting = false; submit.disabled = false; form.removeAttribute('aria-busy'); }
         });
         submit.disabled = false;
     } else if (workspace) {
         async function logout() {
             await window.SIGDAUsage?.log("logout");
-            sessionStorage.setItem("sigda-result-message", "Déconnexion effectuée.");
+            sessionStorage.removeItem("sigda-result-message");
             sessionStorage.removeItem(key);
             sessionStorage.removeItem(entryKey);
             sessionStorage.removeItem("sigda-demo-role"); sessionStorage.removeItem("sigda-demo-user");

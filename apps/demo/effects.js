@@ -24,9 +24,9 @@
         if(active?.key===key)return active.promise;
         let resolve;const promise=new Promise(done=>{resolve=done;});queue.push({message,kind,key,resolve,promise});nextResult();return promise;
     }
-    function begin(button,label='Traitement en cours…'){
+    function begin(button,label='Traitement en cours…',options={}){
         const token={};operations.set(token,label);activity.textContent=label;
-        pending++;if(pending===1)delay=setTimeout(()=>{if(pending){progress.hidden=false;activity.hidden=false;}},140);
+        pending++;if(pending===1)delay=setTimeout(()=>{if(pending){progress.hidden=false;activity.hidden=false;}},140);if(options.immediate){clearTimeout(delay);progress.hidden=false;activity.hidden=false;}
         if(button?.matches('button,.button')){const state=counts.get(button)||{count:0,busy:button.getAttribute('aria-busy')};state.count++;counts.set(button,state);button.dataset.fxLoading='true';button.setAttribute('aria-busy','true');}
         let finished=false;return()=>{if(finished)return;finished=true;operations.delete(token);pending=operations.size;if(!pending){clearTimeout(delay);progress.hidden=true;activity.hidden=true;}else activity.textContent=[...operations.values()].at(-1);if(button&&counts.has(button)){const state=counts.get(button);if(--state.count===0){counts.delete(button);delete button.dataset.fxLoading;if(state.busy===null)button.removeAttribute('aria-busy');else button.setAttribute('aria-busy',state.busy);}}};
     }
@@ -42,12 +42,12 @@
     document.addEventListener('submit',event=>{
         const form=event.target,button=event.submitter;
         if(event.defaultPrevented){
-            if(button?.disabled){const end=begin(button),observer=new MutationObserver(()=>{if(!button.disabled||!button.isConnected){observer.disconnect();end();}});observer.observe(document.body,{attributes:true,attributeFilter:['disabled'],childList:true,subtree:true});}
+            if(button?.disabled&&button.dataset.fxLoading!=='true'){const end=begin(button),observer=new MutationObserver(()=>{if(!button.disabled||!button.isConnected){observer.disconnect();end();}});observer.observe(document.body,{attributes:true,attributeFilter:['disabled'],childList:true,subtree:true});}
             return;
         }
         if(form.method.toLowerCase()==='post'){
             if(nativePending.has(form)){event.preventDefault();return;}
-            nativePending.add(form);form.setAttribute('aria-busy','true');begin(button,form.classList.contains('login-form')?'Connexion en cours…':'Enregistrement en cours…');
+            nativePending.add(form);form.setAttribute('aria-busy','true');begin(button,form.classList.contains('login-form')?'Connexion à votre espace…':'Enregistrement en cours…',{immediate:form.classList.contains('login-form')});
         }
     });
     document.addEventListener('click',event=>{

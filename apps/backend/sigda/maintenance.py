@@ -191,6 +191,12 @@ def administration(request):
     tickets=SupportTicket.objects.select_related('owner','handled_by')
     if selected in dict(SupportTicket.STATES):tickets=tickets.filter(state=selected)
     else:selected='all'
+    query=request.GET.get('q','').strip()[:200]
+    if query:
+        search=Q(details__icontains=query)|Q(owner__username__icontains=query)|Q(response__icontains=query)
+        try:search|=Q(pk=UUID(query))
+        except (ValueError,TypeError):pass
+        tickets=tickets.filter(search)
     tickets=tickets.annotate(priority=Case(When(state='open',then=0),When(state='processing',then=1),default=2,output_field=IntegerField())).order_by('priority','-created_at')
     page=Paginator(tickets,15).get_page(request.GET.get('page'))
     counts=dashboard_counts();latest=SupportTicket.objects.order_by('-updated_at').values_list('updated_at',flat=True).first()
@@ -200,7 +206,7 @@ def administration(request):
     for event in usage_page:event.operation_label=usage_labels.get(event.action,event.action)
     return render(request, 'maintenance.html', {'current_view': 'maintenance', 'current_label': 'Tableau de bord Maintenance',
         'validity_form': validity_form, 'import_form': import_form, 'service_choices': SERVICES, 'problem': problem,
-        'counts':counts,'selected_state':selected,'ticket_page':page,'all_tickets':page,
+        'counts':counts,'selected_state':selected,'ticket_query':query,'ticket_page':page,'all_tickets':page,
         'latest_update':latest.isoformat() if latest else '',
         'technical_metrics':[('Agents enregistrés',AgentRecord.objects.count()),('Comptes actifs',get_user_model().objects.filter(is_active=True).count()),('PDF archivés',DocumentRequest.objects.exclude(issued_pdf__isnull=True).exclude(issued_pdf=b'').count()),('Tâches en attente',ValidationTask.objects.filter(state='pending').count())],
         'workflow_load':[{'stage':stage,'total':load.get(stage,0)} for stage in ['OPS','SECAD','AP','DIRCAB']],

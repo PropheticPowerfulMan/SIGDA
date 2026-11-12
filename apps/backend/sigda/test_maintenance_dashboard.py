@@ -51,6 +51,9 @@ class MaintenanceDashboardTests(TestCase):
         self.assertTrue(UsageEvent.objects.filter(actor=self.ops,action='login').exists())
         self.client.post(reverse('support'),{'category':'assistance','details':'Une autre action doit conserver sa confirmation.'})
         self.assertIn('sigda-feedback',self.client.session)
+        self.client.post(reverse('logout'))
+        self.assertNotIn('sigda-feedback',self.client.session)
+        self.assertTrue(UsageEvent.objects.filter(actor=self.ops,action='logout').exists())
         self.client.logout();self.assertNotContains(self.client.get(reverse('login')),'data-demo-guide')
         self.assertIsNone(finders.find('guide-utilisateur-sigda-demo.pdf'))
 
@@ -60,6 +63,18 @@ class MaintenanceDashboardTests(TestCase):
         response=self.client.get(reverse('maintenance'));self.assertEqual(response.context['ticket_page'].paginator.count,20)
         self.assertEqual(len(response.context['all_tickets']),15)
         filtered=self.client.get(reverse('maintenance'),{'state':'processing'});self.assertEqual(filtered.context['ticket_page'].paginator.count,1)
+
+    def test_complaint_reaches_the_inbox_and_can_be_found_by_reference(self):
+        self.client.force_login(self.ops)
+        self.client.post(reverse('support'),{'category':'complaint','details':'Réclamation fictive CAB-RECL-845 concernant un dossier.'})
+        ticket=SupportTicket.objects.get(category='complaint')
+        self.client.force_login(self.team)
+        response=self.client.get(reverse('maintenance'),{'q':'CAB-RECL-845'})
+        self.assertContains(response,'Réclamations et requêtes du Cabinet')
+        self.assertEqual(response.context['ticket_page'].paginator.count,1)
+        by_id=self.client.get(reverse('maintenance'),{'q':str(ticket.pk)})
+        self.assertEqual(by_id.context['ticket_page'].paginator.count,1)
+        self.assertEqual(self.client.get(reverse('maintenance'),{'q':'inexistant'}).context['ticket_page'].paginator.count,0)
 
     def test_background_polling_does_not_extend_an_unattended_session(self):
         self.client.force_login(self.team)

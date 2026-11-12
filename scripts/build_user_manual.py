@@ -69,12 +69,22 @@ def para(text,x,y,width,style=BODY,html=False,draw=True):
     return h
 
 
+def header(cover=False):
+    canvas.drawImage(str(EMBLEM),LEFT,HEIGHT-52,width=30,height=30,mask='auto')
+    canvas.setFillColor(HexColor('#e2e9ee') if cover else NAVY);canvas.setFont('GuideStrong',8.6)
+    canvas.drawString(LEFT+40,HEIGHT-30,'RÉPUBLIQUE DÉMOCRATIQUE DU CONGO')
+    canvas.setFillColor(HexColor('#bfcfdb') if cover else MUTED);canvas.setFont('GuideUI',7.3)
+    canvas.drawString(LEFT+40,HEIGHT-44,'Cabinet du Président de la République | SIGDA - Guide de démonstration')
+    if not cover:
+        canvas.setFont('GuideUI',8);canvas.drawRightString(RIGHT,HEIGHT-33,'Sommaire')
+        canvas.linkRect('', 'sommaire',(RIGHT-50,HEIGHT-41,RIGHT,HEIGHT-23),relative=0,thickness=0)
+    canvas.setStrokeColor(GOLD if cover else BORDER);canvas.setLineWidth(.6);canvas.line(LEFT,HEIGHT-59,RIGHT,HEIGHT-59)
+
+
 def frame(number):
     canvas.setFillColor(PAPER);canvas.rect(0,0,WIDTH,HEIGHT,fill=1,stroke=0)
-    canvas.setFillColor(NAVY);canvas.setFont('GuideStrong',11);canvas.drawString(LEFT,HEIGHT-34,'SIGDA')
-    canvas.setFont('GuideUI',8);canvas.setFillColor(MUTED);canvas.drawString(LEFT+47,HEIGHT-34,'GUIDE DE LA DÉMONSTRATION')
-    canvas.drawRightString(RIGHT,HEIGHT-34,'Sommaire');canvas.linkRect('', 'sommaire',(RIGHT-50,HEIGHT-41,RIGHT,HEIGHT-27),relative=0,thickness=0)
-    canvas.setStrokeColor(BORDER);canvas.setLineWidth(.6);canvas.line(LEFT,HEIGHT-47,RIGHT,HEIGHT-47);canvas.line(LEFT,47,RIGHT,47)
+    header()
+    canvas.setStrokeColor(BORDER);canvas.line(LEFT,47,RIGHT,47)
     canvas.setFont('GuideUI',7.1);canvas.setFillColor(MUTED);canvas.drawString(LEFT,33,'12 novembre 2026 · Démonstration · Données fictives')
     canvas.setFont('GuideUI',6.6);canvas.drawString(LEFT,21,'ADN d’édition : '+SOURCE_HASH[:24].upper());canvas.setFont('GuideStrong',8);canvas.drawRightString(RIGHT,28,f'{number:02d} / {PAGES:02d}')
 
@@ -134,9 +144,7 @@ def table(rows,widths,y):
 def cover():
     canvas.setFillColor(NAVY);canvas.rect(0,0,WIDTH,HEIGHT,fill=1,stroke=0)
     canvas.setFillColor(HexColor('#142f49'));canvas.circle(WIDTH+90,HEIGHT-80,300,fill=1,stroke=0)
-    canvas.setStrokeColor(GOLD);canvas.setLineWidth(1);canvas.line(LEFT,HEIGHT-50,RIGHT,HEIGHT-50)
-    style=ParagraphStyle('institution',fontName='GuideUI',fontSize=9.5,leading=15,textColor=HexColor('#d4dce4'))
-    para('RÉPUBLIQUE DÉMOCRATIQUE DU CONGO<br/>Projet destiné au Cabinet du Président de la République',LEFT,HEIGHT-72,350,style,html=True)
+    header(cover=True)
     canvas.drawImage(str(EMBLEM),WIDTH-153,HEIGHT-205,width=108,height=108,mask='auto')
     canvas.setFont('GuideStrong',52);canvas.setFillColor(white);canvas.drawString(LEFT,HEIGHT-246,'SIGDA')
     title=ParagraphStyle('cover',fontName='GuideStrong',fontSize=30,leading=37,textColor=white);para('Guide d’utilisation<br/>illustré',LEFT,HEIGHT-276,450,title,html=True)

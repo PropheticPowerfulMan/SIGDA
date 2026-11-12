@@ -302,7 +302,7 @@
     "screen": "27-assistance.jpg",
     "steps": [
       "Ouvrir Maintenance et assistance depuis le menu ou depuis le répertoire des agents.",
-      "Choisir la nature de l’intervention : ajout d’agent, correction, mise à jour, renouvellement ou assistance.",
+      "Choisir la nature de l’intervention : réclamation, ajout d’agent, correction, mise à jour, renouvellement ou assistance.",
       "Décrire la demande et donner la référence du dossier concerné. Utiliser exclusivement des données fictives dans la démonstration publique.",
       "Sur GitHub Pages, télécharger le fichier texte puis le transmettre à l’équipe habilitée : aucun envoi automatique n’est effectué. Sur Django, la demande est conservée dans la file privée de maintenance."
     ],
@@ -314,7 +314,7 @@
     "lead": "La maintenance dispose de son propre espace, distinct du circuit de validation. Il réunit la réception des demandes, l’activité globale et les fonctions techniques nécessaires au suivi du Cabinet.",
     "screen": "31-maintenance.jpg",
     "steps": [
-      "Demandes à traiter, Interventions en cours et Demandes traitées permettent d’identifier la charge et le suivi. Demandes reçues compte l’ensemble de la file.",
+      "Ouvrir Réclamations du Cabinet dans le menu. La boîte de réception Réclamations et requêtes du Cabinet apparaît en premier, sous les quatre compteurs de suivi.",
       "Consulter la charge OPS, SECAD, AP et DIRCAB, les comptes actifs, les agents et les PDF archivés. Ces compteurs décrivent la base concernée, sans réécrire les décisions.",
       "Ouvrir Activité et statistiques pour les courbes et indicateurs. Les journaux d’utilisation et de maintenance sont paginés pour retrouver les opérations plus anciennes.",
       "Sur Django, les compteurs sont vérifiés toutes les 20 secondes et un avis signale une file actualisée. Rafraîchir les demandes pour consulter les nouveaux éléments."
@@ -327,7 +327,7 @@
     "lead": "Sur le serveur privé, chaque demande enregistrée par un compte du Cabinet rejoint la file centralisée. La réponse et l’auteur de la prise en charge sont conservés.",
     "screen": "35-file-serveur.jpg",
     "steps": [
-      "Ouvrir Demandes du Cabinet et filtrer les états À traiter, En cours ou Traitées. Utiliser les pages pour parcourir toute la file.",
+      "Dans Réclamations et requêtes du Cabinet, filtrer À traiter, En cours ou Traitées. Rechercher un compte, une référence ou un texte et parcourir les pages si nécessaire.",
       "Lire la catégorie, le compte demandeur, la référence et le détail. Choisir En cours et rédiger une réponse indiquant la prise en charge effective.",
       "Enregistrer le suivi. La confirmation valide l’enregistrement ; le demandeur retrouve la réponse dans Maintenance et assistance. Clôturer en Traitée lorsque l’intervention est terminée.",
       "Si un autre intervenant a modifié la demande, relire son état et sa réponse avant de reprendre. Consulter le journal pour retrouver les changements et leur auteur."
@@ -368,7 +368,7 @@
       "Si le dossier ou sa révision a changé, actualiser avant de reprendre l’action. Ne pas répéter une décision sur un écran ancien.",
       "Si l’impression est bloquée, vérifier la présence des validations SECAD, AP et DIRCAB pour cette révision. En cas d’écart d’empreinte, interrompre la sortie et contacter la maintenance."
     ],
-    "note": "Sur GitHub Pages, effacer les données du navigateur peut supprimer les dossiers fictifs et l’historique local. Un autre appareil ou profil de navigateur n’a pas automatiquement les mêmes données."
+    "note": "Sur GitHub Pages, effacer les données du navigateur peut supprimer les dossiers fictifs et l’historique local. Un autre appareil ou profil de navigateur n’a pas automatiquement les mêmes données. Les connexions et déconnexions réussies passent directement à l’écran suivant, sans fenêtre de confirmation. Le bouton de connexion affiche un indicateur de chargement pendant l’ouverture."
   },
   {
     "title": "Recette rapide : du dossier à la feuille",

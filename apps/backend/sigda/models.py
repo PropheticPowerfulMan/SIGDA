@@ -119,7 +119,7 @@ class ServiceValidity(models.Model):
 
 class SupportTicket(models.Model):
     CATEGORIES = [('agent_add', 'Ajout d’un agent'), ('agent_update', 'Correction d’un dossier agent'),
-                  ('app_update', 'Mise à jour de l’application'), ('renewal', 'Renouvellement annuel'), ('assistance', 'Assistance')]
+                  ('app_update', 'Mise à jour de l’application'), ('renewal', 'Renouvellement annuel'), ('assistance', 'Assistance'), ('complaint', 'Réclamation')]
     STATES = [('open', 'À traiter'), ('processing', 'En cours'), ('resolved', 'Traitée')]
     id = models.UUIDField(primary_key=True, default=uuid4, editable=False)
     owner = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.PROTECT)

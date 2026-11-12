@@ -2,7 +2,7 @@
 (() => {
     const form = document.querySelector('[data-support-form]'); if (!form) return;
     const status = document.querySelector('[data-support-status]'), list = document.querySelector('[data-support-list]');
-    const categories = {agent_add:'Ajout d’un agent',agent_update:'Correction d’un dossier agent',app_update:'Mise à jour de l’application',renewal:'Renouvellement annuel',assistance:'Assistance'};
+    const categories = {agent_add:'Ajout d’un agent',agent_update:'Correction d’un dossier agent',app_update:'Mise à jour de l’application',renewal:'Renouvellement annuel',assistance:'Assistance',complaint:'Réclamation'};
     const channel=typeof BroadcastChannel==='function'?new BroadcastChannel('sigda-maintenance-demo-v1'):null;
     const states={open:'À traiter dans la simulation',processing:'Prise en charge simulée',resolved:'Traitée dans la simulation'};
     const el = (tag,text) => { const node=document.createElement(tag);node.textContent=text;return node; };

@@ -58,7 +58,7 @@
                 <a class="nav-link" href="{% url 'assistant' %}" title="Assistant"{% if current_view == "assistant" %} aria-current="page"{% endif %}>
                     <span class="assistant-mark" aria-hidden="true">IA</span><span class="nav-label">Assistant</span>
                 </a>
-                <a class="nav-link" href="{% url 'support' %}" title="Maintenance et assistance"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Maintenance</span></a>{% if is_maintainer %}<a class="nav-link" href="{% url 'maintenance' %}" title="Administration technique"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Tableau Maintenance</span></a>{% endif %}<form class="nav-exit-form" method="post" action="{% url 'logout' %}">
+                <a class="nav-link" href="{% url 'support' %}" title="Maintenance et assistance"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Maintenance</span></a>{% if is_maintainer %}<a class="nav-link" href="{% url 'maintenance' %}" title="Administration technique"><span class="assistant-mark" aria-hidden="true">⚙</span><span class="nav-label">Réclamations du Cabinet</span></a>{% endif %}<form class="nav-exit-form" method="post" action="{% url 'logout' %}">
                     {% csrf_token %}
                     <button type="submit" class="nav-link nav-exit" title="Exit · Déconnexion" aria-label="Exit, se déconnecter">
                         <svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 4H5v16h4m4-8h8m-4-4 4 4-4 4"></path></svg>

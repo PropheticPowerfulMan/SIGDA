@@ -5,7 +5,7 @@
     if(!endpoint&&who.role!=='MAINTENANCE')return;
     const news=root.querySelector('[data-maint-news]')||document.querySelector('[data-maint-news]'),status=root.querySelector('[data-maint-poll-status]');
     const fmt=new Intl.DateTimeFormat('fr',{dateStyle:'short',timeStyle:'short',timeZone:'Africa/Kinshasa'}),states={open:'À traiter',processing:'En cours',resolved:'Traitée'};
-    const categories={agent_add:'Ajout d’un agent',agent_update:'Correction d’un agent',app_update:'Mise à jour',renewal:'Renouvellement',assistance:'Assistance'};
+    const categories={agent_add:'Ajout d’un agent',agent_update:'Correction d’un agent',app_update:'Mise à jour',renewal:'Renouvellement',assistance:'Assistance',complaint:'Réclamation'};
     let stamp=root.dataset.stamp||'',pending=false,page=1,tickets=[],initialized=false;
     const el=(tag,text='',cls='')=>{const e=document.createElement(tag);e.textContent=text;e.className=cls;return e;};
     function counts(values){for(const [key,value]of Object.entries(values)){const target=root.querySelector('[data-maint-count="'+key+'"]');if(target)target.textContent=value;}}
@@ -26,9 +26,9 @@
         });return item;
     }
     function showTickets(){
-        const filter=root.querySelector('[data-maint-filter]').value,selected=tickets.filter(t=>filter==='all'||(t.state||'open')===filter),total=Math.max(1,Math.ceil(selected.length/10));page=Math.min(page,total);
-        const list=root.querySelector('[data-maint-tickets]');list.replaceChildren(...selected.slice((page-1)*10,page*10).map(row));if(!list.children.length)list.append(el('li','Aucune demande dans cet état.'));
-        root.querySelector('[data-maint-page]').textContent='Page '+page+' / '+total;root.querySelector('[data-maint-previous]').disabled=page===1;root.querySelector('[data-maint-next]').disabled=page===total;
+        const filter=root.querySelector('[data-maint-filter]').value,query=root.querySelector('[data-maint-search]').value.trim().toLocaleLowerCase('fr'),selected=tickets.filter(t=>(filter==='all'||(t.state||'open')===filter)&&[t.id,t.owner,t.details,t.response||'',categories[t.category]||''].join(' ').toLocaleLowerCase('fr').includes(query)),total=Math.max(1,Math.ceil(selected.length/10));page=Math.min(page,total);
+        const list=root.querySelector('[data-maint-tickets]');list.replaceChildren(...selected.slice((page-1)*10,page*10).map(row));if(!list.children.length){const empty=el('li','','maintenance-empty');empty.append(el('strong',tickets.length?'Aucune demande ne correspond à ces filtres.':'Votre boîte de réception est prête.'),el('p',tickets.length?'Modifiez la recherche ou choisissez Tous les états.':'Les réclamations et requêtes créées par le Cabinet apparaîtront ici, avec leur auteur, leur état et votre espace de réponse.'));list.append(empty);}
+        root.querySelector('[data-maint-page]').textContent=selected.length+' demande(s) · Page '+page+' / '+total;root.querySelector('[data-maint-previous]').disabled=page===1;root.querySelector('[data-maint-next]').disabled=page===total;
     }
     async function refresh(force=false){
         if(pending)return;pending=true;
@@ -48,7 +48,7 @@
         }catch(error){status.textContent=error.message;if(force)window.SIGDAEffects?.notify(error.message,'error');}finally{pending=false;}
     }
     const channel=!endpoint&&typeof BroadcastChannel==='function'?new BroadcastChannel('sigda-maintenance-demo-v1'):null;if(channel)channel.onmessage=()=>refresh(false);
-    if(!endpoint){root.querySelector('[data-maint-filter]').addEventListener('change',()=>{page=1;showTickets();});for(const button of root.querySelectorAll('[data-maint-refresh]'))button.addEventListener('click',()=>refresh(true));root.querySelector('[data-maint-previous]').addEventListener('click',()=>{page--;showTickets();});root.querySelector('[data-maint-next]').addEventListener('click',()=>{page++;showTickets();});}
+    if(!endpoint){root.querySelector('[data-maint-filter]').addEventListener('change',()=>{page=1;showTickets();});root.querySelector('[data-maint-search]').addEventListener('input',()=>{page=1;showTickets();});for(const button of root.querySelectorAll('[data-maint-refresh]'))button.addEventListener('click',()=>refresh(true));root.querySelector('[data-maint-previous]').addEventListener('click',()=>{page--;showTickets();});root.querySelector('[data-maint-next]').addEventListener('click',()=>{page++;showTickets();});}
     document.addEventListener('click',event=>{const button=event.target.closest('[data-maint-focus]');if(button){const target=document.getElementById(button.dataset.maintFocus);target?.scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth',block:'start'});}});
     window.addEventListener('sigda-view-changed',event=>{if(event.detail.view==='maintenance')refresh(false);});window.addEventListener('sigda-support-changed',()=>refresh(false));
     setInterval(()=>{if(document.visibilityState==='visible'&&(endpoint||!root.closest('[data-view]')?.hidden))refresh(false);},20000);refresh(true);

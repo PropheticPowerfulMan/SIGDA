@@ -1,6 +1,6 @@
 # Guide utilisateur SIGDA - démonstration
 
-Le guide couvre les quatre profils OPS, SECAD, AP et DIRCAB et l’espace technique Maintenance. Il explique leurs tableaux de bord, la création à partir du dossier agent, les retours, la validation, l’impression, l’ADN numérique, les demandes et les réponses. Un atlas contient les captures complémentaires.
+Le guide couvre les quatre profils OPS, SECAD, AP et DIRCAB et l’espace technique Maintenance. Il explique leurs tableaux de bord, la création à partir du dossier agent, les retours, la validation, l’impression, l’ADN numérique, les demandes et les réponses. Un atlas contient les captures complémentaires. Chaque page porte un en-tête avec l’emblème de la RDC. La boîte de réception des réclamations est présentée en premier dans le tableau de bord Maintenance, avec recherche, filtres et réponse au demandeur.
 
 - Texte : `manual_content.json`.
 - Captures réelles : `screenshots/`, avec leur origine et leur SHA-256 dans `captures.json`.

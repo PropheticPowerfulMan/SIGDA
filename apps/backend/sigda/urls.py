@@ -148,7 +148,6 @@ def specimen_preview(request, key, agent_key):
 @require_POST
 def exit_session(request):
     auth_logout(request)
-    request.session['sigda-feedback'] = 'Déconnexion effectuée.'
     return redirect('login')
 
 

@@ -1,11 +1,11 @@
 {
   "edition": "2026-11-12",
-  "id": "SIGDA-GUIDE-20261112-1084EB30",
+  "id": "SIGDA-GUIDE-20261112-9EF29D80",
   "pages": 41,
   "chapters": 32,
   "captures": 38,
-  "source_sha256": "1084eb303ede1c53233b141f26e3d0abeb798d3fa749cdf89087bfc487f910da",
-  "pdf_sha256": "03d34cabe2e1fa983322cee501cbbca89e42c81eafb487487be7c01ba7ccaa54",
-  "bytes": 3326869,
+  "source_sha256": "9ef29d80f1fbed3823e4f0510d6c6b15110348a2b546953071320e2499f5e399",
+  "pdf_sha256": "0d9c72f90781e72b15fc85a44ee9f502551eb1098ea0dfb5b20e803020bea8cf",
+  "bytes": 3376017,
   "file": "Guide_utilisateur_SIGDA_demo.pdf"
 }

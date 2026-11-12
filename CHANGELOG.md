@@ -2,6 +2,9 @@
 
 ## En développement
 
+- Déconnexion sans fenêtre de confirmation ; chargement immédiat du bouton de connexion avec protection contre les doubles clics.
+- Réclamations du Cabinet visibles en premier dans Maintenance, recherche par compte, texte ou référence, catégorie Réclamation et guide illustré actualisé avec l’emblème de la RDC dans l’en-tête de chaque page.
+
 - Parcours guidé en quatre étapes pour composer les onze modèles avec les données d’un dossier agent, d’un service ou de pièces transmises.
 - Base agents locale IndexedDB dans la démonstration et dossiers persistants privés dans Django ; création, modification et sélection des dossiers.
 - Brouillons documentaires conservant une copie des données et du texte, avec référence et événement dans le circuit de validation.
