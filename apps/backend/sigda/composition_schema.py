@@ -1,5 +1,9 @@
 """Shared field descriptions and factual templates for the guided composer."""
 from datetime import date
+import json
+from pathlib import Path
+
+SERVICES = json.loads((Path(__file__).resolve().parents[3] / "config/services.json").read_text(encoding="utf-8"))
 
 from .catalog import Agent, format_date
 from .wording import STYLES
@@ -12,7 +16,7 @@ def field(key, label, kind="text", example="", maximum=100):
 IDENTITY_FIELDS = [
     field("name", "Nom complet de l’agent", example="Ex. Camille Exemple"),
     field("registration", "Matricule", example="Ex. DEMO-001", maximum=40),
-    field("service", "Service d’affectation", example="Ex. Service des systèmes d’information"),
+    {**field("service", "Service d’affectation", "select"), "options": SERVICES},
     field("job", "Fonction exercée", example="Ex. Technicienne des réseaux"),
     field("grade", "Grade administratif", example="Ex. Agent d’administration de 1re classe"),
 ]

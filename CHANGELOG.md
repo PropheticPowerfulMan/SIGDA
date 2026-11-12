@@ -57,3 +57,12 @@
 - Fenêtre centrée de confirmation ou d’échec, accessible au clavier, pour les opérations et validations de saisie.
 
 - Emblème de la RDC en filigrane très léger (4,5 %) derrière la zone d’écriture, dans l’aperçu et le PDF ; texte pleinement opaque et en-tête conservé.
+
+## Ergonomie, profils et protections — 12 novembre 2026
+
+- Menu mobile fermé dès le premier affichage, transitions d’ouverture et de fermeture, fermeture par X.
+- Icônes œil ouvert/barré pour le mot de passe ; taille de texte adaptée et raccourcis mobiles.
+- Indicateur de traitement contextualisé pour la connexion, l’enregistrement et la navigation ; état occupé accessible et réinitialisation au retour de page.
+- Services d’affectation contrôlés et tableaux de bord propres aux quatre profils.
+- Icônes PWA basées sur l’emblème de la RDC, avec nouvelles URL et identifiant SIGDA conservé.
+- Limitation des connexions, en-têtes et sessions renforcés, configuration HTTPS explicite.

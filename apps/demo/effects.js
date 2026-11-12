@@ -1,13 +1,13 @@
 "use strict";
 (() => {
-    const reduced=matchMedia('(prefers-reduced-motion: reduce)'),counts=new WeakMap();let pending=0,delay,viewAnimation;
-    const progress=document.createElement('div');progress.className='fx-progress';progress.hidden=true;progress.setAttribute('role','status');
-    const loading=document.createElement('span');loading.className='sr-only';loading.textContent='Traitement en cours';progress.append(loading);
+    const reduced=matchMedia('(prefers-reduced-motion: reduce)');let counts=new WeakMap(),pending=0,delay,viewAnimation;const operations=new Map();
+    const progress=document.createElement('div');progress.className='fx-progress';progress.hidden=true;progress.setAttribute('aria-hidden','true');
+    const activity=document.createElement('div');activity.className='fx-activity';activity.hidden=true;activity.setAttribute('role','status');activity.setAttribute('aria-live','polite');
     const dialog=document.createElement('dialog');dialog.className='fx-result';dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','fx-result-title');dialog.setAttribute('aria-describedby','fx-result-message');
     const mark=document.createElement('span');mark.className='fx-result-mark';mark.setAttribute('aria-hidden','true');
     const title=document.createElement('h2');title.id='fx-result-title';const text=document.createElement('p');text.id='fx-result-message';
     const close=document.createElement('button');close.type='button';close.className='button button-primary';
-    dialog.append(mark,title,text,close);document.body.append(progress,dialog);
+    dialog.append(mark,title,text,close);document.body.append(progress,activity,dialog);
     let active=null,lastKey='',lastClosed=0;const queue=[];
     function nextResult(){
         if(active||!queue.length)return;active=queue.shift();dialog.dataset.kind=active.kind;dialog.setAttribute('role',active.kind==='error'?'alertdialog':'dialog');
@@ -24,10 +24,11 @@
         if(active?.key===key)return active.promise;
         let resolve;const promise=new Promise(done=>{resolve=done;});queue.push({message,kind,key,resolve,promise});nextResult();return promise;
     }
-    function begin(button){
-        pending++;if(pending===1)delay=setTimeout(()=>{if(pending)progress.hidden=false;},140);
-        if(button?.matches('button,.button')){counts.set(button,(counts.get(button)||0)+1);button.dataset.fxLoading='true';}
-        let finished=false;return()=>{if(finished)return;finished=true;pending=Math.max(0,pending-1);if(!pending){clearTimeout(delay);progress.hidden=true;}if(button&&counts.has(button)){const n=counts.get(button)-1;if(n>0)counts.set(button,n);else{counts.delete(button);delete button.dataset.fxLoading;}}};
+    function begin(button,label='Traitement en cours…'){
+        const token={};operations.set(token,label);activity.textContent=label;
+        pending++;if(pending===1)delay=setTimeout(()=>{if(pending){progress.hidden=false;activity.hidden=false;}},140);
+        if(button?.matches('button,.button')){const state=counts.get(button)||{count:0,busy:button.getAttribute('aria-busy')};state.count++;counts.set(button,state);button.dataset.fxLoading='true';button.setAttribute('aria-busy','true');}
+        let finished=false;return()=>{if(finished)return;finished=true;operations.delete(token);pending=operations.size;if(!pending){clearTimeout(delay);progress.hidden=true;activity.hidden=true;}else activity.textContent=[...operations.values()].at(-1);if(button&&counts.has(button)){const state=counts.get(button);if(--state.count===0){counts.delete(button);delete button.dataset.fxLoading;if(state.busy===null)button.removeAttribute('aria-busy');else button.setAttribute('aria-busy',state.busy);}}};
     }
     window.SIGDAEffects={notify,begin};
     const originalFetch=window.fetch;
@@ -46,8 +47,12 @@
         }
         if(form.method.toLowerCase()==='post'){
             if(nativePending.has(form)){event.preventDefault();return;}
-            nativePending.add(form);form.setAttribute('aria-busy','true');begin(button);
+            nativePending.add(form);form.setAttribute('aria-busy','true');begin(button,form.classList.contains('login-form')?'Connexion en cours…':'Enregistrement en cours…');
         }
+    });
+    document.addEventListener('click',event=>{
+        const link=event.target.closest('a[href]');if(!link||event.defaultPrevented||event.button!==0||event.ctrlKey||event.metaKey||event.shiftKey||event.altKey||link.hasAttribute('download')||(link.target&&link.target!=='_self'))return;
+        const destination=new URL(link.href,location.href);if(destination.origin===location.origin&&(destination.pathname!==location.pathname||destination.search!==location.search))begin(link,'Ouverture de la page…');
     });
     function wrap(object,key,message){
         if(!object?.[key])return;const original=object[key];object[key]=async function(...args){const end=begin(document.activeElement);try{const result=await original.apply(this,args);end();if(message)await notify(message);return result;}catch(error){end();await notify(error.message||'L’opération n’a pas abouti.','error');throw error;}finally{end();}};
@@ -60,7 +65,7 @@
         viewAnimation?.cancel();viewAnimation=node.animate([{opacity:.35,transform:'translateY(5px)'},{opacity:1,transform:'translateY(0)'}],{duration:170,easing:'ease-out'});
     });
     window.addEventListener('beforeprint',()=>viewAnimation?.finish());
-    window.addEventListener('pageshow',event=>{if(event.persisted){nativePending=new WeakSet();for(const form of document.querySelectorAll('form[aria-busy="true"]'))form.removeAttribute("aria-busy");pending=0;progress.hidden=true;for(const node of document.querySelectorAll('[data-fx-loading]'))delete node.dataset.fxLoading;}});
+    window.addEventListener('pageshow',event=>{if(event.persisted){nativePending=new WeakSet();for(const form of document.querySelectorAll('form[aria-busy="true"]'))form.removeAttribute("aria-busy");pending=0;clearTimeout(delay);operations.clear();progress.hidden=true;activity.hidden=true;for(const node of document.querySelectorAll('[data-fx-loading]')){delete node.dataset.fxLoading;const state=counts.get(node);if(state?.busy===null)node.removeAttribute('aria-busy');else if(state)node.setAttribute('aria-busy',state.busy);}counts=new WeakMap();}});
     let invalidBatch=false;
     document.addEventListener('invalid',event=>{
         event.preventDefault();if(invalidBatch)return;invalidBatch=true;setTimeout(()=>{invalidBatch=false;},100);

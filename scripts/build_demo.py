@@ -20,7 +20,7 @@ STATIC_FILES = (
     "app.js", "theme.js", "demo-auth.js", "menu.js",
     "manifest.webmanifest", "sw.js", "pwa.js", "offline.html",
     "print.css", "print.js", "preview.js",
-    "requests.js", "usage.js", "statistics.js", "statistics.css",
+    "requests.js", "dashboards.js", "shortcuts.js", "usage.js", "statistics.js", "statistics.css",
     "service.js", "service.css", "support.js", "password.js", "effects.js", "effects.css",
     "typography.css", "responsive.css", "eb-garamond.ttf", "eb-garamond-license.txt",
     "assistant.js", "drafting.js", "dm-sans.ttf", "font-license.txt",
@@ -28,7 +28,7 @@ STATIC_FILES = (
     "manrope.ttf", "manrope-license.txt",
     "composer.js", "composer.css", "agent-store.js", "qrcode.js", "qrcode-license.txt",
 )
-ICONS = ("icon-192.png", "icon-512.png", "maskable-512.png", "apple-touch-icon.png")
+ICONS = ("icon-192.png", "icon-512.png", "maskable-512.png", "apple-touch-icon.png", "icon-192-rdc.png", "icon-512-rdc.png", "maskable-rdc-512.png", "apple-touch-icon-rdc.png")
 SPECIMEN_DATE = date(2026, 1, 15)
 SLUG = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
@@ -132,7 +132,7 @@ def build_demo() -> None:
                 html = source.read_text(encoding="utf-8")
                 html = html.replace('<!-- COMPOSER_FORM -->', digest_fragment)
                 html = html.replace('<!-- STATISTICS_PANEL -->', (ROOT / 'apps/backend/templates/statistics_panel.html').read_text(encoding='utf-8'))
-                html = re.sub(r'((?:src|href)="\./[a-z-]+\.(?:css|js))"', rf'\1?v={revision}"', html)
+                html = re.sub(r'((?:src|href)="\./[a-z-]+\.(?:css|js|webmanifest))"', rf'\1?v={revision}"', html)
                 target.write_text(html, encoding="utf-8")
             else:
                 copyfile(source, target)

@@ -103,6 +103,12 @@ class UsageEvent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 
+class LoginAttemptBucket(models.Model):
+    key = models.CharField(primary_key=True, max_length=64)
+    attempts = models.PositiveIntegerField(default=0)
+    started_at = models.DateTimeField()
+
+
 class ServiceValidity(models.Model):
     id = models.PositiveSmallIntegerField(primary_key=True, default=1, editable=False)
     starts_on = models.DateField()

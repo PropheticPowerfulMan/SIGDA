@@ -31,3 +31,24 @@
 @media screen and (max-width:600px){
 .login-header{padding:12px;gap:8px}.login-main .service-banner{margin:0 auto 12px;padding:12px}.login-main .service-banner span{font-size:.85rem}.login-card{gap:14px}.login-emblem{width:72px;height:72px;margin-bottom:12px;box-shadow:0 0 0 5px var(--accent-soft)}.login-emblem img{width:60px;height:60px}.login-card-heading .login-institution{font-size:.7rem!important;line-height:1.35;margin-bottom:6px}.login-card-heading>p{font-size:.9rem;margin-top:5px}.login-card h1{font-size:1.6rem}.profile-choices{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin:0}.profile-choices button{font-size:.85rem;min-height:48px;padding:8px 4px;text-align:center}.profile-choices button span{display:none}.profile-choices button[aria-pressed=true]{background:var(--accent-soft);border-color:var(--accent)}.login-form{gap:12px}.login-field{gap:4px}.login-credentials{padding:14px}.login-header .theme-toggle{font-size:.85rem}
 }
+
+/* Closed before first paint; both directions animate without display:none. */
+@media screen and (max-width:900px){
+ .app-shell .sidebar,.app-shell[data-menu-collapsed=true] .sidebar{display:flex;transform:translateX(-105%);visibility:hidden;pointer-events:none;transition:transform 260ms cubic-bezier(.22,.8,.2,1),visibility 0s 260ms;animation:none!important;will-change:transform}
+ .app-shell[data-menu-collapsed=false] .sidebar{transform:translateX(0);visibility:visible;pointer-events:auto;transition:transform 280ms cubic-bezier(.22,.8,.2,1),visibility 0s;animation:none!important}
+ .menu-backdrop{display:block;opacity:0;visibility:hidden;pointer-events:none;transition:opacity 240ms ease,visibility 0s 240ms}
+ .menu-backdrop[data-open=true]{opacity:1;visibility:visible;pointer-events:auto;transition:opacity 240ms ease,visibility 0s}
+ .menu-close{position:sticky;top:0;width:44px;height:44px;padding:0;font:400 32px/1 Arial,sans-serif;z-index:2}
+}
+.password-control button{width:44px;min-width:44px;height:44px;padding:10px;display:grid;place-items:center}.password-eye{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+@media(prefers-reduced-motion:reduce){.sidebar,.menu-backdrop{transition:none!important}}
+
+.mobile-quick-nav{display:none}
+@media screen and (max-width:900px){.mobile-quick-nav{position:fixed;inset:auto 0 0;z-index:65;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));padding:6px 8px max(7px,env(safe-area-inset-bottom));background:var(--panel);border-top:1px solid var(--border);box-shadow:0 -8px 24px #0001}.mobile-quick-nav a,.mobile-quick-nav button{display:grid;justify-items:center;gap:2px;min-height:52px;align-content:center;border:0;border-radius:10px;background:transparent;color:var(--muted);font:600 .78rem var(--font-ui);text-decoration:none}.mobile-quick-nav [aria-current=page]{color:var(--accent);background:var(--accent-soft)}.mobile-quick-nav span:first-child{font-size:22px;line-height:1.1}.main-content,.app-footer{padding-bottom:calc(80px + env(safe-area-inset-bottom))}}
+@media print{.mobile-quick-nav{display:none!important}}
+
+@media screen and (max-width:600px){
+ [data-view=overview]>.role-banner,.main-content>section.role-banner{display:none}
+ .overview-hero{padding:16px!important;gap:10px!important}.overview-hero .eyebrow,.overview-hero .hero-emblem,.overview-hero .page-description,.overview-hero .hero-link,.overview-hero .install-actions{display:none}.overview-hero .hero-actions{margin-top:12px;flex-direction:row}.overview-hero .hero-actions:empty{display:none}
+ .service-banner[data-state=active] .button,.service-banner[data-state=preparation] .button{display:none}.service-banner{padding:12px;gap:8px}.service-banner span{font-size:.82rem;line-height:1.4}.role-dashboard>h2{font-size:1.15rem}.role-dashboard>.page-description{font-size:.95rem;margin-top:6px}
+}

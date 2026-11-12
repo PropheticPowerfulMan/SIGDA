@@ -13,7 +13,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods, require_POST, require_safe
 
 from .catalog import DOCUMENT_TYPES, format_date
-from .composition_schema import COMMON_FIELDS, IDENTITY_FIELDS, MODELS, OPENINGS, CLOSINGS, compose_agent, compose_text
+from .composition_schema import COMMON_FIELDS, IDENTITY_FIELDS, MODELS, OPENINGS, CLOSINGS, SERVICES, compose_agent, compose_text
 from .models import AgentRecord, DocumentRequest, RequestEvent, ValidationTask, DocumentAccess
 from .roles import require_ops
 from .usage import log_usage
@@ -28,6 +28,7 @@ def agent_data(record):
 
 
 class AgentForm(forms.ModelForm):
+    service = forms.ChoiceField(label="Service d’affectation", choices=[(value, value) for value in SERVICES])
     class Meta:
         model = AgentRecord
         fields = ("name", "registration", "service", "job", "grade")

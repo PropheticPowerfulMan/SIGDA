@@ -15,6 +15,7 @@
     const standalone = window.matchMedia("(display-mode: standalone)");
     if (standalone.matches || navigator.standalone === true) return;
 
+    const iconHelp=document.createElement('p');iconHelp.textContent='Si un ancien raccourci conserve l’ancienne icône, recréez-le depuis cette version. Ne supprimez pas les données du site.';help.append(iconHelp);
     let promptEvent = null;
     function showHelp(visible) {
         help.hidden = !visible;

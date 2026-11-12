@@ -13,6 +13,7 @@ from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_http_methods
 
 from .composition import AgentForm
+from .composition_schema import SERVICES
 from .models import AgentRecord, MaintenanceEvent, ServiceValidity, SupportTicket
 from .roles import is_maintainer, role_for
 from .service_policy import annual_end, policy
@@ -157,6 +158,6 @@ def administration(request):
             summary = f"Demande {details.get('ticket', '')} : {dict(SupportTicket.STATES).get(details.get('state'), '')}."
         journal.append((event, labels.get(event.action, 'Intervention technique'), summary))
     return render(request, 'maintenance.html', {'current_view': 'maintenance', 'current_label': 'Administration technique',
-        'validity_form': validity_form, 'import_form': import_form, 'problem': problem,
+        'validity_form': validity_form, 'import_form': import_form, 'service_choices': SERVICES, 'problem': problem,
         'all_tickets': SupportTicket.objects.select_related('owner')[:50],
         'maintenance_events': journal})

@@ -14,4 +14,14 @@
 
 @media print{.fx-result::backdrop{display:none!important;background:transparent!important;backdrop-filter:none!important}}
 
+@media screen{
+ .fx-activity{position:fixed;z-index:94;top:calc(12px + env(safe-area-inset-top));left:50%;transform:translateX(-50%);display:flex;align-items:center;gap:10px;max-width:calc(100vw - 32px);padding:10px 16px;border:1px solid var(--border);border-radius:999px;background:var(--panel);color:var(--text);box-shadow:0 8px 28px #0002;font:600 .9rem var(--font-ui);pointer-events:none}
+ .fx-activity::before{content:'';flex:none;width:15px;height:15px;border:2px solid var(--accent);border-right-color:transparent;border-radius:50%;animation:fx-spin 700ms linear infinite}
+ .fx-activity[hidden]{display:none}
+ @media(hover:hover){.mobile-quick-nav a:hover,.mobile-quick-nav button:hover{color:var(--accent);background:var(--accent-soft)}.button:hover:not(:disabled){box-shadow:0 4px 14px #0001}}
+ @media(max-width:600px){.fx-result{padding:24px}.fx-result h2{font-size:1.35rem}.fx-result p{font-size:.95rem}}
+}
+@media(prefers-reduced-motion:reduce){.fx-activity::before{animation:none}}
+@media print{.fx-activity{display:none!important}}
+
 @keyframes fx-dialog{from{opacity:0;transform:translate(-50%,calc(-50% + 8px)) scale(.98)}to{opacity:1;transform:translate(-50%,-50%) scale(1)}}

@@ -1,6 +1,6 @@
 {
   "id": "/sigda-gestion-documentaire-demo",
-  "name": "SIGDA Cabinet · Documents administratifs",
+  "name": "SIGDA Cabinet",
   "short_name": "SIGDA",
   "description": "SIGDA pour le Cabinet du Président de la République : documents administratifs et circuit de validation.",
   "lang": "fr",
@@ -11,19 +11,19 @@
   "theme_color": "#071b35",
   "icons": [
     {
-      "src": "./assets/icons/icon-192.png",
+      "src": "./assets/icons/icon-192-rdc.png",
       "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./assets/icons/icon-512.png",
+      "src": "./assets/icons/icon-512-rdc.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "./assets/icons/maskable-512.png",
+      "src": "./assets/icons/maskable-rdc-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "maskable"

@@ -23,6 +23,8 @@ from .pwa import manifest, offline, service_worker
 from . import composition, maintenance
 from .models import AgentRecord
 from .roles import require_ops
+from .dashboards import dashboard_data
+from .security import ProtectedLoginView
 from django.core.exceptions import PermissionDenied
 
 
@@ -32,6 +34,7 @@ from django.core.exceptions import PermissionDenied
 def overview(request):
     return render(request, "overview.html", {
         "current_view": "overview",
+        "dashboard": dashboard_data(request.user),
         "current_label": "Vue d’ensemble",
         "agents": AGENTS,
         "document_types": DOCUMENT_TYPES,
@@ -164,7 +167,7 @@ urlpatterns = [
     path("assistant/", assistant_page, name="assistant"),
     path("assistant/question/", assistant_ask, name="assistant_ask"),
     path("atelier/reformulation/", draft, name="document_draft"),
-    path("connexion/", LoginView.as_view(), name="login"),
+    path("connexion/", ProtectedLoginView.as_view(), name="login"),
     path("deconnexion/", exit_session, name="logout"),
     path("manifest.webmanifest", manifest, name="manifest"),
     path("sw.js", service_worker, name="service_worker"),

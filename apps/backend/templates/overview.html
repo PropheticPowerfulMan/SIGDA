@@ -6,7 +6,7 @@
 <section class="page-heading overview-hero" id="overview" aria-labelledby="title" tabindex="-1">
     <div>
         <p class="eyebrow"><span class="eyebrow-dot" aria-hidden="true"></span>Cabinet du Président · Présidence de la République</p>
-        <h1 id="title">Vue d’ensemble</h1>
+        <h1 id="title">{{ dashboard.title|default:"Administration technique" }}</h1>
         <p class="page-description">Du dossier agent au document imprimé. Retrouvez vos modèles, vos demandes et votre journal d’activité au même endroit.</p>
         <div class="hero-actions">{% if is_ops %}<a class="button button-primary" href="{% url 'compose' %}">Créer un document <span aria-hidden="true">↗</span></a>{% endif %}<a class="hero-link" href="{% url 'assistant' %}">Consulter l’assistant <span aria-hidden="true">→</span></a></div>
     </div>
@@ -22,20 +22,7 @@
     <p><strong>Android et autres navigateurs de bureau</strong> · Cherchez <b>Installer</b> ou <b>Ajouter à l’écran d’accueil</b> dans le menu du navigateur.</p>
 </aside>
 
-<section class="metrics" aria-label="Catalogue de démonstration">
-    <article class="metric-card">
-        <span class="metric-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3"></circle><path d="M3 20v-2a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v2m2-15a3 3 0 0 1 0 6m4 9v-2a4 4 0 0 0-3-3.9"></path></svg></span>
-        <div class="metric-copy"><p class="metric-label">Dossiers en base</p><p class="metric-value">{{ saved_agent_count }}</p><p class="metric-meta">Dossiers de votre compte</p></div>
-    </article>
-    <article class="metric-card">
-        <span class="metric-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"></rect><path d="M8 8h8m-8 4h8m-8 4h5"></path></svg></span>
-        <div class="metric-copy"><p class="metric-label">Modèles</p><p class="metric-value">{{ document_types|length }}</p><p class="metric-meta">Documents administratifs</p></div>
-    </article>
-    <article class="metric-card">
-        <span class="metric-icon"><svg class="icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"></path></svg></span>
-        <div class="metric-copy"><p class="metric-label">Exemples A4</p><p class="metric-value">{% widthratio agents|length 1 document_types|length %}</p><p class="metric-meta">Exemples non validés</p></div>
-    </article>
-</section>
+{% if dashboard %}<section class="role-dashboard"><h2>{{ dashboard.subtitle }}</h2><p class="page-description">{{ dashboard.description }}</p><div class="stats-metrics">{% for label, value in dashboard.cards %}<article class="stats-metric"><h3>{{ label }}</h3><strong>{{ value }}</strong></article>{% endfor %}</div><section class="panel"><div class="panel-header"><h2>Mes prochaines tâches</h2></div><ul class="demo-list">{% for task in dashboard.tasks %}<li class="support-ticket"><strong>{{ task.request.payload.reference }}</strong><p>Révision {{ task.revision }} · {{ task.get_state_display }}</p><a class="button" href="{% url 'request_detail' task.request_id %}">Traiter cette tâche</a></li>{% empty %}<li>Aucune tâche en attente dans votre espace.</li>{% endfor %}</ul></section></section>{% endif %}
 <section class="panel">
     <div class="panel-header"><h2>Accès rapide</h2></div>
     <div class="overview-actions">

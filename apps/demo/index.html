@@ -8,7 +8,7 @@
     <title>Vue d’ensemble · SIGDA</title>
     <meta name="theme-color" content="#0a0f1d">
     <link rel="manifest" href="./manifest.webmanifest">
-    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon.png">
+    <link rel="apple-touch-icon" href="./assets/icons/apple-touch-icon-rdc.png">
     <link rel="icon" href="./assets/EmblemRDC.jpg">
     <link rel="stylesheet" href="./app.css">
     <link rel="stylesheet" href="./print.css">
@@ -21,7 +21,7 @@
     <script src="./catalogue.js" defer></script><script src="./service.js" defer></script><script src="./support.js" defer></script>
     <script src="./agent-store.js" defer></script>
     <script src="./app.js" defer></script>
-    <script src="./requests.js" defer></script><script src="./statistics.js" defer></script>
+    <script src="./requests.js" defer></script><script src="./dashboards.js" defer></script><script src="./statistics.js" defer></script>
     <script src="./print.js" defer></script>
     <script src="./preview.js" defer></script>
     <script src="./assistant.js" defer></script>
@@ -31,6 +31,7 @@
 <link rel="stylesheet" href="./service.css">
 <link rel="stylesheet" href="./typography.css"><link rel="stylesheet" href="./responsive.css">
 <link rel="stylesheet" href="./effects.css"><script src="./effects.js" defer></script>
+<script src="./shortcuts.js" defer></script>
 </head>
 <body>
     <a class="skip-link" href="#main">Aller au contenu</a>
@@ -50,7 +51,7 @@
         <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16"/></symbol>
     </svg>
     <noscript><p>Activez JavaScript pour vous connecter à la démonstration.</p></noscript>
-    <div class="app-shell" id="demo-workspace" hidden>
+    <div class="app-shell" data-menu-collapsed="true" id="demo-workspace" hidden>
         <aside class="sidebar">
             <a class="brand" href="#overview">
                 <span class="brand-mark"><img src="./assets/EmblemRDC.jpg" alt="" width="42" height="42"></span>
@@ -105,13 +106,13 @@
                             <button type="button" class="button" data-install-button aria-expanded="false" aria-controls="install-help" hidden>Installer SIGDA</button>
                         </div>
                     </section>
-                    <aside class="install-help" id="install-help" data-install-help hidden aria-label="Installation de SIGDA">
+                    <section data-role-dashboard class="role-dashboard"></section><aside class="install-help" id="install-help" data-install-help hidden aria-label="Installation de SIGDA">
                         <p><strong>iPhone et iPad</strong> · Dans Safari, choisissez <b>Partager</b>, puis <b>Sur l’écran d’accueil</b> et <b>Ouvrir comme app web</b> si proposé.</p>
                         <p><strong>Mac avec Safari</strong> · Choisissez <b>Partager</b>, puis <b>Ajouter au Dock</b>.</p>
                         <p><strong>Android et autres navigateurs de bureau</strong> · Cherchez <b>Installer</b> ou <b>Ajouter à l’écran d’accueil</b> dans le menu du navigateur.</p>
                     </aside>
 
-                    <section class="metrics" aria-label="Catalogue de démonstration">
+                    <section class="metrics" hidden aria-label="Catalogue de démonstration">
                         <article class="metric-card">
                             <span class="metric-icon"><svg class="icon" aria-hidden="true"><use href="#i-users"/></svg></span>
                             <div class="metric-copy"><p class="metric-label">Dossiers agents</p><p class="metric-value" data-agent-count>02</p><p class="metric-meta">Agents fictifs</p></div>

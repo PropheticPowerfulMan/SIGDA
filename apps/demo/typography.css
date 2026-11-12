@@ -1,5 +1,5 @@
 @font-face{font-family:"EB Garamond";src:url("./eb-garamond.ttf") format("truetype");font-style:normal;font-weight:400 800;font-display:swap}
-:root{--font-ui:"EB Garamond","Times New Roman",serif;font-family:var(--font-ui);font-size:20px}
+:root{--font-ui:"EB Garamond","Times New Roman",serif;font-family:var(--font-ui);font-size:18px}
 body{font-size:1rem;line-height:1.5;font-weight:500}
 .page-heading h1{font-size:clamp(1.65rem,2.5vw,2rem);line-height:1.2;font-weight:600;letter-spacing:-.02em}
 .login-intro-title{font-family:var(--font-ui);font-weight:600;line-height:1.12}
@@ -12,4 +12,6 @@ body{font-size:1rem;line-height:1.5;font-weight:500}
 .metric-value,.stats-metric strong,.agent-table,.stats-table{font-variant-numeric:lining-nums tabular-nums}
 .stats-panel svg text{font-size:13px}.agent-table{font-size:.9rem}.stats-panel .panel-header h2{font-size:1.2rem}
 .login-credentials code{font-size:.78rem;overflow-wrap:anywhere;white-space:normal}
-@media(max-width:900px){:root,html{font-size:19px}.page-heading h1{font-size:1.65rem}.page-description{font-size:.95rem}.login-card-heading>p{font-size:.95rem}.login-field label,.composer-fields label{font-size:.95rem}.stats-note,.field-help{font-size:.9rem}}
+@media(max-width:900px){:root,html{font-size:17px}.page-heading h1{font-size:1.65rem}.page-description{font-size:.95rem}.login-card-heading>p{font-size:.95rem}.login-field label,.composer-fields label{font-size:.95rem}.stats-note,.field-help{font-size:.9rem}}
+
+.role-dashboard{margin-bottom:1.5rem}.role-dashboard>.stats-metrics{margin-top:1rem}.role-dashboard h3{font-size:.9rem;color:var(--muted);font-weight:600}

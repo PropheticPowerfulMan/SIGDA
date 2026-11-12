@@ -37,9 +37,10 @@
             const wrapper = document.createElement("div");
             if (spec.type === "textarea") wrapper.className = "full-field";
             const label = document.createElement("label"); label.htmlFor = `compose-${spec.key}`; label.textContent = spec.label;
-            const input = document.createElement(spec.type === "textarea" ? "textarea" : "input");
+            const input = document.createElement(spec.type === "select" ? "select" : spec.type === "textarea" ? "textarea" : "input");
             input.id = label.htmlFor; input.name = spec.key;
-            if (spec.type !== "textarea") input.type = spec.type;
+            if (spec.type === "select") { input.add(new Option("Choisir un service…", "")); for (const value of spec.options) input.add(new Option(value, value)); }
+            else if (spec.type !== "textarea") input.type = spec.type;
             else input.rows = 4;
             input.required = spec.key !== "signatory";
             input.maxLength = spec.max; input.placeholder = spec.example;
@@ -70,7 +71,7 @@
         supportLink.textContent = record ? 'Demander une correction' : 'Demander un ajout';
         if (server) supportLink.href = '/assistance/?category=' + (record ? 'agent_update' : 'agent_add');
         for (const spec of schema.identity) {
-            const input = form.elements[spec.key]; input.value = record?.[spec.key] || ''; input.readOnly = true;
+            const input = form.elements[spec.key]; if (input.tagName === 'SELECT') { const value=record?.[spec.key]||''; if(value&&![...input.options].some(o=>o.value===value))input.add(new Option(value,value));input.value=value;input.disabled=true; } else { input.value=record?.[spec.key]||'';input.readOnly=true; }
         }
         root.querySelector('[data-agent-status]').textContent = record ? 'Données lues dans la base agents. Leur correction relève de la maintenance.' : 'Sélectionnez un dossier. S’il manque dans la liste, demandez son ajout à la maintenance.';
         invalidated();
@@ -165,6 +166,7 @@
             if (data[start] && data[end] && data[end] < data[start]) { message("La date ou l’heure de fin doit être postérieure ou égale au début."); return; }
         }
         const version = epoch; busy = true; next.disabled = true; message(""); state.textContent = "Création du document avec vos données…";
+        const finishPreparation = window.SIGDAEffects?.begin(next, 'Préparation de l’aperçu…');
         try {
             let text, reference;
             if (!server && schema.models[data.kind].subject === "agent") {
@@ -203,15 +205,17 @@
             document.title = `${models[data.kind].title} · ${reference} · SIGDA`;
             window.SIGDAEffects?.notify("L’aperçu du document est prêt. Relisez-le avant de l’enregistrer dans le circuit de validation.");
         } catch (error) { message(error.message || "Impossible de préparer le document."); state.textContent = "L’aperçu n’a pas été généré."; }
-        finally { busy = false; next.disabled = false; }
+        finally { finishPreparation?.(); busy = false; next.disabled = false; }
     });
     save.addEventListener("click", async () => {
         save.disabled = true;
+        const finishSave = window.SIGDAEffects?.begin(save, 'Enregistrement du brouillon…');
         try {
             if (server) { const payload = new FormData(); payload.set("ticket", ticket); location.assign((await post(root.dataset.saveEndpoint, payload)).url); }
             else { editingDocument = await SIGDAWorkflow.saveDraft(readySnapshot, editingDocument?.id || "", editingDocument?.revision || 0); location.hash = "requests"; save.disabled = false; }
         }
         catch (error) { message(error.message); save.disabled = false; }
+        finally { finishSave?.(); }
     });
     print.addEventListener("click", async () => {
         if (print.disabled || !displayedDocument) return;

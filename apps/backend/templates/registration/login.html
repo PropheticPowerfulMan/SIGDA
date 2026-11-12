@@ -9,7 +9,7 @@
     <title>Connexion · SIGDA</title>
     <link rel="icon" href="{% static 'sigda/EmblemRDC.jpg' %}">
     <link rel="manifest" href="{% url 'manifest' %}">
-    <link rel="apple-touch-icon" href="{% static 'sigda/icons/apple-touch-icon.png' %}">
+    <link rel="apple-touch-icon" href="{% static 'sigda/icons/apple-touch-icon-rdc.png' %}">
     <link rel="stylesheet" href="{% static 'app.css' %}">
     <link rel="stylesheet" href="{% static 'login.css' %}">
     <script src="{% static 'theme.js' %}" defer></script>
@@ -63,7 +63,7 @@
                     <h1 id="login-title">Connexion</h1>
                     <p id="login-description">Identifiez-vous pour accéder à l’atelier documentaire.</p>
                 </div>
-                <form class="login-form" method="post" action="{% url 'login' %}" aria-describedby="login-description">
+                {% if login_throttled %}<p role="alert" class="login-error">Trop de tentatives de connexion. Réessayez dans quinze minutes.</p>{% endif %}<form class="login-form" method="post" action="{% url 'login' %}" aria-describedby="login-description">
                     {% csrf_token %}
                     {% if next %}<input type="hidden" name="next" value="{{ next }}">{% endif %}
                     <div class="login-field">
